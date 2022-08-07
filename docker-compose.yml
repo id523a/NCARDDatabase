@@ -1,0 +1,25 @@
+version: "3.9"
+   
+services:
+  db:
+    image: mysql
+    volumes:
+      - ./data/db:/var/lib/mysql/data
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=ncarddb
+      - MYSQL_USER=ncarddb
+      - MYSQL_PASSWORD=insecure-yf7sAkNZTCaBx2d8hVBd4CwM # SECURITY WARNING: Non-secret password, for development purposes
+  web:
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "8000:80"
+    environment:
+      - MYSQL_DATABASE=ncarddb
+      - MYSQL_USER=ncarddb
+      - MYSQL_PASSWORD=insecure-yf7sAkNZTCaBx2d8hVBd4CwM
+    depends_on:
+      - db
+
