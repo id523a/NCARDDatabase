@@ -7,12 +7,18 @@
  5. `docker compose up`
  6. Wait for MySQL to initialise, if applicable.
     Look for `/usr/sbin/mysqld: ready for connections.`
- 7. Try navigating to http://localhost:8000. You should see a success page from Django.
+ 7. Try navigating to http://localhost:8000. You should see the homepage of the app.
  8. Open a shell inside the currently running `ncarddatabase-web-1` container, then run:
     * `python manage.py migrate`
     * `python manage.py collectstatic`
     * `python manage.py createsuperuser` - Set the username and password to whatever you like. The email address does not matter.
- 9. Try navigating to http://localhost:8000/admin, then log in with the username and password.
+ 9. Try navigating to http://localhost:8000/admin, then log in with the username and password. You should see Django's built-in admin interface.
+ 
+## To make code changes
+
+1. Modify/create/delete code files as necessary.
+2. If the server is running, you must also modify `NCARDDatabase/NCARDDatabase/wsgi.py`, e.g. by adding or removing a blank line.
+   This notifies the server to pick up the code changes.
  
 ## To stop the server
 
