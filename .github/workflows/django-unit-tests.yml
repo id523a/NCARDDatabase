@@ -3,7 +3,7 @@ name: Django Unit Tests
 on:
   push:
     branches: [ "main" ]
-  workflow-dispatch:
+  workflow_dispatch:
 
 jobs:
   build:
