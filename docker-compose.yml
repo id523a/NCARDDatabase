@@ -4,7 +4,7 @@ services:
   db:
     image: mysql
     volumes:
-      - ./data/mysql:/var/lib/mysql
+      - db_data:/var/lib/mysql
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=ncarddb
@@ -22,4 +22,5 @@ services:
       - MYSQL_PASSWORD=insecure-yf7sAkNZTCaBx2d8hVBd4CwM
     depends_on:
       - db
-
+volumes:
+  db_data:
