@@ -19,10 +19,6 @@ from app01test import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("info/",views.info_list),
-    path("info/ainfo",views.info_add),
-    path("info/dinfo",views.info_delete),
-    path("info/<int:id>/uinfo",views.info_update),
-
-
+    path('app01test/', include('app01test.urls')),
+    path('', include('ncard_app.urls')),
 ]

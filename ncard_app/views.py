@@ -1,4 +1,7 @@
-from django.shortcuts import render, HttpResponse, redirect
-from app01test.models import NcardInfo
+from django.shortcuts import render
 
-
+def index(request):
+    template_context = {
+        'value': 123,
+    }
+    return render(request, 'index.html', template_context)
