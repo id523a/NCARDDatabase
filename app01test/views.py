@@ -9,7 +9,6 @@ def index(request):
 
 def info_list(request):
     data_list = NcardInfo.objects.all()
-    print(data_list)
     return render(request, "user.html", {"datalist": data_list})
 
 
