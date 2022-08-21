@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 from django.conf import settings
 from django.db import models
 
@@ -35,4 +33,3 @@ class ContactRecord(models.Model):
     
     class Meta:
         ordering = ['person']
->>>>>>> 941c6f6de86aafe3a5c2237391dddab502e8d59f
