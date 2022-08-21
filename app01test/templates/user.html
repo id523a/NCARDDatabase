@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css">
+</head>
+<body>
+{#<img src="{% static '' %}">#}
+<style>
+
+
+</style>
+<h1>list</h1>
+<button  class="btn btn-primary btn-lg"  onclick="window.location.href='/info/ainfo'">add info</button>
+<table class="table table-striped table-hover">
+    <thead >
+    <tr>
+        <th>title</th>
+        <th>firstname</th>
+        <th>lastname</th>
+        <th>location</th>
+        <th>primary_organisation</th>
+        <th>other_organisation</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>NCARD_collaborator</th>
+        <th>Project</th>
+        <th>Twitter_handle</th>
+        <th>Profile_link</th>
+        <th>operate</th>
+
+
+
+    </tr>
+    </thead>
+    <tbody>
+
+        {% for obj in datalist %}
+            <tr>
+                <td>{{ obj.title }}</td>
+                <td>{{ obj.firstname }}</td>
+                <td>{{ obj.lastname }}</td>
+                <td>{{ obj.location }}</td>
+                <td>{{ obj.primary_organisation }}</td>
+                <td>{{ obj.other_organisation }}</td>
+                <td>{{ obj.Email }}</td>
+                <td>{{ obj.Phone }}</td>
+                <td>{{ obj.NCARD_collaborator }}</td>
+                <td>{{ obj.Project }}</td>
+                <td>{{ obj.Twitter_handle }}</td>
+                <td>{{ obj.Profile_link }}</td>
+                <td>
+                    <button class="btn btn-success btn-lg btn-block" onclick="window.location.href='/info/{{ obj.id }}/uinfo'"> update info</button>
+                    <button class="btn btn-danger btn-lg btn-block" onclick="window.location.href='/info/dinfo?id={{ obj.id }}'">delete info</button>
+                </td>
+
+
+
+
+
+
+            </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+</body>
+</html>

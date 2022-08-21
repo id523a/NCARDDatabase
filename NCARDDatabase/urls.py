@@ -15,8 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from app01test import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('ncard_app.urls')),
+    path("info/",views.info_list),
+    path("info/ainfo",views.info_add),
+    path("info/dinfo",views.info_delete),
+    path("info/<int:id>/uinfo",views.info_update),
+
+
 ]
