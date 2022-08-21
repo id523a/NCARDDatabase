@@ -7,15 +7,8 @@ def index(request):
     return HttpResponse("hello");
 
 
-def showList(request):
-    # 默认在当前目录下的templates下找
-    name = "test";
-    return render(request, "user.html", {"n1": name});
-
-
 def info_list(request):
     data_list = NcardInfo.objects.all()
-    print(data_list)
     return render(request, "user.html", {"datalist": data_list})
 
 
@@ -40,16 +33,15 @@ def info_add(request):
                                  primary_organisation=primary_organisation, other_organisation=other_organisation,
                                  Email=email, Phone=phone, NCARD_collaborator=nCARD_collaborator, Project=project,
                                  Twitter_handle=twitter_handle, Profile_link=profile_link)
-        return redirect("/info/")
+        return redirect('app01test:info_list')
 
 
-def info_delete(request):
-    inId = request.GET.get('id');
-    NcardInfo.objects.filter(id=inId).delete();
-    return redirect("/info/")
+def info_delete(request, id):
+    NcardInfo.objects.filter(id=id).delete();
+    return redirect('app01test:info_list')
 
 
-def info_update(request,id):
+def info_update(request, id):
     if request.method=='GET':
         info=NcardInfo.objects.filter(id=id).first
 
@@ -72,4 +64,4 @@ def info_update(request,id):
                                  Email=email, Phone=phone, NCARD_collaborator=nCARD_collaborator, Project=project,
                                  Twitter_handle=twitter_handle, Profile_link=profile_link)
 
-    return redirect("/info/")
+    return redirect('app01test:info_list')

@@ -2,11 +2,8 @@ from django.urls import path
 
 from . import views
 
+app_name = 'ncard_app'
+
 urlpatterns = [
     path('', views.index, name='index'),
-    path("info/",views.info_list),
-    path("info/ainfo",views.info_add),
-    path("info/dinfo",views.info_delete),
-    path("info/<int:id>/uinfo",views.info_update),
-
 ]

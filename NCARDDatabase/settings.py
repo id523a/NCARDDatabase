@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ncard_app',
-    "app01test.apps.App01TestConfig",
+    'app01test',
 ]
 
 MIDDLEWARE = [
