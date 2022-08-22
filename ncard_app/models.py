@@ -54,7 +54,7 @@ class ContactRecord(models.Model):
         YES = 1, 'Yes'
         STUDENT = 2, 'Yes - student'
 
-    phone_validator = RegexValidator(r'^[ 0-9()+-]*$', 'Phone numbers must contain only these characters: ()+-0123456789')
+    phone_validator = RegexValidator(r'^[ 0-9()+,*#-]*$', 'Phone numbers must contain only these characters: #()*+,-0123456789')
     # ORCID ident. format based on https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier
     orcid_validator = RegexValidator(r'^$|^https://orcid\.org/\d{4}-\d{4}-\d{4}-\d{3}(\d|X)$', 'ORCID identifier must be a full URL, in this format: https://orcid.org/XXXX-XXXX-XXXX-XXXX')
     # https://help.twitter.com/en/managing-your-account/twitter-username-rules
