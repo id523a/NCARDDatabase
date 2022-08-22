@@ -25,28 +25,19 @@ class Person(models.Model):
     class Meta:
         verbose_name_plural = 'people'
         ordering = ['surname', 'given_name', 'id']
-
-class Address(models.Model):
-    line1 = models.CharField('line 1', max_length=64)
-    line2 = models.CharField('line 2', max_length=64, blank=True)
-    line3 = models.CharField('line 3', max_length=64, blank=True)
-    suburb = models.CharField(max_length=32, blank=True)
-    state = models.CharField('state (abbrev.)', max_length=3, blank=True)
-    postcode = models.CharField(max_length=20)
-    country = models.CharField(max_length=2, choices=sorted(pytz.country_names.items(), key=lambda kv: kv[1]), default='AU')
-
-    def __str__(self):
-        country_name = pytz.country_names.get(self.country, self.country)
-        return ', '.join(filter(None, (self.line1, self.line2, self.line3, self.suburb, self.state, f'{country_name} {self.postcode}')))
-
-    class Meta:
-        verbose_name_plural = 'addresses'
+        indexes = [
+            models.Index(fields=['surname']),
+            models.Index(fields=['given_name'])
+        ]
 
 class Organisation(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
+        
+    class Meta:
+        ordering = ['name']
 
 class ContactRecord(models.Model):
     class NCARDRelation(models.IntegerChoices):
@@ -70,7 +61,7 @@ class ContactRecord(models.Model):
     twitter_validator = RegexValidator(r'^$|^@[A-Za-z0-9_]+$', 'Twitter handle must begin with an @ and only contain letters, digits and underscores.')
     nonnegative_validator = MinValueValidator(0, 'Value must not be negative.')
 
-    person = models.OneToOneField(Person, on_delete=models.CASCADE, related_name='contact_record')
+    person = models.OneToOneField(Person, on_delete=models.CASCADE, related_name='contact')
     email = models.EmailField('email', blank=True)
     email2 = models.EmailField('email 2', blank=True)
     phone_office = models.CharField('phone (office)', max_length=25, blank=True, validators=[phone_validator])
@@ -96,11 +87,40 @@ class ContactRecord(models.Model):
     clinician = models.BooleanField(default=False)
     notes = models.TextField(blank=True)
     research_focus = models.CharField(max_length=255, blank=True)
-    address_home = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True, related_name='contact_records_home', verbose_name='home address')
-    address_work = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, blank=True, related_name='contact_records_work', verbose_name='work address')
 
     def __str__(self):
         return str(self.person)
 
     class Meta:
         ordering = ['person']
+        indexes = [
+            models.Index(fields=['person'])
+        ]
+
+class PersonAddress(models.Model):
+    class AddressType(models.IntegerChoices):
+        HOME = 1, 'Home'
+        WORK = 2, 'Work'
+        
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='addresses')
+    type = models.IntegerField(choices=AddressType.choices)
+    line1 = models.CharField('line 1', max_length=64)
+    line2 = models.CharField('line 2', max_length=64, blank=True)
+    line3 = models.CharField('line 3', max_length=64, blank=True)
+    suburb = models.CharField(max_length=32, blank=True)
+    state = models.CharField('state (abbrev.)', max_length=3, blank=True)
+    postcode = models.CharField(max_length=20)
+    country = models.CharField(max_length=2, choices=sorted(pytz.country_names.items(), key=lambda kv: kv[1]), default='AU')
+
+    def __str__(self):
+        return f'{self.person}, {self.get_type_display()}'
+
+    class Meta:
+        verbose_name = 'address'
+        verbose_name_plural = 'addresses'
+        constraints = [
+            models.UniqueConstraint(fields=['person', 'type'], name='address_unique_person_type')
+        ]
+        indexes = [
+            models.Index(fields=['person', 'type'])
+        ]
