@@ -145,3 +145,25 @@ class Project(models.Model):
         indexes = [
             models.Index(fields=['name'])
         ]
+
+class Grant(models.Model):
+    reference = models.CharField(max_length=64, blank=True)
+    title = models.CharField(max_length=255, blank=True)
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True, related_name='grants')
+    investigators = models.ManyToManyField(Person, through='GrantInvestigator')
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['reference'], name='grant_unique_reference')
+            models.CheckConstraint(check=models.Q()
+        ]
+
+class GrantInvestigator(models.Model):
+    grant = models.ForeignKey(Grant, on_delete=models.CASCADE, related_name='+')
+    investigator = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='+')
+    chief = models.BooleanField(default=False)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['grant', 'investigator'], name='grantinvestigator_unique')
+        ]
