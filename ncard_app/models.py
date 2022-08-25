@@ -124,3 +124,24 @@ class PersonAddress(models.Model):
         indexes = [
             models.Index(fields=['person', 'type'])
         ]
+
+class Project(models.Model):
+    class ProjectStatus(models.IntegerChoices):
+        NONE = 0, '-'
+        PENDING = 1, 'Pending'
+        ACTIVE = 2, 'Active'
+        COMPLETE = 3, 'Complete'
+
+    name = models.CharField(max_length=255)
+    lead = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, blank=True, related_name='projects')
+    status = models.IntegerField(choices=ProjectStatus.choices, default=ProjectStatus.NONE)
+    funded = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+        indexes = [
+            models.Index(fields=['name'])
+        ]
