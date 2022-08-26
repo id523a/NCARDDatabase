@@ -1,6 +1,6 @@
-Professional Computing
-CITS3200 Team 30 Project Meeting  
-Date: 07.08 / Time: 3.30pm / Location: Teams (Online)
+# **Professional Computing**
+## CITS3200 Team 30 Project Meeting  
+### Date: 07.08 / Time: 3.30pm / Location: Teams (Online)
 
 
 Chair: Jordan Lee
