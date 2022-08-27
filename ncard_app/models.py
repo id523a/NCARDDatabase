@@ -1,7 +1,16 @@
 from django.conf import settings
 from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator
-import pytz
+
+#validators section
+
+phone_validator = RegexValidator(r'^[ 0-9()+,*#-]*$', 'Phone numbers must contain only these characters: #()*+,-0123456789')
+# ORCID ident. format based on https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier
+orcid_validator = RegexValidator(r'^$|^https://orcid\.org/\d{4}-\d{4}-\d{4}-\d{3}(\d|X)$', 'ORCID identifier must be a full URL, in this format: https://orcid.org/XXXX-XXXX-XXXX-XXXX')
+# https://help.twitter.com/en/managing-your-account/twitter-username-rules
+twitter_validator = RegexValidator(r'^$|^@[A-Za-z0-9_]+$', 'Twitter handle must begin with an @ and only contain letters, digits and underscores.')
+nonnegative_validator = MinValueValidator(0, 'Value must not be negative.')
+country_code_validator = RegexValidator(r'^[A-Z]{2}$', 'Country code must be two upper-case letters, e.g. AU')
 
 class Person(models.Model):
     title = models.CharField(max_length=16, blank=True)
@@ -31,13 +40,133 @@ class Person(models.Model):
         ]
 
 class Organisation(models.Model):
-    name = models.CharField(max_length=255)
+    class OrganisationType(models.IntegerChoices):
+        NONE = 0, '-'
+        HEALTH_EDUCATION_RESEARCH = 1, 'Health/Education/Research'
+        FUNDING_AGENCY = 2, 'Funding Agency'
+        COMMUNITY = 3, 'Community'
+        SERVICE_PROVIDER = 4, 'Service Provider'
+
+    name = models.CharField('name', max_length=255)
+    primary_contact = models.ForeignKey(Person, on_delete=models.RESTRICT, null=True, blank=True, related_name='organisations_primary_contact')
+    phone = models.CharField('phone', max_length=25, blank=True, validators=[phone_validator])
+    website = models.URLField('website', blank=True)
+    twitter_handle = models.CharField('Twitter handle', max_length=16, blank=True, validators=[twitter_validator])
+    type = models.IntegerField('type', choices=OrganisationType.choices, default=OrganisationType.NONE)
 
     def __str__(self):
         return self.name
         
     class Meta:
         ordering = ['name']
+
+class Project(models.Model):
+    class ProjectStatus(models.IntegerChoices):
+        NONE = 0, '-'
+        PENDING = 1, 'Pending'
+        ACTIVE = 2, 'Active'
+        COMPLETE = 3, 'Complete'
+
+    name = models.CharField(max_length=255)
+    lead = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True, blank=True, related_name='projects')
+    status = models.IntegerField(choices=ProjectStatus.choices, default=ProjectStatus.NONE)
+    funded = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+        indexes = [
+            models.Index(fields=['name'])
+        ]
+
+class Award(models.Model):
+    class AwardType(models.IntegerChoices):
+        PRIZE = 1, 'Prize'
+        SCHOLARSHIP = 2, 'Scholarship'
+
+    class AwardStatus(models.IntegerChoices):
+        AWARDEE = 1, 'Awardee'
+        NOMINEE = 2, 'Nominee'
+        FINALIST = 3, 'Finalist'
+
+    type = models.IntegerField('type', choices=AwardType.choices)
+    agency = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='awards')
+    name = models.CharField('name', max_length=255)
+    recipients = models.ManyToManyField(Person)
+    status = models.IntegerField('award status', choices=AwardStatus.choices, default=AwardStatus.AWARDEE)
+    detail = models.TextField('detail', blank=True)
+    year = models.PositiveSmallIntegerField('year')
+
+    def __str__(self):
+        return f'{self.name} {self.year}'
+
+    class Meta:
+        ordering = ['-year']
+
+# The Biography table is not a high priority at the moment, and it is complicated to support thanks to the attachment column.
+# class Biography(models.Model):
+#     person = models.OneToOneField(Person, on_delete=models.RESTRICT, related_name='biography')
+#     bio_type = # choice of 'CV Full', 'CV Short' and 'Profile'
+#     cv_attachment = # Microsoft Access supports multiple files in the Attachment column.
+
+#     def __str__(self):
+#         return str(self.person)
+
+class Event(models.Model):
+    type = models.CharField('type', max_length=255)
+    date = models.DateField('date')
+    number_attendees = models.IntegerField('number of attendees')
+    title = models.CharField('title', max_length=255, blank=True)
+    detail = models.TextField('detail')
+    lead_organisation = models.ForeignKey(Organisation, on_delete=models.SET_NULL, blank=True, null=True, related_name='events')
+    lead_contacts = models.ManyToManyField(Person, blank=True)
+    # The participants field is deliberately not ManyToManyField(Person). This allows for the free-form participation info seen in the existing spreadsheet.
+    participants = models.TextField('participants')
+    location = models.CharField('location', max_length=255, blank=True)
+
+    def __str__(self):
+        if not self.title:
+            return f'{self.date} - {self.detail}'
+        return f'{self.date} - {self.title}'
+
+    class Meta:
+        ordering = ['-date']
+
+class Publication(models.Model):
+    class OpenAccessStatus(models.IntegerChoices):
+        NONE = 0, 'None'
+        OPEN = 1, 'Open'
+        CLOSED = 2, 'Closed'
+        INDETERMINATE = 3, 'Indeterminate'
+        EMBARGOED = 4, 'Embargoed'
+        
+    type = models.CharField('type', max_length=255) # integer choices
+    year = models.PositiveSmallIntegerField('year') 
+    title = models.CharField('title', max_length=255)
+    contributors = models.ManyToManyField(Person)
+    journal = models.CharField('journal', max_length=255)
+    journal_ISSN = models.CharField('journal ISSN', max_length=255) # add validator
+    volume = models.PositiveSmallIntegerField('volume', blank=True, null=True)
+    page_start = models.PositiveIntegerField('start page', blank=True, null=True)
+    page_end = models.PositiveIntegerField('end page', blank=True, null=True)
+    open_access_status = models.IntegerField(choices=OpenAccessStatus.choices, default=OpenAccessStatus.NONE)
+    doi = models.CharField('doi', max_length=255)
+    electronic_ISBN = models.CharField('electronic ISBN', max_length=255, blank=True)
+    print_ISBN = models.CharField('print ISBN', max_length=255, blank=True)
+    abstract = models.TextField('abstract', blank=True)
+    citation = models.TextField('citation (Vancouver)', blank=True)
+    source_ID = models.CharField('source ID', max_length=50, blank=True) # check type
+    ncard_publication = models.BooleanField('NCARD publication', default=True)
+
+    def __str__(self):
+        if self.ncard_publication:
+            return f'NCARD - {self.title}'
+        return self.title
+
+    class Meta:
+        ordering = ['-year']
 
 class ContactRecord(models.Model):
     class NCARDRelation(models.IntegerChoices):
@@ -53,13 +182,6 @@ class ContactRecord(models.Model):
         NO = 0, 'No'
         YES = 1, 'Yes'
         STUDENT = 2, 'Yes - student'
-
-    phone_validator = RegexValidator(r'^[ 0-9()+,*#-]*$', 'Phone numbers must contain only these characters: #()*+,-0123456789')
-    # ORCID ident. format based on https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier
-    orcid_validator = RegexValidator(r'^$|^https://orcid\.org/\d{4}-\d{4}-\d{4}-\d{3}(\d|X)$', 'ORCID identifier must be a full URL, in this format: https://orcid.org/XXXX-XXXX-XXXX-XXXX')
-    # https://help.twitter.com/en/managing-your-account/twitter-username-rules
-    twitter_validator = RegexValidator(r'^$|^@[A-Za-z0-9_]+$', 'Twitter handle must begin with an @ and only contain letters, digits and underscores.')
-    nonnegative_validator = MinValueValidator(0, 'Value must not be negative.')
 
     person = models.OneToOneField(Person, on_delete=models.CASCADE, related_name='contact')
     email = models.EmailField('email', blank=True)
@@ -97,6 +219,17 @@ class ContactRecord(models.Model):
             models.Index(fields=['person'])
         ]
 
+class Country(models.Model):
+    code = models.CharField('country code', max_length=2, primary_key=True, validators=[country_code_validator])
+    name = models.CharField('name', max_length=255)
+    
+    def __str__(self):
+        return f'{self.code} - {self.name}'
+        
+    class Meta:
+        ordering = ['code']
+        verbose_name_plural = 'countries'
+
 class PersonAddress(models.Model):
     class AddressType(models.IntegerChoices):
         HOME = 1, 'Home'
@@ -110,7 +243,7 @@ class PersonAddress(models.Model):
     suburb = models.CharField(max_length=32, blank=True)
     state = models.CharField('state (abbrev.)', max_length=3, blank=True)
     postcode = models.CharField(max_length=20)
-    country = models.CharField(max_length=2, choices=sorted(pytz.country_names.items(), key=lambda kv: kv[1]), default='AU')
+    country = models.ForeignKey(Country, on_delete=models.RESTRICT, to_field='code', default='AU', related_name='+')
 
     def __str__(self):
         return f'{self.person}, {self.get_type_display()}'
