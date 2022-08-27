@@ -3,7 +3,18 @@
 import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
+import pytz
 
+def add_countries(apps, schema_editor):
+    Country = apps.get_model('ncard_app', 'Country')
+    db_alias = schema_editor.connection.alias
+    countries = []
+    for code, name in pytz.country_names.items():
+        countries.append(Country(code=code, name=name))
+    Country.objects.using(db_alias).bulk_create(countries)
+
+def reverse_add_countries(apps, schema_editor):
+    pass
 
 class Migration(migrations.Migration):
 
@@ -19,6 +30,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=255, verbose_name='name')),
             ],
         ),
+        migrations.RunPython(add_countries, reverse_add_countries),
         migrations.AddField(
             model_name='organisation',
             name='phone',
