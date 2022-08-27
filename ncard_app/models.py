@@ -222,6 +222,13 @@ class ContactRecord(models.Model):
 class Country(models.Model):
     code = models.CharField('country code', max_length=2, primary_key=True, validators=[country_code_validator])
     name = models.CharField('name', max_length=255)
+    
+    def __str__(self):
+        return f'{self.code} - {self.name}'
+        
+    class Meta:
+        ordering = ['code']
+        verbose_name_plural = 'countries'
 
 class PersonAddress(models.Model):
     class AddressType(models.IntegerChoices):
