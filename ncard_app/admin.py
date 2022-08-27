@@ -10,3 +10,16 @@ admin.site.register(models.Publication)
 admin.site.register(models.ContactRecord)
 admin.site.register(models.Country)
 admin.site.register(models.PersonAddress)
+
+class GrantInvestigatorInline(admin.TabularInline):
+    model = models.GrantInvestigator
+    fields = ['investigator', 'chief']
+    extra = 1
+
+class GrantAdmin(admin.ModelAdmin):
+    inlines = [
+        GrantInvestigatorInline
+    ]
+    exclude = ['investigators']
+
+admin.site.register(models.Grant, GrantAdmin)
