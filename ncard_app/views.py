@@ -15,20 +15,23 @@ def test_show(request):
     name = request.POST.get("name")
     status = request.POST.get("status")
     start_date=request.POST.get("startDate")
-    end_date=request.POST.get("end_date")
+    end_date=request.POST.get("endDate")
     given_name = request.POST.get("givenName")
     surname=request.POST.get("surname")
+    noYear=request.POST.get("noYear")
+
 
     search_dict = dict()
 
-
+    if noYear:
+        search_dict["noYear"] = noYear
     if type:
         search_dict["type"] = type
 
     if status:
-        search_dict["status"] = status
+       search_dict["status"] = status
 
-    # print(search_dict)
+
     data = Award.objects.filter(**search_dict)
     # print(data)
 
@@ -39,7 +42,8 @@ def test_show(request):
     if start_date:
         data = data.filter(year__gte=start_date)
     if end_date:
-        data=data.filter(year__lte=end_date)
+        data=data.filter(year__lt=end_date)
+        
 
     if given_name:
         data=data.filter(recipients__given_name__icontains=given_name)
