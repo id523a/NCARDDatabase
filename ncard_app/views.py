@@ -4,4 +4,4 @@ def index(request):
     template_context = {
         'value': 123,
     }
-    return render(request, 'index.html', template_context)
+    return render(request, 'events/index.html', template_context)
