@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from ncard_app.models import Award
 def index(request):
     template_context = {
         'value': 123,

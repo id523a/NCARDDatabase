@@ -19,5 +19,5 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('ncard_app.urls')),
-    path("test/show",views.test_show,name='fuzzy'),
+
 ]
