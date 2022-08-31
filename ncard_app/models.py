@@ -98,7 +98,7 @@ class Award(models.Model):
     status = models.IntegerField('award status', choices=AwardStatus.choices, default=AwardStatus.AWARDEE)
     detail = models.TextField('detail', blank=True)
     year = models.PositiveSmallIntegerField('year')
-    noYear = models.DecimalField(max_digits=10,decimal_places=1,blank=True)
+    no_year = models.DecimalField(default=1.0, max_digits=10, decimal_places=1, null=True, blank=True)
     notes = models.TextField(blank=True)
     link = models.URLField(blank=True)
 
