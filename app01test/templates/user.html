@@ -12,7 +12,7 @@
 
 </style>
 <h1>list</h1>
-<button  class="btn btn-primary btn-lg"  onclick="window.location.href='/info/ainfo'">add info</button>
+<button  class="btn btn-primary btn-lg"  onclick="window.location.href='{% url 'app01test:info_add' %}'">add info</button>
 <table class="table table-striped table-hover">
     <thead >
     <tr>
@@ -51,8 +51,8 @@
                 <td>{{ obj.Twitter_handle }}</td>
                 <td>{{ obj.Profile_link }}</td>
                 <td>
-                    <button class="btn btn-success btn-lg btn-block" onclick="window.location.href='/info/{{ obj.id }}/uinfo'"> update info</button>
-                    <button class="btn btn-danger btn-lg btn-block" onclick="window.location.href='/info/dinfo?id={{ obj.id }}'">delete info</button>
+                    <button class="btn btn-success btn-lg btn-block" onclick="window.location.href='{% url 'app01test:info_update' obj.id %}'"> update info</button>
+                    <button class="btn btn-danger btn-lg btn-block" onclick="window.location.href='{% url 'app01test:info_delete' obj.id %}'">delete info</button>
                 </td>
 
 
