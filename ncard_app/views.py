@@ -9,4 +9,7 @@ def index(request):
     return render(request, 'events/index.html', template_context)
 
 def home(request):
+    if not request.user.is_authenticated:
+        messages.success(request, ("Please login to access this page."))
+        return redirect('login')
     return render(request, 'events/home.html', {})
