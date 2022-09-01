@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views
+from ncard_app import views
 
 app_name = 'ncard_app'
 

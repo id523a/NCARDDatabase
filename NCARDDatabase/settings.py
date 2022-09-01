@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "simpleui",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -133,3 +134,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# simple_ui's config
+SIMPLEUI_STATIC_OFFLINE = True    # Use offline static resources
+SIMPLEUI_HOME_INFO = False        # Show home info
+SIMPLEUI_HOME_ACTION = False      #
+SIMPLEUI_ANALYSIS = False         # Upload usage data
+SIMPLEUI_LOGIN_PARTICLES = False  #
+SIMPLEUI_DEFAULT_ICON = True      # Default icon

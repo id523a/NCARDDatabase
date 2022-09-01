@@ -15,10 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from ncard_app import views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('ncard_app.urls')),
-    path("test/show",views.test_show,name='fuzzy'),
+
 ]
