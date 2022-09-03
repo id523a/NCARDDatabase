@@ -56,7 +56,7 @@ class Organisation(models.Model):
 
     def __str__(self):
         return self.name
-        
+
     class Meta:
         ordering = ['name']
 
@@ -98,6 +98,9 @@ class Award(models.Model):
     status = models.IntegerField('award status', choices=AwardStatus.choices, default=AwardStatus.AWARDEE)
     detail = models.TextField('detail', blank=True)
     year = models.PositiveSmallIntegerField('year')
+    no_year = models.DecimalField(default=1.0, max_digits=10, decimal_places=1, null=True, blank=True)
+    notes = models.TextField(blank=True)
+    link = models.URLField(blank=True)
 
     def __str__(self):
         return f'{self.name} {self.year}'
@@ -134,6 +137,7 @@ class Event(models.Model):
     class Meta:
         ordering = ['-date']
 
+
 class Publication(models.Model):
     class OpenAccessStatus(models.IntegerChoices):
         NONE = 0, 'None'
@@ -141,9 +145,9 @@ class Publication(models.Model):
         CLOSED = 2, 'Closed'
         INDETERMINATE = 3, 'Indeterminate'
         EMBARGOED = 4, 'Embargoed'
-        
+
     type = models.CharField('type', max_length=255) # integer choices
-    year = models.PositiveSmallIntegerField('year') 
+    year = models.PositiveSmallIntegerField('year')
     title = models.CharField('title', max_length=255)
     contributors = models.ManyToManyField(Person)
     journal = models.CharField('journal', max_length=255)
@@ -222,10 +226,10 @@ class ContactRecord(models.Model):
 class Country(models.Model):
     code = models.CharField('country code', max_length=2, primary_key=True, validators=[country_code_validator])
     name = models.CharField('name', max_length=255)
-    
+
     def __str__(self):
         return f'{self.code} - {self.name}'
-        
+
     class Meta:
         ordering = ['code']
         verbose_name_plural = 'countries'
@@ -234,7 +238,7 @@ class PersonAddress(models.Model):
     class AddressType(models.IntegerChoices):
         HOME = 1, 'Home'
         WORK = 2, 'Work'
-        
+
     person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='addresses')
     type = models.IntegerField(choices=AddressType.choices)
     line1 = models.CharField('line 1', max_length=64)
@@ -263,7 +267,7 @@ class Grant(models.Model):
     title = models.CharField(max_length=255, blank=True)
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True, related_name='grants')
     investigators = models.ManyToManyField(Person, through='GrantInvestigator')
-    
+
     def __str__(self):
         name = self.title or 'Grant'
         return f'{name} [{self.id}]'
@@ -272,7 +276,7 @@ class GrantInvestigator(models.Model):
     grant = models.ForeignKey(Grant, on_delete=models.CASCADE, related_name='+')
     investigator = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='+')
     chief = models.BooleanField(default=False)
-    
+
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['grant', 'investigator'], name='grantinvestigator_unique')
