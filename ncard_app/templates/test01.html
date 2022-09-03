@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>all Award</title>
+</head>
+<body>
+
+		<form action="{% url 'ncard_app:fuzzy' %}" method="post">
+            {% csrf_token %}
+			<div id="">
+				<span> type</span>
+				<input  class="checked" type="checkbox" name="" id="" value=""  onclick="enable(this)" />
+				<select name="type" disabled>
+
+					<option  selected value="1">Prize</option>
+					<option value="2">ScholarShip</option>
+				</select>
+			</div>
+			<div id="">
+				<span> agency</span>
+				<input  class="checked" type="checkbox" name="" id="" value=""  onclick="enable(this)" />
+				<input type="text" name="agency" id="" value=""  disabled="disabled">
+			</div>
+			<div id="">
+				<span> name</span>
+				<input  class="checked" type="checkbox" name="" id="" value=""  onclick="enable(this)" />
+				<input type="text" name="name" id="" value=""  disabled="disabled">
+			</div>
+			<div id="">
+				<span> status</span>
+				<input  class="checked" type="checkbox" name="" id="" value=""  onclick="enable(this)" />
+				<select name="status" disabled>
+					<option selected value="1">Awardee</option>
+					<option value="2">Nominee</option>
+					<option value="3">Finalist</option>
+				</select>
+			</div>
+            <div id="">
+				<span> startDate</span>
+				<input  class="checked" type="checkbox" name="" id="" value=""  onclick="enable(this)" />
+				<input type="text" name="startDate" id="" value=""  disabled="disabled">
+				<span> endDate</span>
+				<input  class="checked" type="checkbox" name="" id="" value=""  onclick="enable(this)" />
+				<input type="text" name="endDate" id="" value=""  disabled="disabled">
+			</div>
+			<div id="">
+				<span> noYear</span>
+				<input  class="checked" type="checkbox" name="" id="" value=""  onclick="enable(this)" />
+				<input type="text" name="noYear" id="" value=""  disabled="disabled">
+			</div>
+            <div id="">
+				<span> recipients:  </span>
+				<span>given name</span>
+				<input  class="checked" type="checkbox" name="" id="" value=""  onclick="enable(this)" />
+				<input type="text" name="givenName" id="" value=""  disabled="disabled">
+				<span>surname</span>
+				<input  class="checked" type="checkbox" name="" id="" value=""  onclick="enable(this)" />
+				<input type="text" name="surname" id="" value=""  disabled="disabled">
+			</div>
+			<button type="submit">search</button>
+		</form>
+
+		<!-- <input type="checkbox" name="" id="" value=""  onclick=""/> -->
+	</body>
+	<script type="text/javascript">
+
+	function enable(e){
+
+		if(e.checked==true){
+			e.nextElementSibling.disabled=false;
+		}
+		if(e.checked==false){
+			e.nextElementSibling.disabled=true;
+		}
+
+
+
+	}
+
+	</script>
+  {% for ele in n1 %}
+        {{ ele}}--{{ ele.get_type_display }}--{% for a in ele.recipients.all %}{{ a }} {% endfor %}<br>
+
+    {%  endfor %}
+</html>
