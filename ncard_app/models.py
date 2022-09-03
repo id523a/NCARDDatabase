@@ -52,7 +52,7 @@ class Organisation(models.Model):
     phone = models.CharField('phone', max_length=25, blank=True, validators=[phone_validator])
     website = models.URLField('website', blank=True)
     twitter_handle = models.CharField('Twitter handle', max_length=16, blank=True, validators=[twitter_validator])
-    type = models.IntegerField('type', choices=OrganisationType.choices, default=OrganisationType.NONE)
+    organisation_type = models.IntegerField('type', choices=OrganisationType.choices, default=OrganisationType.NONE)
 
     def __str__(self):
         return self.name
@@ -91,7 +91,7 @@ class Award(models.Model):
         NOMINEE = 2, 'Nominee'
         FINALIST = 3, 'Finalist'
 
-    type = models.IntegerField('type', choices=AwardType.choices)
+    award_type = models.IntegerField('type', choices=AwardType.choices)
     agency = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='awards')
     name = models.CharField('name', max_length=255)
     recipients = models.ManyToManyField(Person)
@@ -118,7 +118,7 @@ class Award(models.Model):
 #         return str(self.person)
 
 class Event(models.Model):
-    type = models.CharField('type', max_length=255)
+    event_type = models.CharField('type', max_length=255)
     date = models.DateField('date')
     number_attendees = models.IntegerField('number of attendees')
     title = models.CharField('title', max_length=255, blank=True)
@@ -146,7 +146,7 @@ class Publication(models.Model):
         INDETERMINATE = 3, 'Indeterminate'
         EMBARGOED = 4, 'Embargoed'
 
-    type = models.CharField('type', max_length=255) # integer choices
+    publication_type = models.CharField('type', max_length=255) # integer choices
     year = models.PositiveSmallIntegerField('year')
     title = models.CharField('title', max_length=255)
     contributors = models.ManyToManyField(Person)
@@ -240,7 +240,7 @@ class PersonAddress(models.Model):
         WORK = 2, 'Work'
 
     person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='addresses')
-    type = models.IntegerField(choices=AddressType.choices)
+    address_type = models.IntegerField(choices=AddressType.choices)
     line1 = models.CharField('line 1', max_length=64)
     line2 = models.CharField('line 2', max_length=64, blank=True)
     line3 = models.CharField('line 3', max_length=64, blank=True)
@@ -250,16 +250,16 @@ class PersonAddress(models.Model):
     country = models.ForeignKey(Country, on_delete=models.RESTRICT, to_field='code', default='AU', related_name='+')
 
     def __str__(self):
-        return f'{self.person}, {self.get_type_display()}'
+        return f'{self.person}, {self.get_address_type_display()}'
 
     class Meta:
         verbose_name = 'address'
         verbose_name_plural = 'addresses'
         constraints = [
-            models.UniqueConstraint(fields=['person', 'type'], name='address_unique_person_type')
+            models.UniqueConstraint(fields=['person', 'address_type'], name='address_unique_person_address_type')
         ]
         indexes = [
-            models.Index(fields=['person', 'type'])
+            models.Index(fields=['person', 'address_type'])
         ]
 
 class Grant(models.Model):
