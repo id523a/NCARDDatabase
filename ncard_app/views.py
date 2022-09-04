@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
 from ncard_app.models import Award
+from django.contrib import messages
+
 def index(request):
     template_context = {
         'value': 123,
@@ -10,7 +11,7 @@ def index(request):
 
 def home(request):
     if not request.user.is_authenticated:
-        messages.success(request, ("Please login to access this page."))
+        messages.error(request, ("Please login to access this page."))
         return redirect('login')
     return render(request, 'events/home.html', {})
 
