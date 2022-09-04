@@ -1,12 +1,44 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
 from ncard_app.models import Award
+
 from  ncard_app import forms
 from django.views import View
+
+from django.contrib import messages
+
+
 def index(request):
     template_context = {
         'value': 123,
     }
-    return render(request, 'index.html', template_context)
+    return render(request, 'events/index.html', template_context)
+
+def home(request):
+    if not request.user.is_authenticated:
+        messages.error(request, ("Please login to access this page."))
+        return redirect('login')
+    return render(request, 'events/home.html', {})
+
+def login_user(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, ("Incorrect username or password, please try again."))
+            return redirect('login')
+    else:
+        return render(request, 'authenticate/login.html', {})
+
+def logout_user(request):
+    logout(request)
+    messages.success(request, ("Logged out successfully."))
+    return redirect('login')
+
 
 def test_show(request):
     if request.method == "GET":
@@ -53,6 +85,7 @@ def test_show(request):
         data=data.filter(recipients__surname__icontains=surname)
 
     return render(request, "test01.html", {"n1":data})
+
 
 class CbShow(View):
     # form=xx
@@ -110,3 +143,4 @@ class CbShow(View):
 
             return render(request, "test02.html", {"form": form, "n1": data})
         return render(request, "test02.html", {"form": form})
+
