@@ -8,12 +8,12 @@
     <form action="{% url 'login' %}" method=POST>
         {% csrf_token %}
         <div class="mb-3">
-            <label id="exampleInputEmail1" class="form-label">Username</label>
-            <input type="text" class="form-control" name="username" aria-describedby="emailHelp">
+            <label for="LoginUsername" class="form-label">Username</label>
+            <input id="LoginUsername" type="text" class="form-control" name="username" aria-describedby="emailHelp">
         </div>
         <div class="mb-3">
-            <label id="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" name="password">
+            <label for="LoginPassword" class="form-label">Password</label>
+            <input id ="LoginPassword" type="password" class="form-control" name="password">
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
     </form>
