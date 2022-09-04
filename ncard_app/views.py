@@ -15,6 +15,26 @@ def home(request):
         return redirect('login')
     return render(request, 'events/home.html', {})
 
+def login_user(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, ("There was an error logging in."))
+            return redirect('login')
+    else:
+        return render(request, 'authenticate/login.html', {})
+
+def logout_user(request):
+    logout(request)
+    messages.success(request, ("Logged out successfully."))
+    return redirect('login')
+
+
 def test_show(request):
     if request.method == "GET":
         return render(request, "test01.html")
