@@ -1,10 +1,10 @@
 from django.urls import path
 
-from ncard_app import views
+from . import views
 
 app_name = 'ncard_app'
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path("test/show",views.test_show,name='fuzzy'),
+    path("test/show", views.CbShow.as_view(), name='fuzzy'),
 ]
