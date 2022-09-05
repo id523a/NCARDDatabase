@@ -258,9 +258,6 @@ class PersonAddress(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['person', 'address_type'], name='address_unique_person_address_type')
         ]
-        indexes = [
-            models.Index(fields=['person', 'address_type'])
-        ]
 
 class Grant(models.Model):
     reference = models.CharField(max_length=64, blank=True)
