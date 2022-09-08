@@ -1,0 +1,40 @@
+{% extends 'events/base.html' %}
+
+{% block title %}NCARD People{% endblock %}
+
+{% block content%}
+
+    <h1 style="border: none; outline: none; scroll-behavior: smooth;">People</h1> 
+    </br>
+    <table class="table table-striped ">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for person in people_list %}
+            <tr>
+                <th scope="row">{{ person.id }}</th>
+                <td>{{ person.title }}</td>
+                <td>{{ person.given_name }}</td>
+                <td>{{ person.surname }}</td>
+                <td>
+                    <input type="button" class="btn btn-secondary btn-sm" style="min-width: 60px;" value="Edit" onclick=""/>
+                    <input type="button" class="btn btn-danger btn-sm" style="min-width: 60px;" value="Delete" onclick="deleteRow(this)"/>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        function deleteRow(btn) {
+        var row = btn.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+        }
+    </script>
+{% endblock %}

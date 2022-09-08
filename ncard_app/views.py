@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from ncard_app.models import Award
+from ncard_app.models import Award, Person
 from django.contrib import messages
 
 def index(request):
@@ -34,6 +34,12 @@ def logout_user(request):
     messages.success(request, ("Logged out successfully."))
     return redirect('login')
 
+def all_people(request):
+    if not request.user.is_authenticated:
+        messages.error(request, ("Please login to access this page."))
+        return redirect('login')
+    people_list = Person.objects.all()
+    return render(request, 'tables/people.html', {'people_list': people_list})
 
 def test_show(request):
     if request.method == "GET":

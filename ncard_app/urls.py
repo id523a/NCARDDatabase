@@ -8,4 +8,5 @@ urlpatterns = [
     path('login_user', views.login_user, name="login"),
     path('logout_user', views.logout_user, name="logout"),
     path("test/show",views.test_show,name='fuzzy'),
+    path('tables', views.all_people, name="list-people"),
 ]
