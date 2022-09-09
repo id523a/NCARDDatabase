@@ -1,7 +1,11 @@
+from multiprocessing.sharedctypes import Value
+from turtle import title
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from ncard_app.models import Award, Person
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 def index(request):
     template_context = {
@@ -34,12 +38,30 @@ def logout_user(request):
     messages.success(request, ("Logged out successfully."))
     return redirect('login')
 
-def all_people(request):
+def list_people(request):
     if not request.user.is_authenticated:
         messages.error(request, ("Please login to access this page."))
         return redirect('login')
     people_list = Person.objects.all()
     return render(request, 'tables/people.html', {'people_list': people_list})
+
+@csrf_exempt
+def save_people(request):
+    id = request.POST.get("id")
+    type = request.POST.get("type")
+    value = request.POST.get("value")
+    person=Person.objects.get(id=id)
+    if type == "title":
+        person.title = value
+    if type == "given_name":
+        person.given_name = value
+    if type == "middle_name":
+        person.middle_name = value
+    if type == "surname":
+        person.surname = value
+    person.save()
+    return JsonResponse({"success":"Update"})
+    
 
 def test_show(request):
     if request.method == "GET":
