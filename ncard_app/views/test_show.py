@@ -1,34 +1,6 @@
-from multiprocessing.sharedctypes import Value
-from turtle import title
 from django.shortcuts import render, redirect
-from ncard_app.models import Award, Person
+from ncard_app.models import Award
 from django.contrib import messages
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-
-def list_people(request):
-    if not request.user.is_authenticated:
-        messages.error(request, ("Please login to access this page."))
-        return redirect('login')
-    people_list = Person.objects.all()
-    return render(request, 'tables/people.html', {'people_list': people_list})
-
-@csrf_exempt
-def save_people(request):
-    id = request.POST.get("id")
-    type = request.POST.get("type")
-    value = request.POST.get("value")
-    person=Person.objects.get(id=id)
-    if type == "title":
-        person.title = value
-    if type == "given_name":
-        person.given_name = value
-    if type == "middle_name":
-        person.middle_name = value
-    if type == "surname":
-        person.surname = value
-    person.save()
-    return JsonResponse({"success":"Update"})
 
 def test_show(request):
     if request.method == "GET":
