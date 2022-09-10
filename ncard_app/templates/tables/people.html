@@ -15,7 +15,6 @@
     <table class="table table-striped ">
         <thead>
           <tr>
-            <th scope="col">ID</th>
             <th scope="col">Title</th>
             <th scope="col">First Name</th>
             <th scope="col">Middle Name</th>
@@ -27,7 +26,7 @@
         <tbody>
             {% for person in people_list %}
             <tr>
-                <th scope="row">{{ person.id }}</th>
+
                 <td class="editable" data-id="{{ person.id }}" data-type="title">{{ person.title }}</td>
                 <td class="editable" data-id="{{ person.id }}" data-type="given_name">{{ person.given_name }}</td>
                 <td class="editable" data-id="{{ person.id }}" data-type="middle_name">{{ person.middle_name }}</td>

@@ -1,0 +1,57 @@
+{% extends 'events/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Phone Book{% endblock %}
+
+{% block content%}
+    <h1>Phone Book</h1>
+
+        {% csrf_token %}
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
+<table id="query-form" >
+    {% csrf_token %}
+    <tr>
+        <th> Title </th>
+        <th> Full Name </th>
+        <th> Organization Name </th>
+        <th> Phone(office) </th>
+        <th> Phone(Mobile) </th>
+        <th> Email </th>
+    </tr>
+    {% for ele in data %}
+        <tr>
+            <td>
+                {{ ele.primary_contact.title }}
+            </td>
+            <td>
+                {% if ele.primary_contact.surname_first %} {{ ele.primary_contact.surname }}
+                    {{ ele.primary_contact.given_name }}
+                {% else %}  {{ ele.primary_contact.given_name }}  {{ ele.primary_contact.surname }}
+                {% endif %}
+            </td>
+            <td>
+                {{ ele.name }}
+            </td>
+            <td>
+                {{ ele.primary_contact.contact.phone_office }}
+            </td>
+            <td>
+                {{ ele.primary_contact.contact.phone_mobile }}
+            </td>
+            <td>
+                {{ ele.primary_contact.contact.email }}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+<button onclick="get_export()">export</button>
+
+
+
+
+{% endblock %}
+
