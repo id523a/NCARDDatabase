@@ -1,0 +1,14 @@
+{% extends 'events/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Person{% endblock %}
+
+{% block content%}
+    <h1>Edit Person</h1>
+    <form id="contact-form" action="{% url 'edit-person' id %}" method=POST>
+        {% csrf_token %}
+        {% crispy person_form %}
+        {% crispy contact_form %}
+        <input type="submit" value="Save" />
+    </form>
+{% endblock %}

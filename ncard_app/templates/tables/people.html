@@ -3,9 +3,15 @@
 {% block title %}NCARD People{% endblock %}
 
 {% block content%}
+    <div class="row mb-4">
+        <div class="col-md-10">
+            <h1>People</h1>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'add-person' %}" class="btn btn-primary btn-lg" style="width: 100%;">Add</a>
+        </div>
+    </div>
 
-    <h1>People</h1> 
-    </br>
     <table class="table table-striped ">
         <thead>
           <tr>
@@ -27,10 +33,9 @@
                 <td class="editable" data-id="{{ person.id }}" data-type="middle_name">{{ person.middle_name }}</td>
                 <td class="editable" data-id="{{ person.id }}" data-type="surname">{{ person.surname }}</td>
                 <td>
-                    <input type="button" class="btn btn-primary btn-sm" style="min-width: 60px;" value="Contact Details" onclick=""/>
+                    <a href="{% url 'edit-person' person.id %}" class="btn btn-primary btn-sm" style="min-width: 60px;">Contact Details</a>
                 </td>
                 <td>
-                    <input type="button" class="btn btn-secondary btn-sm" style="min-width: 60px;" value="Update" onclick=""/>
                     <input type="button" class="btn btn-danger btn-sm" style="min-width: 60px;" value="Delete" onclick="deleteRow(this)"/>
                 </td>
             </tr>
