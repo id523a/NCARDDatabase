@@ -27,10 +27,9 @@
                 <td style="width: auto;" class="editable" data-id="{{ person.id }}" data-type="middle_name">{{ person.middle_name }}</td>
                 <td style="width: auto;" class="editable" data-id="{{ person.id }}" data-type="surname">{{ person.surname }}</td>
                 <td>
-                    <input type="button" class="btn btn-primary btn-sm" style="min-width: 60px;" value="Contact Details" onclick=""/>
+                    <a href="{% url 'edit-person' person.id %}" class="btn btn-primary btn-sm" style="min-width: 60px;">Contact Details</a>
                 </td>
                 <td>
-                    <input type="button" class="btn btn-secondary btn-sm" style="min-width: 60px;" value="Update" onclick=""/>
                     <input type="button" class="btn btn-danger btn-sm" style="min-width: 60px;" value="Delete" onclick="deleteRow(this)"/>
                 </td>
             </tr>
