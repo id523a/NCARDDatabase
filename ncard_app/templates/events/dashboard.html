@@ -1,0 +1,32 @@
+{% extends 'events/base.html' %}
+
+{% block title %}NCARD Database{% endblock %}
+
+
+{% block content%}
+    <div class="container-fluid">
+        <div class="text-center row">
+            <div class="col-sm">
+                <a href="{% url 'list-people' %}">
+                    <button type="button" class="btn btn-outline-info btn-lg">People</button>
+                </a>
+            </div>
+            <div class="col-sm">
+                <a href="{% url 'list-people' %}">
+                    <button type="button" class="btn btn-outline-info btn-lg">Organisation</button>
+                </a>
+            </div>
+            <div class="col-sm">
+                <a href="{% url 'list-people' %}">
+                    <button type="button" class="btn btn-outline-info btn-lg">Button 3</button>
+                </a>
+            </div>
+            <div class="col-sm">
+                <a href="{% url 'list-people' %}">
+                    <button type="button" class="btn btn-outline-info btn-lg">Button 4</button>
+                </a>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
