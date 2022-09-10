@@ -7,7 +7,6 @@
     <table class="table table-striped ">
         <thead>
           <tr>
-            <th scope="col">ID</th>
             <th scope="col">Name</th>
             <th scope="col">Primary Contact</th>
             <th scope="col">Phone Number</th>
@@ -20,7 +19,6 @@
         <tbody>
             {% for organisation in organisations_list %}
             <tr>
-                <th scope="row">{{ organisation.id }}</th>
                 <td class="editable" data-id="{{ organisation.id }}" data-type="name">{{ organisation.name }}</td>
                 <td class="editable" data-id="{{ organisation.id }}" data-type="primary_contact">{{ organisation.primary_contact }}</td>
                 <td class="editable" data-id="{{ organisation.id }}" data-type="phone">{{ organisation.phone }}</td>
