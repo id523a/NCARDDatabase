@@ -50,24 +50,4 @@ $(document).ready(function(){
             sendToServer(td.data("id"),value,type);
         }
     });
-
-    function sendToServer(id,value,type){
-        const formData = new FormData();
-        formData.append("id", id)
-        formData.append("type", type)
-        formData.append("value", value)
-        fetch("http://localhost:8000/save_people", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": getCookie("csrftoken"),
-            },
-            body: formData
-        })
-        .then(function(response){
-            console.log(response);
-        })
-        .catch(function(error){
-            console.log("Error Occured");
-        });
-    }
 });
