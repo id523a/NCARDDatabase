@@ -3,6 +3,23 @@ function deleteRow(btn) {
     row.parentNode.removeChild(row);
     };
 
+function getCookie(name) {
+    // Code from: https://docs.djangoproject.com/en/4.1/howto/csrf/#using-csrf
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 $(document).ready(function(){
     $(document).on('dblclick',".editable",function(){
         var value=$(this).text();
@@ -35,18 +52,21 @@ $(document).ready(function(){
     });
 
     function sendToServer(id,value,type){
-        console.log(id);
-        console.log(value);
-        console.log(type);
-        $.ajax({
-            url:"http://localhost:8000/save_people",
-            type:"POST",
-            data:{id:id,type:type,value:value},
+        const formData = new FormData();
+        formData.append("id", id)
+        formData.append("type", type)
+        formData.append("value", value)
+        fetch("http://localhost:8000/save_people", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+            body: formData
         })
-        .done(function(response){
+        .then(function(response){
             console.log(response);
         })
-        .fail(function(){
+        .catch(function(error){
             console.log("Error Occured");
         });
     }

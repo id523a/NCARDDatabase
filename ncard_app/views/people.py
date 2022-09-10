@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
 from ncard_app.models import Person
 from .decorators import login_required
 from django.http import JsonResponse
@@ -9,7 +8,6 @@ def list_people(request):
     people_list = Person.objects.all()
     return render(request, 'tables/people.html', {'people_list': people_list})
 
-@csrf_exempt
 def save_people(request):
     id = request.POST.get("id")
     type = request.POST.get("type")
