@@ -50,8 +50,48 @@
 </table>
 <button onclick="get_export()">export</button>
 
+{% endblock %}
 
 
+{% block custom_js %}
+    <script>
+function get_export() {
+        const table = document.getElementById("query-form");
+        const data = []
+
+        for (var i = 0, rows = table.rows.length; i < rows; i++) {
+            for (var j = 0, cells = table.rows[i].cells.length; j < cells; j++) {
+                if (!data[i]) {
+                    data[i] = new Array();
+                }
+                data[i][j] = table.rows[i].cells[j].innerHTML
+            }
+        }
+        console.log(data)
+        const trans = JSON.stringify(data)
+        const csrfToken = $("[name='csrfmiddlewaretoken']").val()
+        params = {
+            'datalist': trans,
+
+            'csrfmiddlewaretoken': csrfToken,
+
+        }
+        $.ajaxSettings.async = false
+        $.post("{% url 'export' %}", params, function (data) {
+
+            var BOM = '\uFEFF';
+            csvString = BOM + data;
+            var a = document.createElement('a');
+            a.href = 'data:attachment/csv,' + encodeURI(csvString);
+            a.target = '_blank';
+            a.download = 'organisation.csv';//文件名
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        })
+    }
+
+    </script>
 
 {% endblock %}
 
