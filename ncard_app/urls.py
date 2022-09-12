@@ -16,5 +16,5 @@ urlpatterns = [
     path('save_organisations/', views.save_organisations, name="save_organisations"),
     path('tables/organisations/add/', views.OrganisationAdd.as_view(), name="add-organisations"),
     path('predefined/phonebook', views.PhoneBook.as_view(), name="phone_book"),
-    path('predefined/export', views.export, name="export"),
+
 ]

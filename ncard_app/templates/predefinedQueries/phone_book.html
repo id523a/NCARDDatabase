@@ -12,15 +12,15 @@
             border: 1px solid black;
         }
     </style>
-<table id="query-form" >
+<table id="query-form"  class="table table-striped ">
     {% csrf_token %}
     <tr>
-        <th> Title </th>
-        <th> Full Name </th>
-        <th> Organization Name </th>
-        <th> Phone(office) </th>
-        <th> Phone(Mobile) </th>
-        <th> Email </th>
+        <th scope="col"> Title </th>
+        <th scope="col"> Full Name </th>
+        <th scope="col"> Organization Name </th>
+        <th scope="col"> Phone(office) </th>
+        <th scope="col"> Phone(Mobile) </th>
+        <th scope="col"> Email </th>
     </tr>
     {% for ele in data %}
         <tr>
@@ -64,31 +64,23 @@ function get_export() {
                 if (!data[i]) {
                     data[i] = new Array();
                 }
-                data[i][j] = table.rows[i].cells[j].innerHTML
+
+                data[i][j] = " " + table.rows[i].cells[j].innerText
+
             }
         }
-        console.log(data)
-        const trans = JSON.stringify(data)
-        const csrfToken = $("[name='csrfmiddlewaretoken']").val()
-        params = {
-            'datalist': trans,
 
-            'csrfmiddlewaretoken': csrfToken,
+        let csvContent = "";
+        csvContent=data.map(e => e.join(",")).join("\n")
 
-        }
-        $.ajaxSettings.async = false
-        $.post("{% url 'export' %}", params, function (data) {
+        const a = document.createElement('a')
+        a.target = '_blank';
+        const blob = new Blob([csvContent], {type: "data:text/csv;charset=utf-8,"})
+        const url = URL.createObjectURL(blob)
+        a.setAttribute('href', url)
+        a.setAttribute('download', "organisation.csv")
+        a.click()
 
-            var BOM = '\uFEFF';
-            csvString = BOM + data;
-            var a = document.createElement('a');
-            a.href = 'data:attachment/csv,' + encodeURI(csvString);
-            a.target = '_blank';
-            a.download = 'organisation.csv';//文件名
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-        })
     }
 
     </script>

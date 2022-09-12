@@ -16,11 +16,3 @@ class PhoneBook(View):
         return render(request, self.template_name, {"data": datalist})
 
 
-def export(request):
-    datalist = json.loads(request.POST.get('datalist'))
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="organisation.csv"'
-    writer = csv.writer(response)
-    for row in datalist:
-        writer.writerow(row)
-    return response
