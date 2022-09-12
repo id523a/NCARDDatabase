@@ -3,11 +3,18 @@
 {% block title %}NCARD Organisations{% endblock %}
 
 {% block content%}
-    <h1 class="mb-4">Organisations</h1> 
+     <div class="row mb-4">
+        <div class="col-md-10">
+            <h1>Organisations</h1>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'add-organisations' %}" class="btn btn-primary btn-lg" style="width: 100%;">Add</a>
+        </div>
+    </div>
     <table class="table table-striped ">
         <thead>
           <tr>
-            <th scope="col">ID</th>
+
             <th scope="col">Name</th>
             <th scope="col">Primary Contact</th>
             <th scope="col">Phone Number</th>
@@ -17,18 +24,19 @@
             <th scope="col">Actions</th>
           </tr>
         </thead>
+
         <tbody>
             {% for organisation in organisations_list %}
             <tr>
-                <th scope="row">{{ organisation.id }}</th>
+
                 <td class="editable" data-id="{{ organisation.id }}" data-type="name">{{ organisation.name }}</td>
                 <td class="editable" data-id="{{ organisation.id }}" data-type="primary_contact">{{ organisation.primary_contact }}</td>
                 <td class="editable" data-id="{{ organisation.id }}" data-type="phone">{{ organisation.phone }}</td>
                 <td class="editable" data-id="{{ organisation.id }}" data-type="website">{{ organisation.website }}</td>
                 <td class="editable" data-id="{{ organisation.id }}" data-type="twitter_handle">{{ organisation.twitter_handle }}</td>
-                <td class="" data-id="{{ organisation.id }}" data-type="type">{{ organisation.get_type_display }}</td>
+                <td class="" data-id="{{ organisation.id }}" data-type="type">{{ organisation.get_organisation_type_display }}</td>
                 <td>
-                    <input type="button" class="btn btn-secondary btn-sm" style="min-width: 60px;" value="Update" onclick=""/>
+
                     <input type="button" class="btn btn-danger btn-sm" style="min-width: 60px;" value="Delete" onclick="deleteRow(this)"/>
                 </td>
             </tr>
