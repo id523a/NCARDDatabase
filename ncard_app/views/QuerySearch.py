@@ -94,7 +94,7 @@ class PersonForm(ModelForm):
 class QuerySearch(View):
 
     def get(self, request):
-        models_list = list(apps.get_app_config('app01test').get_models())
+        models_list = list(apps.get_app_config('ncard_app').get_models())
         table_fields = {}
 
         for model in models_list:
