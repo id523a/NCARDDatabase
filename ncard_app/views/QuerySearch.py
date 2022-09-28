@@ -95,10 +95,11 @@ class QuerySearch(View):
 
     def get(self, request):
         models_list = list(apps.get_app_config('ncard_app').get_models())
+        print(models_list)
         table_fields = {}
 
         for model in models_list:
-            table_name = model._meta.db_table.split("_")[1]
+            table_name = model._meta.db_table.split("_")[2]
 
             table_fields[table_name] = []
             for fields in model._meta.fields:
