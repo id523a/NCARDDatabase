@@ -1,3 +1,4 @@
+from unittest.util import _MAX_LENGTH
 from django.conf import settings
 from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator
@@ -278,3 +279,21 @@ class GrantInvestigator(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['grant', 'investigator'], name='grantinvestigator_unique')
         ]
+
+
+class Students(models.Model): 
+    student_name = models.OneToOneField(Person, on_delete=models.CASCADE, related_name = 'person')
+    student_type = models.IntegerField('student type', )
+    primary_supervisor = models.CharField('primary supervisor', max_length=255, Blank=True)
+    supervisor2 = models.CharField('primary supervisor', max_length=255, Blank=True)
+    supervisor3 = models.CharField('primary supervisor', max_length=255, Blank=True)
+    title_topic = models.TextField('title topic', blank=True)
+    year_start = models.PositiveSmallIntegerField('year start')
+    year_end = models.PositiveSmallIntegerField('year end')
+    scholarship = models.OneToOneField(Award, on_delete=models.SET_NULL, null=True, blank=True, related_name='award')
+
+    def __str__(self):
+        return self.student_name
+    
+    class Meta:
+        ordering = ['student_name']
