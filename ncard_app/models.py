@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator
+from django.urls import reverse
 
 #validators section
 
@@ -90,6 +91,9 @@ class Person(models.Model):
 
     def __str__(self):
         return f'{self.full_name} [{self.id}]'
+        
+    def get_absolute_url(self):
+        return reverse('edit-person', args=[self.id])
 
     class Meta:
         verbose_name_plural = 'people'
