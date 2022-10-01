@@ -1,0 +1,20 @@
+{% extends 'events/base.html' %}
+
+{% block title %}NCARD Database{% endblock %}
+
+{% block content%}
+    <div class="row mb-4">
+        <div class="col-md-10">
+            <h1>Query</h1>
+        </div>
+    </div>
+    <div>
+    <pre>
+    {{ show }}
+    </pre>
+    </div>
+{% endblock %}
+
+{% block custom_js %}
+
+{% endblock custom_js %}

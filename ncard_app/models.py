@@ -73,10 +73,10 @@ class Person(models.Model):
     loop_profile = models.URLField('Loop profile', blank=True)
     linkedin = models.URLField('LinkedIn', blank=True)
     twitter = models.CharField('Twitter handle', max_length=16, blank=True, validators=[twitter_validator])
-    employers = models.ManyToManyField(Organisation, blank=True)
+    employers = models.ManyToManyField(Organisation, blank=True, related_name='employees')
     location = models.CharField(max_length=50, blank=True)
-    organisation_primary = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contact_records_primary', verbose_name='organisation (primary)')
-    organisation_other = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contact_records_other', verbose_name='organisation (other)')
+    organisation_primary = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contacts_primary_org', verbose_name='organisation (primary)')
+    organisation_other = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contacts_other_org', verbose_name='organisation (other)')
     clinician = models.BooleanField(default=False)
     notes = models.TextField(blank=True)
     research_focus = models.CharField(max_length=255, blank=True)
@@ -137,7 +137,7 @@ class Award(models.Model):
     award_type = models.IntegerField('type', choices=AwardType.choices)
     agency = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='awards')
     name = models.CharField('name', max_length=255)
-    recipients = models.ManyToManyField(Person)
+    recipients = models.ManyToManyField(Person, related_name='awards')
     status = models.IntegerField('award status', choices=AwardStatus.choices, default=AwardStatus.AWARDEE)
     detail = models.TextField('detail', blank=True)
     year = models.PositiveSmallIntegerField('year')
@@ -167,7 +167,7 @@ class Event(models.Model):
     title = models.CharField('title', max_length=255, blank=True)
     detail = models.TextField('detail')
     lead_organisation = models.ForeignKey(Organisation, on_delete=models.SET_NULL, blank=True, null=True, related_name='events')
-    lead_contacts = models.ManyToManyField(Person, blank=True)
+    lead_contacts = models.ManyToManyField(Person, blank=True, related_name='events')
     # The participants field is deliberately not ManyToManyField(Person). This allows for the free-form participation info seen in the existing spreadsheet.
     participants = models.TextField('participants')
     location = models.CharField('location', max_length=255, blank=True)
@@ -192,7 +192,7 @@ class Publication(models.Model):
     publication_type = models.CharField('type', max_length=255) # integer choices
     year = models.PositiveSmallIntegerField('year')
     title = models.CharField('title', max_length=255)
-    contributors = models.ManyToManyField(Person)
+    contributors = models.ManyToManyField(Person, related_name='publications')
     journal = models.CharField('journal', max_length=255)
     journal_ISSN = models.CharField('journal ISSN', max_length=255) # add validator
     volume = models.PositiveSmallIntegerField('volume', blank=True, null=True)
@@ -255,7 +255,7 @@ class Grant(models.Model):
     reference = models.CharField(max_length=64, blank=True)
     title = models.CharField(max_length=255, blank=True)
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True, related_name='grants')
-    investigators = models.ManyToManyField(Person, through='GrantInvestigator')
+    investigators = models.ManyToManyField(Person, through='GrantInvestigator', related_name='grants')
 
     def __str__(self):
         name = self.title or 'Grant'
