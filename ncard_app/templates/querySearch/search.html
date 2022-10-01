@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load crispy_forms_tags %}
+<head>
+    <meta charset="UTF-8">
+    <link href="../../static/css/tableButton.css" type="text/css" rel="stylesheet"/>
+
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+    <link href="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css"
+          rel="stylesheet">
+
+
+    <title>Title</title>
+
+    <style>
+        .fields {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+
+<body>
+<label for="id_select">tables:</label>
+<select id="select_table" class="selectpicker" multiple data-live-search="true" data-actions-box="true"
+        data-max-options="{{ table_list.keys|length }}">
+    {% for table_name in table_list.keys %}
+        <option value="{{ table_name }}">{{ table_name }}</option>
+    {% endfor %}
+    }
+</select>
+
+
+<button id="add_table"> add</button>
+<form id="query_form" method="post" action="{% url 'tes' %}">
+    {% csrf_token %}
+    <button id="report_modal" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" type="button">
+        search
+    </button>
+    {#<input id="query_submit" type="button" value="search">#}
+    <div id="table_query">
+
+        {#    {{ form }}#}
+    </div>
+</form>
+<div id="report-area" class="table-responsive">
+    <table id="report" class="table table-dark table-striped text-nowrap" style="width: 30%; height: auto;">
+        <thead>
+        <tr id="report_head">
+
+        </tr>
+        </thead>
+        <tbody id="report_body">
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="closed" type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Choose the report fields
+                </h4>
+            </div>
+            <div id="cutomized_report" class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button id="close_modal" type="button" class="btn btn-default"
+                        data-dismiss="modal">close
+                </button>
+                <button id="query_submit" type="button" class="btn btn-primary" data-dismiss="modal">
+                    search
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<script>
+    const table_obj = JSON.parse("{{ form|escapejs }}");
+    const model_obj = JSON.parse("{{ table_list_json|escapejs }}");
+    let dic_display = {}
+    let selected_table_fields = {}
+    let report_table_filed={}
+
+    var table_div = document.getElementById('table_query')
+    $("#add_table").click(function () {
+
+        const selected = $("#select_table").val()
+
+
+        $("#select_table").val('default').selectpicker("refresh")
+        console.log(selected)
+
+
+        selected.forEach(function (table_name) {
+            if (selected_table_fields.hasOwnProperty(table_name)) {
+                return;
+            }
+
+            selected_table_fields[table_name] = new Array()
+
+            let frag = document.createRange().createContextualFragment(table_obj[table_name])
+            let div = document.createElement('div')
+            let span = document.createElement('span')
+            let hidden_input=document.createElement('input')
+            let button = document.createElement('button')
+            button.appendChild(document.createTextNode(`add`))
+            button.setAttribute('type', 'button')
+            button.addEventListener('click', function (e) {
+                addFiled(e, table_name)
+            })
+            span.appendChild(document.createTextNode(`table : ${table_name} `))
+            span.setAttribute('id', 'table_name')
+            hidden_input.setAttribute('name',table_name)
+            hidden_input.style.display="none"
+            span.appendChild(hidden_input)
+            let select = document.createElement('select')
+            let initial = document.createElement('option')
+            initial.appendChild(document.createTextNode('---------'))
+            select.appendChild(initial)
+            dic_display[table_name] = {}
+            frag.querySelectorAll('label').forEach(function (ele) {
+                let option = document.createElement('option');
+                let fild_name = ele.innerText.split(":")[0]
+                option.appendChild(document.createTextNode(fild_name));
+                select.appendChild(option)
+                console.log(ele.parentNode)
+
+
+                dic_display[table_name][fild_name] = ele.parentNode
+            })
+
+
+            div.appendChild(span)
+            div.appendChild(select)
+            div.appendChild(button)
+
+            $('#table_query').append(div)
+
+        })
+
+
+    })
+
+    function addFiled(e, table_name) {
+
+        let select_obj = e.currentTarget.previousSibling
+        let selected = select_obj.value
+        select_obj.selectedIndex = 0;
+        if (selected_table_fields[table_name].includes(selected)) {
+            return
+        }
+        selected_table_fields[table_name].push(selected)
+        console.log(table_name)
+        let dom_obj = dic_display[table_name][selected]
+        let button = document.createElement('button')
+        button.appendChild(document.createTextNode(`add`))
+        button.setAttribute('type', 'button')
+        button.addEventListener('click', clone)
+        dom_obj.appendChild(button)
+        let children = dom_obj.childNodes
+        let children_jq = $(children)
+        children_jq.wrapAll("<div class='fields' ></div>")
+        e.currentTarget.parentNode.appendChild(dom_obj)
+
+        console.log(e.currentTarget.previousSibling.value)
+        call_picker();
+        {#select_obj.selectedIndex=0;#}
+    }
+
+    function call_picker() {
+        var picker = $(".selectpicker")
+        Object.values(picker).forEach(function (item) {
+            $(item).selectpicker()
+
+
+        })
+
+        $("[Date-class='year_select']").datepicker({
+            format: "yyyy",
+            viewMode: "years",
+            minViewMode: "years",
+            autoclose: true
+        })
+    }
+
+    function clone(e) {
+
+        let current_div = e.currentTarget.parentNode
+        let current_obj = current_div.cloneNode(true)
+        let last_child = current_obj.lastChild
+
+        let second_ele = current_obj.children[1]
+        console.log(second_ele)
+        second_ele.value = ""
+        last_child.remove()
+
+        e.currentTarget.parentNode.parentNode.appendChild(current_obj)
+        call_picker();
+    }
+
+
+    $(document).ready(function () {
+        $('#query_submit').click(function () {
+            {#var dic = {}#}
+            {#form = document.forms[0]#}
+            {#for (var i = 0; i < form.length; i++) {#}
+            {#    var element = form[i];#}
+            {#    let name = element.name#}
+            {#    if (!name) {#}
+            {#        continue#}
+            {#    }#}
+            {##}
+            {#    if (name == 'csrfmiddlewaretoken') {#}
+            {#        continue;#}
+            {#    }#}
+            {#    if (!dic.hasOwnProperty(name)) {#}
+            {#        dic[name] = new Array()#}
+            {#    }#}
+            {##}
+                {#dic[name]+=element.value+"&"#}
+            {#    dic[name].push(element.value)#}
+            {##}
+            {# }#}
+            {#console.log($("#query_form").serialize())#}
+            {#let value=$("#query_form").serialize()#}
+            {#for (let key in selected_table_fields){#}
+            {#    value.concat(`&${key}=${}`)#}
+            {# }#}
+            {#let csrf=$("[name='csrfmiddlewaretoken']").val()#}
+
+            $.ajax({
+                url: "{% url 'tes' %}",
+                type: "post",
+                {#data:$("#query_form").serialize(),#}
+                data: $("#query_form").serialize(),
+                dataType: "JSON",
+                success: function (dataBack) {
+
+                    console.log(dataBack)
+                    {#match the queryresult set with the columns choosed by the client#}
+                    {#have to find a decent way for now I am using the if and else  #}
+                    dataBack.result_set.forEach(function (ele){
+                        let array=ele['recipients']
+                        let tr=document.createElement('tr')
+                        for (var key in report_table_filed){
+                            if(key=='award'){
+                                report_table_filed[key].forEach(function (award){
+                                    let td=document.createElement('td')
+                                    let a=document.createElement('a')
+                                    let text=ele[`${award}`]
+                                    a.appendChild(document.createTextNode(text))
+                                    td.appendChild(a)
+                                    console.log(ele[`${award}`])
+                                    tr.appendChild(td)
+                        })
+                            }
+
+
+                        }
+
+
+
+
+
+
+                        $('#report_body').append(tr)
+                     })
+
+
+                },
+                error:function (data) {
+                    console.log(data);
+                }
+            })
+
+
+        })
+
+        $('#report_modal').click(function () {
+            let span_list = document.forms[0].querySelectorAll('#table_name')
+            span_list.forEach(function (ele) {
+                let table_name = ele.innerText.replace(/\s/g, "").split(":").slice(-1)[0]
+                let fields = model_obj[table_name]
+                let ul = document.createElement("ul");
+                let div = document.createElement('div')
+                div.setAttribute("report_customize_table",table_name)
+                let head = document.createElement("h3")
+                head.appendChild(document.createTextNode(table_name))
+                div.appendChild(head)
+                fields.forEach(function (field) {
+
+                    let checkbox = document.createElement('input')
+                    checkbox.setAttribute("type", "checkbox");
+                    checkbox.setAttribute("value", field);
+                    let li = document.createElement("li");
+                    li.appendChild(checkbox);
+                    li.appendChild(document.createTextNode(field))
+                    ul.appendChild(li)
+
+                    console.log(field)
+                })
+                div.appendChild(ul)
+                $('#cutomized_report').append(div)
+            })
+
+
+        })
+        $('#myModal').on('hidden.bs.modal', function () {
+            $('#cutomized_report').empty()
+        });
+
+        $('#closed,#close_modal').click(function () {
+            $('#cutomized_report').empty()
+        })
+
+        $('#query_submit').click(function () {
+            $('#report_head,#report_body').empty()
+            report_table_filed={}
+            let checkedBox = document.getElementById('cutomized_report').querySelectorAll('input:checked')
+            checkedBox.forEach(function (selected) {
+                let column = selected.value
+                let th = document.createElement("th")
+                let report_table=selected.closest("div").getAttribute("report_customize_table")
+
+                if(!report_table_filed.hasOwnProperty(report_table)){report_table_filed[report_table]=new Array()}
+                if(!report_table_filed[report_table].includes(column)){report_table_filed[report_table].push(column)}
+                th.appendChild(document.createTextNode(column))
+                $('#report_head').append(th)
+            })
+            $('#cutomized_report').empty()
+        })
+    })
+
+
+</script>
+</html>

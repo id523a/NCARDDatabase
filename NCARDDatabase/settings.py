@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ncard_app',
+    'ncard_app.apps.NcardAppConfig',
     'crispy_forms',
     'crispy_bootstrap5',
 ]

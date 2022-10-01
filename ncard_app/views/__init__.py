@@ -5,3 +5,4 @@ from .tables import *
 from .test_show import *
 from .add_organisations import *
 from .predefinedQuery import *
+from .QuerySearch import *
