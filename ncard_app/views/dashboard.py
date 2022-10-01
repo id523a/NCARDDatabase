@@ -3,5 +3,5 @@ from django.contrib import messages
 from .decorators import login_required
 
 @login_required
-def home(request):
-    return render(request, 'events/home.html', {})
+def dashboard(request):
+    return render(request, 'events/dashboard.html', {})

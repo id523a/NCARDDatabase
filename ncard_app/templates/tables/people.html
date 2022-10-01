@@ -3,29 +3,43 @@
 {% block title %}NCARD People{% endblock %}
 
 {% block content%}
+    <div class="row mb-4">
+        <div class="col-md-10">
+            <h1>People</h1>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'add-person' %}" class="btn btn-primary btn-lg" style="width: 100%;">Add</a>
+        </div>
+    </div>
 
-    <h1>People</h1> 
-    </br>
     <table class="table table-striped ">
         <thead>
           <tr>
-            <th scope="col">ID</th>
             <th scope="col">Title</th>
             <th scope="col">First Name</th>
+            <th scope="col">Middle Name</th>
             <th scope="col">Last Name</th>
-            <th scope="col"></th>
+            <th scope="col">Contact Info</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
             {% for person in people_list %}
             <tr>
-                <th scope="row">{{ person.id }}</th>
-                <td class="editable" data-id="{{ person.id }}" data-type="title">{{ person.title }}</td>
-                <td class="editable" data-id="{{ person.id }}" data-type="given_name">{{ person.given_name }}</td>
-                <td class="editable" data-id="{{ person.id }}" data-type="surname">{{ person.surname }}</td>
+                <td class="" data-id="{{ person.id }}" data-type="title">{{ person.title }}</td>
+                <td class="" data-id="{{ person.id }}" data-type="given_name">{{ person.given_name }}</td>
+                <td class="" data-id="{{ person.id }}" data-type="middle_name">{{ person.middle_name }}</td>
+                <td class="" data-id="{{ person.id }}" data-type="email">{{ person.email }}</td>
+                <td class="" data-id="{{ person.id }}" data-type="phone_office">{{ person.phone_office }}</td>
+                <td class="" data-id="{{ person.id }}" data-type="phone_mobile">{{ person.phone_mobile }}</td>
+                <td class="" data-id="{{ person.id }}" data-type="ncard_relation">{{ person.ncard_relation }}</td>
+                <td class="" data-id="{{ person.id }}" data-type="project">{{ person.project }}</td>
+                <td class="" data-id="{{ person.id }}" data-type="linkedin">{{ person.linkedin }}</td>
+                <td class="" data-id="{{ person.id }}" data-type="location">{{ person.location }}</td>
+                <td class="" data-id="{{ person.id }}" data-type="organisation_primary">{{ person.organisation_primary }}</td>
+                <td class="" data-id="{{ person.id }}" data-type="organisation_other">{{ person.organisation_other }}</td>
                 <td>
-                    <input type="button" class="btn btn-primary btn-sm" style="min-width: 60px;" value="Update" onclick=""/>
-                    <input type="button" class="btn btn-danger btn-sm" style="min-width: 60px;" value="Delete" onclick="deleteRow(this)"/>
+                    <a href="{% url 'edit-person' person.id %}" class="btn btn-primary btn-sm" style="min-width: 60px;">Edit</a>
                 </td>
             </tr>
             {% endfor %}
