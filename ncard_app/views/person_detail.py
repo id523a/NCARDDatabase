@@ -8,7 +8,8 @@ from crispy_forms.layout import Layout, Row, Column, Submit
 class PersonForm(ModelForm):
     class Meta:
         model = Person
-        fields = ['title', 'given_name', 'middle_name', 'surname']
+        fields = '__all__'
+        exclude = ['id', 'surname_first', 'auth_user']
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -22,7 +23,32 @@ class PersonForm(ModelForm):
                 Column('middle_name', css_class='col-md-3 mb-0'),
                 Column('surname', css_class='col-md-4 mb-0'),
                 css_class='row'
-            )
+            ),
+            Row('email', css_class='row'),
+            Row('email2', css_class='row'),
+            Row('phone_office', css_class='row'),
+            Row('phone_mobile', css_class='row'),
+            Row('phone_home', css_class='row'),
+            Row('cre_role', css_class='row'),
+            Row('ncard_relation', css_class='row'),
+            Row('project', css_class='row'),
+            Row('display_on_website', css_class='row'),
+            Row('profile_url', css_class='row'),
+            Row('orcid_id', css_class='row'),
+            Row('scopus_id', css_class='row'),
+            Row('wos_researcher_id', css_class='row'),
+            Row('google_scholar', css_class='row'),
+            Row('researchgate', css_class='row'),
+            Row('loop_profile', css_class='row'),
+            Row('linkedin', css_class='row'),
+            Row('twitter', css_class='row'),
+            Row('employers', css_class='row'),
+            Row('location', css_class='row'),
+            Row('organisation_primary', css_class='row'),
+            Row('organisation_other', css_class='row'),
+            Row('clinician', css_class='row'),
+            Row('notes', css_class='row'),
+            Row('research_focus', css_class='row'),
         )
 
 class PersonDetail(View):
