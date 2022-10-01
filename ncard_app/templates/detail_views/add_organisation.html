@@ -1,14 +1,13 @@
 {% extends 'events/base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Add Person{% endblock %}
+{% block title %}Add Organisation{% endblock %}
 
 {% block content%}
     <h1>Add Organisation</h1>
-    <form  action="{% url 'add-organisations' %}" method=POST>
+    <form action="{% url 'add-organisation' %}" method=POST>
         {% csrf_token %}
         {% crispy form %}
-
         <input type="submit" value="Add" />
     </form>
 {% endblock %}
