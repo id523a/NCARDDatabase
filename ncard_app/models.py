@@ -12,13 +12,73 @@ twitter_validator = RegexValidator(r'^$|^@[A-Za-z0-9_]+$', 'Twitter handle must 
 nonnegative_validator = MinValueValidator(0, 'Value must not be negative.')
 country_code_validator = RegexValidator(r'^[A-Z]{2}$', 'Country code must be two upper-case letters, e.g. AU')
 
+class Organisation(models.Model):
+    class OrganisationType(models.IntegerChoices):
+        NONE = 0, '-'
+        HEALTH_EDUCATION_RESEARCH = 1, 'Health/Education/Research'
+        FUNDING_AGENCY = 2, 'Funding Agency'
+        COMMUNITY = 3, 'Community'
+        SERVICE_PROVIDER = 4, 'Service Provider'
+
+    name = models.CharField('name', max_length=255)
+    primary_contact = models.ForeignKey('ncard_app.Person', on_delete=models.RESTRICT, null=True, blank=True, related_name='organisations_primary_contact')
+    phone = models.CharField('phone', max_length=25, blank=True, validators=[phone_validator])
+    website = models.URLField('website', blank=True)
+    twitter_handle = models.CharField('Twitter handle', max_length=16, blank=True, validators=[twitter_validator])
+    organisation_type = models.IntegerField('type', choices=OrganisationType.choices, default=OrganisationType.NONE)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
 class Person(models.Model):
+    class NCARDRelation(models.IntegerChoices):
+        CORE_TEAM = 1, 'Core team'
+        AFFILIATE = 2, 'Affiliate'
+        COLLABORATOR = 3, 'Collaborator'
+        COMMUNITY_OR_CONSUMER = 4, 'Community / Consumer'
+        ADVOCATE = 5, 'Advocate'
+        GOVT_OR_INDUSTRY = 6, 'Govt / Industry'
+        OTHER = 0, 'Other'
+
+    class DisplayOnWebsite(models.IntegerChoices):
+        NO = 0, 'No'
+        YES = 1, 'Yes'
+        STUDENT = 2, 'Yes - student'
+
     title = models.CharField(max_length=16, blank=True)
     given_name = models.CharField(max_length=64)
     middle_name = models.CharField(max_length=64, blank=True)
     surname = models.CharField(max_length=64, blank=True)
     surname_first = models.BooleanField(default=False)
     auth_user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='person')
+    email = models.EmailField('email', blank=True)
+    email2 = models.EmailField('email 2', blank=True)
+    phone_office = models.CharField('phone (office)', max_length=25, blank=True, validators=[phone_validator])
+    phone_mobile = models.CharField('phone (mobile)', max_length=25, blank=True, validators=[phone_validator])
+    phone_home = models.CharField('phone (home)', max_length=25, blank=True, validators=[phone_validator])
+    cre_role = models.CharField('CRE role', max_length=15, blank=True)
+    ncard_relation = models.IntegerField('relationship with NCARD', choices=NCARDRelation.choices, default=NCARDRelation.OTHER)
+    project = models.CharField(max_length=50, blank=True)
+    display_on_website = models.IntegerField(choices=DisplayOnWebsite.choices, default=DisplayOnWebsite.NO)
+    profile_url = models.URLField('profile URL', blank=True)
+    orcid_id = models.CharField('ORCID iD', max_length=37, blank=True, validators=[orcid_validator])
+    scopus_id = models.BigIntegerField('Scopus ID', null=True, blank=True, validators=[nonnegative_validator])
+    wos_researcher_id = models.CharField('WoS ResearcherID', max_length=32, blank=True)
+    google_scholar = models.URLField('Google Scholar', blank=True)
+    researchgate = models.URLField('ResearchGate', blank=True)
+    loop_profile = models.URLField('Loop profile', blank=True)
+    linkedin = models.URLField('LinkedIn', blank=True)
+    twitter = models.CharField('Twitter handle', max_length=16, blank=True, validators=[twitter_validator])
+    employers = models.ManyToManyField(Organisation, blank=True)
+    location = models.CharField(max_length=50, blank=True)
+    organisation_primary = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contact_records_primary', verbose_name='organisation (primary)')
+    organisation_other = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contact_records_other', verbose_name='organisation (other)')
+    clinician = models.BooleanField(default=False)
+    notes = models.TextField(blank=True)
+    research_focus = models.CharField(max_length=255, blank=True)
 
     @property
     def full_name(self):
@@ -38,27 +98,6 @@ class Person(models.Model):
             models.Index(fields=['surname']),
             models.Index(fields=['given_name'])
         ]
-
-class Organisation(models.Model):
-    class OrganisationType(models.IntegerChoices):
-        NONE = 0, '-'
-        HEALTH_EDUCATION_RESEARCH = 1, 'Health/Education/Research'
-        FUNDING_AGENCY = 2, 'Funding Agency'
-        COMMUNITY = 3, 'Community'
-        SERVICE_PROVIDER = 4, 'Service Provider'
-
-    name = models.CharField('name', max_length=255)
-    primary_contact = models.ForeignKey(Person, on_delete=models.RESTRICT, null=True, blank=True, related_name='organisations_primary_contact')
-    phone = models.CharField('phone', max_length=25, blank=True, validators=[phone_validator])
-    website = models.URLField('website', blank=True)
-    twitter_handle = models.CharField('Twitter handle', max_length=16, blank=True, validators=[twitter_validator])
-    organisation_type = models.IntegerField('type', choices=OrganisationType.choices, default=OrganisationType.NONE)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        ordering = ['name']
 
 class Project(models.Model):
     class ProjectStatus(models.IntegerChoices):
@@ -172,58 +211,6 @@ class Publication(models.Model):
     class Meta:
         ordering = ['-year']
 
-"""
-class ContactRecord(models.Model):
-    class NCARDRelation(models.IntegerChoices):
-        CORE_TEAM = 1, 'Core team'
-        AFFILIATE = 2, 'Affiliate'
-        COLLABORATOR = 3, 'Collaborator'
-        COMMUNITY_OR_CONSUMER = 4, 'Community / Consumer'
-        ADVOCATE = 5, 'Advocate'
-        GOVT_OR_INDUSTRY = 6, 'Govt / Industry'
-        OTHER = 0, 'Other'
-
-    class DisplayOnWebsite(models.IntegerChoices):
-        NO = 0, 'No'
-        YES = 1, 'Yes'
-        STUDENT = 2, 'Yes - student'
-
-    person = models.OneToOneField(Person, on_delete=models.CASCADE, related_name='contact')
-    email = models.EmailField('email', blank=True)
-    email2 = models.EmailField('email 2', blank=True)
-    phone_office = models.CharField('phone (office)', max_length=25, blank=True, validators=[phone_validator])
-    phone_mobile = models.CharField('phone (mobile)', max_length=25, blank=True, validators=[phone_validator])
-    phone_home = models.CharField('phone (home)', max_length=25, blank=True, validators=[phone_validator])
-    cre_role = models.CharField('CRE role', max_length=15, blank=True)
-    ncard_relation = models.IntegerField('relationship with NCARD', choices=NCARDRelation.choices, default=NCARDRelation.OTHER)
-    project = models.CharField(max_length=50, blank=True)
-    display_on_website = models.IntegerField(choices=DisplayOnWebsite.choices, default=DisplayOnWebsite.NO)
-    profile_url = models.URLField('profile URL', blank=True)
-    orcid_id = models.CharField('ORCID iD', max_length=37, blank=True, validators=[orcid_validator])
-    scopus_id = models.BigIntegerField('Scopus ID', null=True, blank=True, validators=[nonnegative_validator])
-    wos_researcher_id = models.CharField('WoS ResearcherID', max_length=32, blank=True)
-    google_scholar = models.URLField('Google Scholar', blank=True)
-    researchgate = models.URLField('ResearchGate', blank=True)
-    loop_profile = models.URLField('Loop profile', blank=True)
-    linkedin = models.URLField('LinkedIn', blank=True)
-    twitter = models.CharField('Twitter handle', max_length=16, blank=True, validators=[twitter_validator])
-    employers = models.ManyToManyField(Organisation, blank=True)
-    location = models.CharField(max_length=50, blank=True)
-    organisation_primary = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contact_records_primary', verbose_name='organisation (primary)')
-    organisation_other = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contact_records_other', verbose_name='organisation (other)')
-    clinician = models.BooleanField(default=False)
-    notes = models.TextField(blank=True)
-    research_focus = models.CharField(max_length=255, blank=True)
-
-    def __str__(self):
-        return str(self.person)
-
-    class Meta:
-        ordering = ['person']
-        indexes = [
-            models.Index(fields=['person'])
-        ]
-"""
 class Country(models.Model):
     code = models.CharField('country code', max_length=2, primary_key=True, validators=[country_code_validator])
     name = models.CharField('name', max_length=255)
