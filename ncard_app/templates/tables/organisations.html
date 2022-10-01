@@ -8,7 +8,7 @@
             <h1>Organisations</h1>
         </div>
         <div class="col-md-2">
-            <a href="{% url 'add-organisations' %}" class="btn btn-primary btn-lg" style="width: 100%;">Add</a>
+            <a href="{% url 'add-organisation' %}" class="btn btn-primary btn-lg" style="width: 100%;">Add</a>
         </div>
     </div>
     <table class="table table-striped ">
@@ -35,7 +35,7 @@
                 <td class="" data-id="{{ organisation.id }}" data-type="twitter_handle">{{ organisation.twitter_handle }}</td>
                 <td class="" data-id="{{ organisation.id }}" data-type="type">{{ organisation.get_organisation_type_display }}</td>
                 <td>
-                    <a href="{% url 'add-organisations' %}"  class="btn btn-danger btn-sm" style="min-width: 60px;" value="Delete" onclick="deleteRow(this)"></a>
+                    <a href="#"  class="btn btn-danger btn-sm" style="min-width: 60px;" value="Delete" onclick="deleteRow(this)"></a>
                 </td>
             </tr>
             {% endfor %}

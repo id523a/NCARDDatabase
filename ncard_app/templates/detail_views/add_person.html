@@ -5,9 +5,9 @@
 
 {% block content%}
     <h1>Add Person</h1>
-    <form id="contact-form" action="{% url 'add-person' %}" method=POST>
+    <form action="{% url 'add-person' %}" method=POST>
         {% csrf_token %}
-        {% crispy person_form %}
+        {% crispy form %}
         <input type="submit" value="Add" />
     </form>
 {% endblock %}
