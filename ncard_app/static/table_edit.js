@@ -19,35 +19,3 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-$(document).ready(function(){
-    $(document).on('dblclick',".editable",function(){
-        var value=$(this).text();
-        var input="<input type='text' class='input-data' value='"+value+"' class='form-control'>";
-        $(this).html(input);
-        $(this).removeClass("editable")
-    });
-
-    $(document).on("blur",".input-data", function(){
-        var value=$(this).val();
-        var td=$(this).parent("td");
-        $(this).remove();
-        td.html(value);
-        td.addClass("editable");
-        var type=td.data("type");
-        sendToServer(td.data("id"),value, type);
-    });
-
-    $(document).on("keypress",".input-data", function(e){
-        var key=e.which;
-        if(key==13){
-            var value=$(this).val();
-            var td=$(this).parent("td");
-            $(this).remove();
-            td.html(value);
-            td.addClass("editable");
-            var type=td.data("type");
-            sendToServer(td.data("id"),value,type);
-        }
-    });
-});
