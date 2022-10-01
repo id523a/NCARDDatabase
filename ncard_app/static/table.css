@@ -6,7 +6,15 @@
 }
 #ncard_table th {
     width: 200px;
+    
 }
+
+#ncard_table tr > * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 #ncard_table tr > :last-child {
     position: sticky;
     width: 100px;
