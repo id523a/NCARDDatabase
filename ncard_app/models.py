@@ -172,6 +172,7 @@ class Publication(models.Model):
     class Meta:
         ordering = ['-year']
 
+"""
 class ContactRecord(models.Model):
     class NCARDRelation(models.IntegerChoices):
         CORE_TEAM = 1, 'Core team'
@@ -222,7 +223,7 @@ class ContactRecord(models.Model):
         indexes = [
             models.Index(fields=['person'])
         ]
-
+"""
 class Country(models.Model):
     code = models.CharField('country code', max_length=2, primary_key=True, validators=[country_code_validator])
     name = models.CharField('name', max_length=255)

@@ -8,7 +8,6 @@
     <form id="contact-form" action="{% url 'edit-person' id %}" method=POST>
         {% csrf_token %}
         {% crispy person_form %}
-        {% crispy contact_form %}
         <input type="submit" value="Save" />
     </form>
 {% endblock %}
