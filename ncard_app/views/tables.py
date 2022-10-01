@@ -13,15 +13,40 @@ def save_people(request):
     type = request.POST.get("type")
     value = request.POST.get("value")
     person=Person.objects.get(id=id)
-    if type == "title":
-        person.title = value
-    if type == "given_name":
-        person.given_name = value
-    if type == "middle_name":
-        person.middle_name = value
-    if type == "surname":
-        person.surname = value
-    person.save()
+    fields = {
+            "title", 
+            "given_name",
+            "middle_name",
+            "surname",
+            # "email",
+            # "email2",
+            # "phone_office",
+            # "phone_mobile",
+            # "phone_home",
+            # "cre_role",
+            # "ncard_relation",
+            # "project",
+            # "display_on_website",
+            # "profile_url",
+            # "orcid_id",
+            # "scopus_id",
+            # "wos_researcher_id",
+            # "google_scholar",
+            # "researchgate",
+            # "loop_profile",
+            # "linkedin",
+            # "twitter",
+            # "employers",
+            # "location",
+            # "organisation_primary",
+            # "organisation_other",
+            # "clinician",
+            # "notes",
+            # "research_focus"
+    }
+    if type in fields:
+        setattr(person, type, value)
+        person.save()
     return JsonResponse({"success":"Update"})
 
 
