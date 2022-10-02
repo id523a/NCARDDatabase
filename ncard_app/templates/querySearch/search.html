@@ -96,6 +96,22 @@
 
 
 <script>
+    /*
+    table_obj : A list to store the ModelForm-related HTML tags for each model returned from the backend,
+                and JSON parses these into strings. {table_name :"html tags..."}
+
+   model_obj : A list to store the fields' name for each model,
+               which is used for showing the fields for user to customize(in the pop-up window) the column the report must contain.
+               and JSON parses these into strings. {table_name : ["field_1","field2"...]}
+
+
+  dic_display : The table selected by the customer is found in table_obj,
+                and the corresponding string is converted into a real HTML object stored in this list,
+                so that the value extracted by the key can be directly rendered in the page
+
+  selected_table_fields: Is used to store tables and fields selected by the customer. {table_name:["field_1","field2"...] }
+  report_table_filed : Is to record the tables that the user wants to query and the fields that they want to display(by going through the selected check-boxes). {table_name:["field_1","field2"...] }
+    */
     const table_obj = JSON.parse("{{ form|escapejs }}");
     const model_obj = JSON.parse("{{ table_list_json|escapejs }}");
     let dic_display = {}
@@ -103,29 +119,45 @@
     let report_table_filed={}
 
     var table_div = document.getElementById('table_query')
+
+
+
     $("#add_table").click(function () {
 
         const selected = $("#select_table").val()
 
+        /*
+        When the user clicks Add Table,this method generates a div that contains <span> for the table name
+        and a drop-down box with options for the table fields
+        */
 
+
+        //Refresh the drop-down box for the table selection
         $("#select_table").val('default').selectpicker("refresh")
+
         console.log(selected)
 
 
         selected.forEach(function (table_name) {
+            //If the user has already selected this table, it is invalid and returns directly
+            //Prevent adding the same table repeatedly
             if (selected_table_fields.hasOwnProperty(table_name)) {
                 return;
             }
-
+            //If not, create a new key-value pair for the table and store it in the 'selected_table_fields' list
             selected_table_fields[table_name] = new Array()
 
+            //Converts the String text of the relevant HTML tags corresponding to the table selected by the customer into the DOM HTML object
             let frag = document.createRange().createContextualFragment(table_obj[table_name])
+            //Then create a series of DOM objects
             let div = document.createElement('div')
             let span = document.createElement('span')
+            //The hidden input label is intended to return all results by default if the user does not enter any fields
             let hidden_input=document.createElement('input')
             let button = document.createElement('button')
             button.appendChild(document.createTextNode(`add`))
             button.setAttribute('type', 'button')
+            //Bind events for buttons so that users add fields for each table
             button.addEventListener('click', function (e) {
                 addFiled(e, table_name)
             })
@@ -139,14 +171,16 @@
             initial.appendChild(document.createTextNode('---------'))
             select.appendChild(initial)
             dic_display[table_name] = {}
+            //Create options for the drop-down box of selected table
             frag.querySelectorAll('label').forEach(function (ele) {
                 let option = document.createElement('option');
+                //Get the name for each field
                 let fild_name = ele.innerText.split(":")[0]
                 option.appendChild(document.createTextNode(fild_name));
                 select.appendChild(option)
                 console.log(ele.parentNode)
 
-
+                //Record the div parent node element corresponding to each field to facilitate the addition of the following fields
                 dic_display[table_name][fild_name] = ele.parentNode
             })
 
@@ -161,33 +195,45 @@
 
 
     })
-
+    /*
+        This feature is to give the user the ability to add specific fields for each table
+    */
     function addFiled(e, table_name) {
-
+        //Gets the drop-down box object
         let select_obj = e.currentTarget.previousSibling
+        //Get the value of the field that the client wants to add
         let selected = select_obj.value
+        //Refresh the status of the drop-down box
         select_obj.selectedIndex = 0;
+        //If the user has added this field before, it is invalid and returns directly
+        //Prevent the same field from being generated repeatedly
         if (selected_table_fields[table_name].includes(selected)) {
             return
         }
+        //If not, create a new key-value pair for this table to record the selected fields
         selected_table_fields[table_name].push(selected)
         console.log(table_name)
         let dom_obj = dic_display[table_name][selected]
         let button = document.createElement('button')
         button.appendChild(document.createTextNode(`add`))
         button.setAttribute('type', 'button')
+        //Bind events for buttons so that users can enter multiple values in each field
         button.addEventListener('click', clone)
         dom_obj.appendChild(button)
         let children = dom_obj.childNodes
         let children_jq = $(children)
+        //Wrap the element in a div for subsequent operations
         children_jq.wrapAll("<div class='fields' ></div>")
         e.currentTarget.parentNode.appendChild(dom_obj)
 
         console.log(e.currentTarget.previousSibling.value)
         call_picker();
-        {#select_obj.selectedIndex=0;#}
+
     }
 
+    /*
+    Call the methods of the front-end plug-in to prevent the front-end plug-in from failing
+    */
     function call_picker() {
         var picker = $(".selectpicker")
         Object.values(picker).forEach(function (item) {
@@ -204,6 +250,9 @@
         })
     }
 
+    /*
+        This is the method allowing user to input multiple values in each field (clone the current div element).
+    */
     function clone(e) {
 
         let current_div = e.currentTarget.parentNode
@@ -222,44 +271,21 @@
 
     $(document).ready(function () {
         $('#query_submit').click(function () {
-            {#var dic = {}#}
-            {#form = document.forms[0]#}
-            {#for (var i = 0; i < form.length; i++) {#}
-            {#    var element = form[i];#}
-            {#    let name = element.name#}
-            {#    if (!name) {#}
-            {#        continue#}
-            {#    }#}
-            {##}
-            {#    if (name == 'csrfmiddlewaretoken') {#}
-            {#        continue;#}
-            {#    }#}
-            {#    if (!dic.hasOwnProperty(name)) {#}
-            {#        dic[name] = new Array()#}
-            {#    }#}
-            {##}
-                {#dic[name]+=element.value+"&"#}
-            {#    dic[name].push(element.value)#}
-            {##}
-            {# }#}
-            {#console.log($("#query_form").serialize())#}
-            {#let value=$("#query_form").serialize()#}
-            {#for (let key in selected_table_fields){#}
-            {#    value.concat(`&${key}=${}`)#}
-            {# }#}
-            {#let csrf=$("[name='csrfmiddlewaretoken']").val()#}
 
+            /*
+            I used ajax to do Asynchronous POST requests, so that the value filled in by the customer can still be retained,
+            the whole page is not submitted, and the data is not refreshed. Here I am submitting the values in the form
+            */
             $.ajax({
                 url: "{% url 'tes' %}",
                 type: "post",
-                {#data:$("#query_form").serialize(),#}
                 data: $("#query_form").serialize(),
                 dataType: "JSON",
                 success: function (dataBack) {
 
                     console.log(dataBack)
-                    {#match the queryresult set with the columns choosed by the client#}
-                    {#have to find a decent way for now I am using the if and else  #}
+                    /*match the query result set from the back end with the columns chosen by the client
+                    have to find a decent way for now I am using the if and else  */
                     dataBack.result_set.forEach(function (ele){
                         let array=ele['recipients']
                         let tr=document.createElement('tr')
@@ -283,7 +309,7 @@
 
 
 
-
+                        //For each data, report adds a new row
                         $('#report_body').append(tr)
                      })
 
@@ -297,6 +323,12 @@
 
         })
 
+
+        /*
+        When the client clicks Search, a modal box pops up. '
+        The modal box will then contain the relevant fields of his selected table to provide him with a choice.
+        This allows him to decide which columns must be included in the report
+         */
         $('#report_modal').click(function () {
             let span_list = document.forms[0].querySelectorAll('#table_name')
             span_list.forEach(function (ele) {
@@ -326,6 +358,7 @@
 
 
         })
+        //When the modal box is closed, empty the contents of the modal box
         $('#myModal').on('hidden.bs.modal', function () {
             $('#cutomized_report').empty()
         });
@@ -334,15 +367,21 @@
             $('#cutomized_report').empty()
         })
 
+
+        /*When the user selects the field, click Send.
+        This function checks which fields have been selected by the user and then populates these fields as table headers for the report
+         */
         $('#query_submit').click(function () {
             $('#report_head,#report_body').empty()
             report_table_filed={}
+            //get the selected check-boxe
             let checkedBox = document.getElementById('cutomized_report').querySelectorAll('input:checked')
             checkedBox.forEach(function (selected) {
                 let column = selected.value
                 let th = document.createElement("th")
                 let report_table=selected.closest("div").getAttribute("report_customize_table")
-
+                /*I use this list to record the tables that the user wants to query and the fields that they want to display.
+                Used to match each column of the report after the result set returned by the back end is obtained*/
                 if(!report_table_filed.hasOwnProperty(report_table)){report_table_filed[report_table]=new Array()}
                 if(!report_table_filed[report_table].includes(column)){report_table_filed[report_table].push(column)}
                 th.appendChild(document.createTextNode(column))
