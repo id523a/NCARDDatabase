@@ -1,0 +1,65 @@
+{% extends 'events/base.html' %}
+
+{% block title %}NCARD People{% endblock %}
+
+{% block content%}
+    <div class="row mb-4">
+        <div class="col-md-10">
+            <h1>People</h1>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'add-person' %}" class="btn btn-primary btn-lg" style="width: 100%;">Add</a>
+        </div>
+    </div>
+    <div id="ncard_table">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Middle Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Office Number</th>
+                    <th scope="col">Mobile Number</th>
+                    <th scope="col">NCARD Relation</th>
+                    <th scope="col">Project</th>
+                    <th scope="col">LinkedIn</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Primary Organisation</th>
+                    <th scope="col">Other Organisation</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for person in people_list %}
+                <tr>
+                    <td class="" data-id="{{ person.id }}" data-type="title">{{ person.title }}</td>
+                    <td class="" data-id="{{ person.id }}" data-type="given_name">{{ person.given_name }}</td>
+                    <td class="" data-id="{{ person.id }}" data-type="middle_name">{{ person.middle_name }}</td>
+                    <td class="" data-id="{{ person.id }}" data-type="surname">{{ person.surname }}</td>
+                    <td class="" data-id="{{ person.id }}" data-type="email">{{ person.email }}</td>
+                    <td class="" data-id="{{ person.id }}" data-type="phone_office">{{ person.phone_office }}</td>
+                    <td class="" data-id="{{ person.id }}" data-type="phone_mobile">{{ person.phone_mobile }}</td>
+                    <td class="" data-id="{{ person.id }}" data-type="ncard_relation">{{ person.get_ncard_relation_display }}</td>
+                    <td class="" data-id="{{ person.id }}" data-type="project">{{ person.project }}</td>
+                    <td class="" data-id="{{ person.id }}" data-type="linkedin">{{ person.linkedin }}</td>
+                    <td class="" data-id="{{ person.id }}" data-type="location">{{ person.location }}</td>
+                    <td class="" data-id="{{ person.id }}" data-type="organisation_primary">{{ person.organisation_primary }}</td>
+                    <td class="" data-id="{{ person.id }}" data-type="organisation_other">{{ person.organisation_other }}</td>
+                    <td>
+                        <a href="{% url 'edit-person' person.id %}" class="btn btn-primary btn-sm" style="min-width: 60px;">Edit</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
+
+{% block custom_js %}
+
+    <script src="/static/table_edit.js"></script>
+
+{% endblock custom_js %}

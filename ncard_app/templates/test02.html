@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="https://www.itxst.com/package/jquery-3.5.1/jquery.min.js"></script>
+<script src="https://www.itxst.com/package/bootstrap-4.5.0/js/bootstrap.min.js"></script>
+<link href="https://www.itxst.com/package/bootstrap-4.5.0/css/bootstrap.css" rel="stylesheet">
+<script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<link href="https://www.itxst.com/package/bootstrap-datepicker-1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+
+
+<body>
+{#{% for field in form %}#}
+{#{{ field.label }} :<input type="text" placeholder="{{ field.help_text }}">#}
+{#{% if not field.field.required %}#}
+{#    -#}
+{#    {% else %}#}
+{#    <span style="color: red">*</span>#}
+{#{% endif %}#}
+{#{% endfor %}#}
+
+
+<div class="col-4">
+    <form method="post" action="{% url 'ncard_app:fuzzy' %}">
+        {#            {% bootstrap_form form %}#}
+        {% for field in form %}
+            <div class="form-row">
+                {{ field.label }} :{{ field }}
+                {{ field.errors }}
+            </div>
+
+        {% endfor %}
+        <button type="submit"> submit</button>
+        {% csrf_token %}
+    </form>
+
+
+</div>
+<div>
+      {% for ele in n1 %}
+        {{ ele}}--{{ ele.get_type_display }}--{% for a in ele.recipients.all %}{{ a }} {% endfor %}<br>
+
+    {%  endfor %}
+</div>
+
+</body>
+<script>
+    $("#id_start_year,#id_end_year").datepicker({
+        format: "yyyy",
+        viewMode: "years",
+        minViewMode: "years",
+        autoclose: true
+    })
+</script>
+</html>

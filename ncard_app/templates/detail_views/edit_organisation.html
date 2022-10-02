@@ -1,0 +1,13 @@
+{% extends 'events/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Organisation{% endblock %}
+
+{% block content%}
+    <h1>Edit Organisation</h1>
+    <form action="{% url 'edit-organisation' form.instance.id %}" method=POST>
+        {% csrf_token %}
+        {% crispy form %}
+        <input type="submit" value="Save" />
+    </form>
+{% endblock %}
