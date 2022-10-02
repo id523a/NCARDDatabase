@@ -83,4 +83,4 @@ def custom_query_schema(request):
 
 @login_required
 def custom_query(request):
-    return render(request, 'custom_query.html', {'show': 123})
+    return render(request, 'custom_query.html')

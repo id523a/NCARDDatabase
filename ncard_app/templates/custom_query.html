@@ -3,18 +3,73 @@
 {% block title %}NCARD Database{% endblock %}
 
 {% block content%}
+    <style type="text/css">
+        #selector {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        #selector * {
+            width: 12em;
+            margin-right: 0.5em;
+            margin-bottom: 1em;
+        }
+    </style>
     <div class="row mb-4">
         <div class="col-md-10">
             <h1>Query</h1>
         </div>
     </div>
     <div>
-    <pre>
-    {{ show }}
-    </pre>
+    <div id="selector"></div>
     </div>
 {% endblock %}
 
 {% block custom_js %}
+<script>
+let schema = null;
 
+function onFieldSelect(e) {
+    const selector = e.target;
+    while (selector.nextSibling) {
+        selector.nextSibling.remove();
+    }
+    const selectedOption = selector.options[selector.selectedIndex];
+    const selectedFieldType = selectedOption.dataset.fieldType;
+    if (schema.hasOwnProperty(selectedFieldType)) {
+        createFieldSelect(selector.parentNode, schema[selectedFieldType]);
+    }
+}
+
+function createOption(parent, value, text) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.text = text;
+    parent.appendChild(option);
+    return option;
+}
+
+function createFieldSelect(parent, fields) {
+    const selector = document.createElement("select");
+    selector.className = "form-select form-select-sm"
+    selector.addEventListener("change", onFieldSelect);
+    parent.appendChild(selector);
+    const defaultOption = createOption(selector, "", "--");
+    defaultOption.dataset.fieldType = "";
+    defaultOption.selected = "selected";
+    for (const field of fields) {
+        const newOption = createOption(selector, field.name, field.label);
+        newOption.dataset.fieldType = field.type;
+    }
+}
+
+const schemaLocation = "{% url 'custom-query-schema' %}";
+window.addEventListener('load', (event) => {
+    fetch(schemaLocation)
+    .then((response) => response.json())
+    .then((loadedSchema) => {
+        schema = loadedSchema;
+        createFieldSelect(document.getElementById("selector"), schema["person"]);
+    });
+});
+</script>
 {% endblock custom_js %}
