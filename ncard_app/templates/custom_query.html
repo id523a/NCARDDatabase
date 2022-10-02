@@ -4,14 +4,47 @@
 
 {% block custom_css %}
 <style type="text/css">
-    #selector {
+    .field-row {
         display: flex;
         flex-wrap: wrap;
     }
-    #selector * {
-        width: 12em;
+    .field-row * {
         margin-right: 0.5em;
+        margin-bottom: 0.5em;
+    }
+    .field-row select {
+        width: 12em;
+    }
+    .field-row button {
+        width: 2.5em;
+    }
+    .add-button {
+        width: 8.5em;
         margin-bottom: 1em;
+    }
+    .filter-section {
+        margin-bottom: 1em;
+    }
+    .filter-container {
+        padding-left: 3em;
+    }
+    .filter-container div {
+        margin-bottom: 0.5em;
+    }
+    .filter-container button {
+        width: 2.5em;
+        margin-right: 0.5em;
+        vertical-align: baseline;
+        background-color: white;
+    }
+    .filter-container div:not(:last-child)::after {
+        content: " OR";
+    }
+    .condition-argument {
+        width: 20em;
+        display: inline;
+        margin-left: 0.5em;
+        margin-right: 0.5em;
     }
 </style>
 {% endblock %}
@@ -22,24 +55,59 @@
             <h1>Query</h1>
         </div>
     </div>
-    <div>
-    <div id="selector"></div>
+    <div id="startingTable" style="margin-bottom:1em;">
+        <span>Starting table:</span>
+        <select class="form-select form-select" style="width:20em; display:inline-block;">
+            <option selected>Person</option>
+        </select>
     </div>
+    <h2>Output Fields</h2>
+    <div><button id="addFieldRow" class="btn btn-outline-success add-button">Add Field</button></div>
+    <div id="fieldRows"></div>
+    <h2>Filter</h2>
+    <div><button id="addFilterSection" class="btn btn-outline-success add-button">Add Filter</button></div>
+    <div id="filterSections"></div>
 {% endblock %}
 
 {% block custom_js %}
 <script>
 let schema = null;
 
-function onFieldSelect(e) {
-    const selector = e.target;
-    while (selector.nextSibling) {
-        selector.nextSibling.remove();
+function fieldSelectHandler(selector, onChange) {
+    return function (e) {
+        while (selector.nextSibling) {
+            selector.nextSibling.remove();
+        }
+        const selectedOption = selector.options[selector.selectedIndex];
+        const selectedFieldType = selectedOption.dataset.fieldType;
+        if (schema.hasOwnProperty(selectedFieldType)) {
+            createFieldSelect(selector.parentNode, schema[selectedFieldType], onChange);
+        }
+        onChange();
     }
-    const selectedOption = selector.options[selector.selectedIndex];
-    const selectedFieldType = selectedOption.dataset.fieldType;
-    if (schema.hasOwnProperty(selectedFieldType)) {
-        createFieldSelect(selector.parentNode, schema[selectedFieldType]);
+}
+
+function deleteRow(row) {
+    return function (e) {
+        row.remove();
+    }
+}
+
+function moveRowUp(row) {
+    return function (e) {
+        if (row.previousElementSibling) {
+            row.parentNode.insertBefore(row, row.previousElementSibling);
+        }
+        e.target.blur()
+    }
+}
+
+function moveRowDown(row) {
+    return function (e) {
+        if (row.nextElementSibling) {
+            row.parentNode.insertBefore(row, row.nextElementSibling.nextElementSibling);
+        }
+        e.target.blur()
     }
 }
 
@@ -51,10 +119,10 @@ function createOption(parent, value, text) {
     return option;
 }
 
-function createFieldSelect(parent, fields) {
+function createFieldSelect(parent, fields, onChange) {
     const selector = document.createElement("select");
-    selector.className = "form-select form-select-sm";
-    selector.addEventListener("change", onFieldSelect);
+    selector.className = "form-select";
+    selector.addEventListener("change", fieldSelectHandler(selector, onChange));
     parent.appendChild(selector);
     const defaultOption = createOption(selector, "", "--");
     defaultOption.dataset.fieldType = "";
@@ -65,13 +133,81 @@ function createFieldSelect(parent, fields) {
     }
 }
 
+function createButton(parent, className, text, action) {
+    const button = document.createElement("button");
+    button.className = className;
+    button.addEventListener("click", action);
+    button.appendChild(document.createTextNode(text));
+    parent.appendChild(button);
+}
+
+function addFieldRow(e) {
+    const fieldRow = document.createElement("div");
+    fieldRow.className = "field-row";
+    createButton(fieldRow, "btn btn-outline-danger", "X", deleteRow(fieldRow));
+    createButton(fieldRow, "btn btn-outline-secondary", "\u25B2", moveRowUp(fieldRow));
+    createButton(fieldRow, "btn btn-outline-secondary", "\u25BC", moveRowDown(fieldRow));
+    createFieldSelect(fieldRow, schema["person"], function() {});
+    document.getElementById("fieldRows").appendChild(fieldRow);
+    e.target.blur();
+}
+
+function addFilterCondition(filterContainer, selector) {
+    return function (e) {
+        if (selector.selectedIndex > 0) {
+            const selectedOption = selector.options[selector.selectedIndex];
+            const newFilter = document.createElement("div");
+
+            const filterArgument = document.createElement("input");
+            filterArgument.type = "text";
+            filterArgument.className = "form-control condition-argument";
+
+            createButton(newFilter, "btn btn-outline-danger", "X", deleteRow(newFilter));
+            newFilter.appendChild(document.createTextNode(selectedOption.text));
+            newFilter.appendChild(filterArgument);
+            
+            filterContainer.appendChild(newFilter);
+            selector.selectedIndex = 0;
+            selector.blur();
+        }
+    }
+}
+
+function addFilterSection(e) {
+    const filterSection = document.createElement("div");
+    filterSection.className = "filter-section";
+    
+    const filterContainer = document.createElement("div");
+    filterContainer.className = "filter-container bg-light";
+    
+    const conditionSelector = document.createElement("select");
+    conditionSelector.className = "form-select";
+    options = ["(Add condition)", "Contains", "Starts with", "Ends with", "Equals"];
+    for (let i = 0; i < options.length; ++i) {
+        createOption(conditionSelector, i, options[i]);
+    }
+    conditionSelector.addEventListener("change", addFilterCondition(filterContainer, conditionSelector));
+
+    const fieldRow = document.createElement("div");
+    fieldRow.className = "field-row";
+    createButton(fieldRow, "btn btn-outline-danger", "X", deleteRow(filterSection));
+    createFieldSelect(fieldRow, schema["person"], function() { filterContainer.innerHTML = ""; });
+
+    filterSection.appendChild(fieldRow);
+    filterSection.appendChild(filterContainer);
+    filterSection.appendChild(conditionSelector);
+    document.getElementById("filterSections").appendChild(filterSection);
+    e.target.blur();
+}
+
 const schemaLocation = "{% url 'custom-query-schema' %}";
 window.addEventListener('load', (event) => {
     fetch(schemaLocation)
     .then((response) => response.json())
     .then((loadedSchema) => {
         schema = loadedSchema;
-        createFieldSelect(document.getElementById("selector"), schema["person"]);
+        document.getElementById("addFieldRow").addEventListener("click", addFieldRow);
+        document.getElementById("addFilterSection").addEventListener("click", addFilterSection);
     });
 });
 </script>
