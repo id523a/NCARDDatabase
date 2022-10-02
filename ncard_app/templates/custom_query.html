@@ -2,18 +2,21 @@
 
 {% block title %}NCARD Database{% endblock %}
 
-{% block content%}
-    <style type="text/css">
-        #selector {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        #selector * {
-            width: 12em;
-            margin-right: 0.5em;
-            margin-bottom: 1em;
-        }
-    </style>
+{% block custom_css %}
+<style type="text/css">
+    #selector {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    #selector * {
+        width: 12em;
+        margin-right: 0.5em;
+        margin-bottom: 1em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
     <div class="row mb-4">
         <div class="col-md-10">
             <h1>Query</h1>
@@ -50,7 +53,7 @@ function createOption(parent, value, text) {
 
 function createFieldSelect(parent, fields) {
     const selector = document.createElement("select");
-    selector.className = "form-select form-select-sm"
+    selector.className = "form-select form-select-sm";
     selector.addEventListener("change", onFieldSelect);
     parent.appendChild(selector);
     const defaultOption = createOption(selector, "", "--");
@@ -72,4 +75,4 @@ window.addEventListener('load', (event) => {
     });
 });
 </script>
-{% endblock custom_js %}
+{% endblock %}
