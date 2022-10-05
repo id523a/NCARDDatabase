@@ -69,7 +69,7 @@ class Person(models.Model):
     project = models.CharField(max_length=50, blank=True)
     display_on_website = models.IntegerField(choices=DisplayOnWebsite.choices, default=DisplayOnWebsite.NO)
     profile_url = models.URLField('Profile URL', blank=True)
-    orcid_id = models.CharField('ORCID ID', max_length=37, blank=True, validators=[orcid_validator])
+    orcid_id = models.CharField('ORCID iD', max_length=37, blank=True, validators=[orcid_validator])
     scopus_id = models.BigIntegerField('Scopus ID', null=True, blank=True, validators=[nonnegative_validator])
     wos_researcher_id = models.CharField('WoS ResearcherID', max_length=32, blank=True)
     google_scholar = models.URLField('Google Scholar', blank=True)

@@ -55,25 +55,24 @@ class PersonForm(ModelForm):
                     ),
                 ),
 
-                Tab('Individal Reseracher Details',
+                Tab('Reseracher Profile',
                     HTML("<br>"),
                     Row(
                         Column('clinician', css_class='col-md-2 mb-0'),
-                        Column('orcid_id', css_class='col-md-3 mb-0'),
-                        Column('scopus_id', css_class='col-md-3 mb-0'),
-                        Column('wos_researcher_id', css_class='col-md-3 mb-0'),
+                        Column('research_focus', css_class='col-md-10 mb-0'),
+                        css_class='row'),
+                    Row(
+                        Column('orcid_id', css_class='col-md-4 mb-0'),
+                        Column('scopus_id', css_class='col-md-4 mb-0'),
+                        Column('wos_researcher_id', css_class='col-md-4 mb-0'),
                         css_class='row'
                     ),
+                    Row('google_scholar', css_class='row'),
+                    Row('researchgate', css_class='row'),
+                    Row('loop_profile', css_class='row'),
                     Row(
-                        Column('google_scholar', css_class='col-md-4 mb-0'),
-                        Column('researchgate', css_class='col-md-4 mb-0'),
-                        Column('loop_profile', css_class='col-md-4 mb-0'),
-                        css_class='row'
-                    ),
-                    Row(
-                        Column('linkedin', css_class='col-md-4 mb-0'),
+                        Column('linkedin', css_class='col-md-5 mb-0'),
                         Column('twitter', css_class='col-md-3 mb-0'),
-                        Column('research_focus', css_class='col-md-5 mb-0'),
                         css_class='row'
                     ),
                 ),
@@ -84,8 +83,12 @@ class PersonForm(ModelForm):
                     Row('location', css_class='row'),
                     Row('organisation_primary', css_class='row'),
                     Row('organisation_other', css_class='row'),
+                ),
+
+                Tab('Others',
+                    HTML("<br>"),
                     Row('notes', css_class='row'),
-                )
+                ),
             )
         )
 

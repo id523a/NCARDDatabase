@@ -10,7 +10,7 @@
         <form action="{% url 'add-person' %}" method=POST>
             {% csrf_token %}
             {% crispy form %}
-            <input class="btn btn-primary btn-lg" type="submit" value="Add" style="position: fixed; bottom: 50px; right: 50px;">
+            <input class="btn btn-lg ncard_btn" type="submit" value="Add" style="position: fixed; bottom: 50px; right: 50px;">
         </form>
     </div>
 {% endblock %}
