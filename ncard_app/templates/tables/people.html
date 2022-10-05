@@ -6,10 +6,12 @@
 
     <div class="row mb-4">
         <div class="col-md-10">
-            <h1>People</h1>
+            <h1 style="color: #009070;">People</h1>
         </div>
         <div class="col-md-2">
-            <a href="{% url 'add-person' %}" class="btn btn-primary btn-lg" style="width: 100%;">Add</a>
+            <a href="{% url 'add-person' %}">
+              <button class="ncard_CTA">ADD</button>
+            </a>
         </div>
     </div>
 
@@ -52,7 +54,7 @@
                     <td class="" data-id="{{ person.id }}" data-type="organisation_primary">{{ person.organisation_primary }}</td>
                     <td class="" data-id="{{ person.id }}" data-type="organisation_other">{{ person.organisation_other }}</td>
                     <td>
-                        <a href="{% url 'edit-person' person.id %}" class="btn btn-primary btn-sm" style="min-width: 60px;">Edit</a>
+                        <a href="{% url 'edit-person' person.id %}" class="btn btn-sm ncard_btn">Edit</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -65,7 +67,7 @@
       <ul class="pagination justify-content-center">
         {% if people.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="?page={{ people.previous_page_number }}" aria-label="Previous">
+            <a class="page-link" href="?page={{ people.previous_page_number }}" aria-label="Previous" style="color:#009070;">
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
@@ -77,7 +79,7 @@
 
         {% for p in people.paginator.page_range %}
           {% if people.number == p %}
-            <li class="page-item"><a class="page-link" style="color: white; background-color: #007bff;" href="#">{{ p }}</a></li>
+            <li class="page-item"><a class="page-link" style="color: white; background-color: #009070;" href="#">{{ p }}</a></li>
           {% else %}
             <li class="page-item"><a class="page-link" style="color: #343a40;" href="?page={{ p }}">{{ p }}</a></li>
           {% endif %}
@@ -85,7 +87,7 @@
 
         {% if people.has_next %}
           <li class="page-item">
-            <a class="page-link" href="?page={{ people.next_page_number }}" aria-label="Next">
+            <a class="page-link" href="?page={{ people.next_page_number }}" aria-label="Next" style="color:#009070;">
               <span aria-hidden="true">&raquo;</span>
             </a>
           </li>

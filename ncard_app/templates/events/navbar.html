@@ -1,16 +1,18 @@
-<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="{% url 'dashboard' %}">NCARD Database</a>
+<nav class="navbar navbar-expand-lg navbar-light">
+  <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'dashboard' %}">
+        <img src="https://ncard.org.au/wp-content/uploads/2017/07/logo-ncard.png" height="50px">
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 space_list">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Tables
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown" style="background-color:#009070;">
               <li><a class="dropdown-item" href="{% url 'list-people' %}">People</a></li>
               <li><a class="dropdown-item" href="{% url 'list-organisations' %}">Organisations</a></li>
               <li><hr class="dropdown-divider"></li>
@@ -18,7 +20,7 @@
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'phone_book' %}">Link</a>
+            <a class="nav-link" href="{% url 'phone_book' %}">Phone Book</a>
           </li>
           {% if user.is_authenticated %}
           <li class="nav-item">
@@ -30,10 +32,7 @@
           </li>
           {% endif %}
         </ul>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
       </div>
-    </div>
-  </nav>
+  </div>
+</nav>
+<div id="ncard-grad"></div>
