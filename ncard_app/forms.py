@@ -57,7 +57,8 @@ class PersonForm(ModelForm):
 
                 Tab('Individal Reseracher Details',
                     HTML("<br>"),
-                                        Row(
+                    Row(
+                        Column('clinician', css_class='col-md-2 mb-0'),
                         Column('orcid_id', css_class='col-md-3 mb-0'),
                         Column('scopus_id', css_class='col-md-3 mb-0'),
                         Column('wos_researcher_id', css_class='col-md-3 mb-0'),
@@ -72,10 +73,9 @@ class PersonForm(ModelForm):
                     Row(
                         Column('linkedin', css_class='col-md-4 mb-0'),
                         Column('twitter', css_class='col-md-3 mb-0'),
-                        Column('clinician', css_class='col-md-2 mb-0'),
+                        Column('research_focus', css_class='col-md-5 mb-0'),
                         css_class='row'
                     ),
-                     Row('research_focus', css_class='row'),
                 ),
 
                 Tab('Organisational Info',
