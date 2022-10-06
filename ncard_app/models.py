@@ -281,14 +281,16 @@ class GrantInvestigator(models.Model):
 
 
 class Students(models.Model): 
+    class StudentTypes(models.IntegerChoices):
+        HONS = 1, 'Honours'
+        PHD = 2, 'Phd'
+
     student_name = models.OneToOneField(Person, on_delete=models.CASCADE, related_name = 'person')
-    student_type = models.IntegerField('student type', )
-    primary_supervisor = models.CharField('primary supervisor', max_length=255, Blank=True)
-    supervisor2 = models.CharField('primary supervisor', max_length=255, Blank=True)
-    supervisor3 = models.CharField('primary supervisor', max_length=255, Blank=True)
+    student_type = models.IntegerField('student type', choices= StudentTypes.choices)
+    supervisor = models.ManyToManyField(Person, blank=True)
     title_topic = models.TextField('title topic', blank=True)
-    year_start = models.PositiveSmallIntegerField('year start')
-    year_end = models.PositiveSmallIntegerField('year end')
+    year_start = models.PositiveSmallIntegerField('year start',blank=True,null=True)
+    year_end = models.PositiveSmallIntegerField('year end',blank=True,null=True)
     scholarship = models.OneToOneField(Award, on_delete=models.SET_NULL, null=True, blank=True, related_name='award')
 
     def __str__(self):
