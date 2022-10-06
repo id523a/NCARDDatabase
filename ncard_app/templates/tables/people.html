@@ -67,7 +67,7 @@
       <ul class="pagination justify-content-center">
         {% if people.has_previous %}
           <li class="page-item">
-            <a class="page-link" href="?page={{ people.previous_page_number }}" aria-label="Previous" style="color:#009070;">
+            <a id="ncard-dark-green" class="page-link" href="?page={{ people.previous_page_number }}" aria-label="Previous">
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
@@ -87,7 +87,7 @@
 
         {% if people.has_next %}
           <li class="page-item">
-            <a class="page-link" href="?page={{ people.next_page_number }}" aria-label="Next" style="color:#009070;">
+            <a id="ncard-dark-green" class="page-link" href="?page={{ people.next_page_number }}" aria-label="Next">
               <span aria-hidden="true">&raquo;</span>
             </a>
           </li>
