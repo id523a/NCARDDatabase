@@ -2,7 +2,7 @@ from django.forms import ModelForm
 from ncard_app import models
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column, ButtonHolder, HTML, Submit, Button
+from crispy_forms.layout import Layout, Field, Row, Column, ButtonHolder, HTML, Submit, Button
 from crispy_forms.bootstrap import FormActions, PrependedText, Tab, TabHolder
 
 class PersonForm(ModelForm):
@@ -79,7 +79,7 @@ class PersonForm(ModelForm):
 
                 Tab('Organisational Info',
                     HTML("<br>"),
-                    Row('employers', css_class='row'),
+                    Row(Field('employers', css_class='selectpicker form-control', data_live_search='true')),
                     Row('location', css_class='row'),
                     Row('organisation_primary', css_class='row'),
                     Row('organisation_other', css_class='row'),
