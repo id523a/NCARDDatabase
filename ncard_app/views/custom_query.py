@@ -63,15 +63,13 @@ extra_fields = {
 }
 
 def schema_entry_model(model):
-    fields = []
+    # Add computed fields first
+    fields = list(extra_fields.get(model, []))
     # Create list of fields by inspecting model
     for field in model._meta.get_fields():
         field_type = get_field_type(field)
         if field_type != '':
             fields.append({'name': field.name, 'label': get_field_friendly_name(model, field), 'type': field_type})
-    # Add any extra computed fields
-    fields.extend(extra_fields.get(model, []))
-    fields.sort(key=lambda field: field["label"])
     return fields
 
 schema = {model._meta.model_name: schema_entry_model(model) for model in schema_models}
