@@ -6,7 +6,7 @@
 
     <div class="row mb-4">
         <div class="col-md-10">
-            <h1 id="ncard-dark-green">People</h1>
+            <h1 class="ncard-dark-green">People</h1>
         </div>
         <div class="col-md-2">
             <a href="{% url 'add-person' %}">
@@ -49,7 +49,7 @@
                     <td data-id="{{ person.id }}" data-type="ncard_relation">{{ person.get_ncard_relation_display }}</td>
                     <td data-id="{{ person.id }}" data-type="project">{{ person.project }}</td>
                     <td data-id="{{ person.id }}" data-type="linkedin">{{ person.linkedin }}</td>
-                    <td data-id="{{ person.id }}" data-type="twietter">{{ person.twitter }}</td>
+                    <td data-id="{{ person.id }}" data-type="twitter">{{ person.twitter }}</td>
                     <td data-id="{{ person.id }}" data-type="location">{{ person.location }}</td>
                     <td data-id="{{ person.id }}" data-type="organisation_primary">{{ person.organisation_primary }}</td>
                     <td data-id="{{ person.id }}" data-type="organisation_other">{{ person.organisation_other }}</td>
@@ -67,7 +67,7 @@
       <ul class="pagination justify-content-center">
         {% if people.has_previous %}
           <li class="page-item">
-            <a id="ncard-dark-green" class="page-link" href="?page={{ people.previous_page_number }}" aria-label="Previous">
+            <a class="page-link ncard-dark-green" href="?page={{ people.previous_page_number }}" aria-label="Previous">
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
@@ -79,15 +79,15 @@
 
         {% for p in people.paginator.page_range %}
           {% if people.number == p %}
-            <li class="page-item"><a class="page-link" style="color: white; background-color: #009070;" href="#">{{ p }}</a></li>
+            <li class="page-item"><a class="page-link ncard-current-page" href="#">{{ p }}</a></li>
           {% else %}
-            <li class="page-item"><a class="page-link" style="color: #343a40;" href="?page={{ p }}">{{ p }}</a></li>
+            <li class="page-item"><a class="page-link ncard-other-pages" href="?page={{ p }}">{{ p }}</a></li>
           {% endif %}
         {% endfor %}
 
         {% if people.has_next %}
           <li class="page-item">
-            <a id="ncard-dark-green" class="page-link" href="?page={{ people.next_page_number }}" aria-label="Next">
+            <a class="page-link ncard-dark-green" href="?page={{ people.next_page_number }}" aria-label="Next">
               <span aria-hidden="true">&raquo;</span>
             </a>
           </li>

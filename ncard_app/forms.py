@@ -55,7 +55,7 @@ class PersonForm(ModelForm):
                     ),
                 ),
 
-                Tab('Reseracher Profile',
+                Tab('Researcher Profile',
                     HTML("<br>"),
                     Row(
                         Column('clinician', css_class='col-md-2 mb-0'),
@@ -85,7 +85,7 @@ class PersonForm(ModelForm):
                     Row('organisation_other', css_class='row'),
                 ),
 
-                Tab('Others',
+                Tab('Notes',
                     HTML("<br>"),
                     Row('notes', css_class='row'),
                 ),

@@ -30,15 +30,15 @@
     text-align: center;
 }
 
-#ncard-dark-green {
+.ncard-dark-green {
     color: #009070;
 }
 
-#ncard-light-green {
+.ncard-light-green {
     color: #A5D2C3;
 }
 
-#ncard-grad {
+.ncard-grad {
     height: 10px;
     background-color: #009070;
     background-image: linear-gradient(to right,#009070, #A5D2C3);
@@ -74,3 +74,13 @@ ul.space_list li {
     color: white;
     border: 1px solid #009070;
 }
+
+.ncard-current-page{
+    color: white; 
+    background-color: #009070;
+}
+
+.ncard-other-pages {
+    color: #343a40;
+}
+
