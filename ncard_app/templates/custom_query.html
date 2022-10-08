@@ -3,18 +3,36 @@
 {% block title %}NCARD Database{% endblock %}
 
 {% block custom_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/css/bootstrap-select.min.css" integrity="sha256-UqiEyrW1sB5d6ZDzcWXKfYCR4MKVYMEdXNjJde84cjc=" crossorigin="anonymous">
 <style type="text/css">
+    .bootstrap-select * {
+        overflow-x: hidden;
+    }
+    .bootstrap-select > button {
+        border: 1px solid #ced4da;
+    }
+    #startingTable {
+        margin-bottom: 1em;
+    }
+    #startingTable select {
+        width: 20em;
+        display: inline-block;
+    }
     .field-row {
         display: flex;
         flex-wrap: wrap;
     }
-    .field-row * {
+    .field-row > * {
         margin-right: 0.5em;
         margin-bottom: 0.5em;
     }
-    .field-row select {
+    .field-row > div {
         width: 12em;
     }
+    .field-row .bootstrap-select {
+        width: 100% !important;
+    }
+
     .field-row button {
         width: 2.5em;
     }
@@ -55,9 +73,9 @@
             <h1>Query</h1>
         </div>
     </div>
-    <div id="startingTable" style="margin-bottom:1em;">
+    <div id="startingTable">
         <span>Starting table:</span>
-        <select class="form-select form-select" style="width:20em; display:inline-block;">
+        <select class="form-select">
             <option selected>Person</option>
         </select>
     </div>
@@ -70,18 +88,19 @@
 {% endblock %}
 
 {% block custom_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta2/dist/js/bootstrap-select.min.js" integrity="sha256-KK/CsQKh6Rb0LsRn4Z8Jcs4h7rRquelIb4EjQm6ige4=" crossorigin="anonymous"></script>
 <script>
 let schema = null;
 
-function fieldSelectHandler(selector, onChange) {
+function fieldSelectHandler(selectorContainer, selector, onChange) {
     return function (e) {
-        while (selector.nextSibling) {
-            selector.nextSibling.remove();
+        while (selectorContainer.nextSibling) {
+            selectorContainer.nextSibling.remove();
         }
         const selectedOption = selector.options[selector.selectedIndex];
         const selectedFieldType = selectedOption.dataset.fieldType;
         if (schema.hasOwnProperty(selectedFieldType)) {
-            createFieldSelect(selector.parentNode, schema[selectedFieldType], onChange);
+            createFieldSelect(selectorContainer.parentNode, schema[selectedFieldType], onChange);
         }
         onChange();
     }
@@ -120,10 +139,13 @@ function createOption(parent, value, text) {
 }
 
 function createFieldSelect(parent, fields, onChange) {
+    const selectorContainer = document.createElement("div");
+    parent.appendChild(selectorContainer);
+    
     const selector = document.createElement("select");
-    selector.className = "form-select";
-    selector.addEventListener("change", fieldSelectHandler(selector, onChange));
-    parent.appendChild(selector);
+    selector.addEventListener("change", fieldSelectHandler(selectorContainer, selector, onChange));
+    selectorContainer.appendChild(selector);
+    
     const defaultOption = createOption(selector, "", "--");
     defaultOption.dataset.fieldType = "";
     defaultOption.selected = "selected";
@@ -131,6 +153,8 @@ function createFieldSelect(parent, fields, onChange) {
         const newOption = createOption(selector, field.name, field.label);
         newOption.dataset.fieldType = field.type;
     }
+    selector.dataset.liveSearch = true;
+    $(selector).selectpicker();
 }
 
 function createButton(parent, className, text, action) {
