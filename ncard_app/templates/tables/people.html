@@ -1,6 +1,6 @@
 {% extends 'events/base.html' %}
 
-{% block title %}NCARD People{% endblock %}
+{% block title %}People | NCARD Table{% endblock %}
 
 {% block content%}
 
@@ -39,20 +39,20 @@
             <tbody>
                 {% for person in people %}
                 <tr>
-                    <td data-id="{{ person.id }}" data-type="title">{{ person.title }}</td>
-                    <td data-id="{{ person.id }}" data-type="given_name">{{ person.given_name }}</td>
-                    <td data-id="{{ person.id }}" data-type="middle_name">{{ person.middle_name }}</td>
-                    <td data-id="{{ person.id }}" data-type="surname">{{ person.surname }}</td>
-                    <td data-id="{{ person.id }}" data-type="email">{{ person.email }}</td>
-                    <td data-id="{{ person.id }}" data-type="phone_office">{{ person.phone_office }}</td>
-                    <td data-id="{{ person.id }}" data-type="phone_mobile">{{ person.phone_mobile }}</td>
-                    <td data-id="{{ person.id }}" data-type="ncard_relation">{{ person.get_ncard_relation_display }}</td>
-                    <td data-id="{{ person.id }}" data-type="project">{{ person.project }}</td>
-                    <td data-id="{{ person.id }}" data-type="linkedin">{{ person.linkedin }}</td>
-                    <td data-id="{{ person.id }}" data-type="twitter">{{ person.twitter }}</td>
-                    <td data-id="{{ person.id }}" data-type="location">{{ person.location }}</td>
-                    <td data-id="{{ person.id }}" data-type="organisation_primary">{{ person.organisation_primary }}</td>
-                    <td data-id="{{ person.id }}" data-type="organisation_other">{{ person.organisation_other }}</td>
+                    <td data-type="title">{{ person.title }}</td>
+                    <td data-type="given_name">{{ person.given_name }}</td>
+                    <td data-type="middle_name">{{ person.middle_name }}</td>
+                    <td data-type="surname">{{ person.surname }}</td>
+                    <td data-type="email">{{ person.email }}</td>
+                    <td data-type="phone_office">{{ person.phone_office }}</td>
+                    <td data-type="phone_mobile">{{ person.phone_mobile }}</td>
+                    <td data-type="ncard_relation">{{ person.get_ncard_relation_display }}</td>
+                    <td data-type="project">{{ person.project }}</td>
+                    <td data-type="linkedin">{{ person.linkedin }}</td>
+                    <td data-type="twitter">{{ person.twitter }}</td>
+                    <td data-type="location">{{ person.location }}</td>
+                    <td data-type="organisation_primary">{{ person.organisation_primary }}</td>
+                    <td data-type="organisation_other">{{ person.organisation_other }}</td>
                     <td>
                         <a href="{% url 'edit-person' person.id %}" class="btn btn-sm ncard_btn">Edit</a>
                     </td>

@@ -1,12 +1,12 @@
 {% extends 'events/base.html' %}
 
-{% block title %}Organisations | NCARD Table{% endblock %}
+{% block title %}Awards | NCARD Table{% endblock %}
 
 {% block content%}
 
     <div class="row mb-4">
         <div class="col-md-10">
-            <h1 class="ncard-dark-green">Organisations</h1>
+            <h1 class="ncard-dark-green">Awards</h1>
         </div>
         <div class="col-md-2">
             <a href="{% url 'add-organisation' %}">
@@ -19,12 +19,15 @@
         <table class="table table-striped ">
             <thead>
                 <tr>
-                    <th scope="col" style="width: 350px">Organisation Name</th>
-                    <th scope="col">Primary Contact</th>
-                    <th scope="col">Phone Number</th>
-                    <th scope="col">Website</th>
-                    <th scope="col">Twitter</th>
-                    <th scope="col">Organisation Type</th>
+                    <th scope="col">Award Type</th>
+                    <th scope="col">Agency</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Recipient</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Details</th>
+                    <th scope="col">First </th>
+                    <th scope="col">Number of Years</th>
+
                     <th scope="col">Action</th>
                 </tr>
             </thead>

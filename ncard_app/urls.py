@@ -18,5 +18,9 @@ urlpatterns = [
     path('tables/organisations/add/', login_required(views.OrganisationCreateView.as_view()), name="add-organisation"),
     path('tables/organisations/<int:pk>/', login_required(views.OrganisationUpdateView.as_view()), name="edit-organisation"),
 
+    path('tables/awards/', views.list_awards, name="list-awards"),
+    path('tables/awards/add/', login_required(views.AwardCreateView.as_view()), name="add-award"),
+    path('tables/awards/<int:pk>/', login_required(views.AwardUpdateView.as_view()), name="edit-award"),
+
     path('predefined/phonebook', login_required(views.PhoneBook.as_view()), name="phone_book"),
 ]

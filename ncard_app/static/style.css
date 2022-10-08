@@ -7,7 +7,7 @@
 }
 
 #ncard_table th {
-    width: 180px;
+    width: 200px;
     color: #343a40;
 }
 
@@ -84,3 +84,16 @@ ul.space_list li {
     color: #343a40;
 }
 
+/* button stick on bottom right of the screen */
+.stick {
+    position: fixed; 
+    bottom: 50px; 
+    right: 50px;
+}
+
+.form-margin {
+    width: 90%; 
+    height: 90%; 
+    margin: 5%;
+    margin-top: 0%;
+}
