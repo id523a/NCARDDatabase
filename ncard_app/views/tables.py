@@ -7,7 +7,7 @@ from django.http import JsonResponse
 @login_required
 def list_people(request):
     people_list = Person.objects.all()
-    paginator = Paginator(people_list, 9)
+    paginator = Paginator(people_list, 10)
     page = request.GET.get('page',1)
     try:
         people = paginator.page(page)
