@@ -80,6 +80,9 @@
         <h2>Filter</h2>
         <div><button id="addFilterSection" class="btn btn-outline-success add-button">Add Filter</button></div>
         <div id="filterSections"></div>
+        <h2>Results</h2>
+        <div><button id="runQueryButton" class="btn btn-outline-success add-button">Get JSON</button></div>
+        <pre id="queryResult" style="display:block; white-space: break-spaces;"></pre>
     </div>
 {% endblock %}
 
@@ -139,6 +142,7 @@ function createFieldSelect(parent, modelName, onChange) {
     parent.appendChild(selectorContainer);
     
     const selector = document.createElement("select");
+    selector.className = 'field-select';
     selector.addEventListener("change", fieldSelectHandler(selectorContainer, selector, onChange));
     selectorContainer.appendChild(selector);
     
@@ -180,12 +184,19 @@ function addFilterCondition(filterContainer, selector) {
         if (selector.selectedIndex > 0) {
             const selectedOption = selector.options[selector.selectedIndex];
             const newFilter = document.createElement("div");
+            newFilter.className = "filter-condition";
+            
+            const filterID = document.createElement("input");
+            filterID.type = "hidden";
+            filterID.className = "condition-id";
+            filterID.value = selectedOption.value;
 
             const filterArgument = document.createElement("input");
             filterArgument.type = "text";
             filterArgument.className = "form-control condition-argument";
 
             createButton(newFilter, "btn btn-outline-danger", "X", deleteRow(newFilter));
+            newFilter.appendChild(filterID);
             newFilter.appendChild(document.createTextNode(selectedOption.text));
             newFilter.appendChild(filterArgument);
             
@@ -210,8 +221,9 @@ function addFilterSection(e) {
     conditionSelector.className = "form-select";
     options = ["(Add condition)", "Contains", "Starts with", "Ends with", "Equals"];
     for (let i = 0; i < options.length; ++i) {
-        createOption(conditionSelector, i, options[i]);
+        createOption(conditionSelector, options[i], options[i]);
     }
+    conditionSelector.selectedIndex = 0;
     conditionSelector.addEventListener("change", addFilterCondition(filterContainer, conditionSelector));
 
     const fieldRow = document.createElement("div");
@@ -250,6 +262,38 @@ function selectStartingModel(e) {
     }
 }
 
+function parseFieldRow(row) {
+    let fields = [];
+    for (const field of row.querySelectorAll("select.field-select")) {
+        if (field.value) {
+            fields.push(field.value);
+        }
+    }
+    return fields;
+}
+
+function parseFilterCondition(cond) {
+    return {
+        id: cond.getElementsByClassName("condition-id")[0].value,
+        arg: cond.getElementsByClassName("condition-argument")[0].value
+    };
+}
+
+function parseFilterSection(sect) {
+    return {
+        field: parseFieldRow(sect.getElementsByClassName("field-row")[0]),
+        conditions: Array.from(sect.getElementsByClassName("filter-container")[0].getElementsByClassName("filter-condition"), parseFilterCondition)
+    };
+}
+
+function parseQuery() {
+    return {
+        startTable: selectedModel,
+        fields: Array.from(document.getElementById("fieldRows").getElementsByClassName("field-row"), parseFieldRow),
+        filters: Array.from(document.getElementById("filterSections").getElementsByClassName("filter-section"), parseFilterSection)
+    };
+}
+
 const schemaLocation = "{% url 'custom-query-schema' %}";
 window.addEventListener('load', (event) => {
     fetch(schemaLocation)
@@ -257,7 +301,6 @@ window.addEventListener('load', (event) => {
     .then((loadedSchema) => {
         schema = loadedSchema;
         const startingTableSelector = document.getElementById("startingTableSelector");
-        let i = 0;
         for (const modelName in schema) {
             // TODO: Use plural verbose name of model as its label
             const option = createOption(startingTableSelector, modelName, modelName);
@@ -267,6 +310,9 @@ window.addEventListener('load', (event) => {
         $(startingTableSelector).selectpicker("refresh");
         document.getElementById("addFieldRow").addEventListener("click", addFieldRow);
         document.getElementById("addFilterSection").addEventListener("click", addFilterSection);
+        document.getElementById("runQueryButton").addEventListener("click", function (e) {
+            document.getElementById("queryResult").innerText = JSON.stringify(parseQuery());
+        });
     });
 });
 </script>
