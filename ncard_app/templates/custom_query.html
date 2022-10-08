@@ -67,28 +67,26 @@
 {% endblock %}
 
 {% block content %}
+    <h1 class="mb-4">Query</h1>
     <div class="row mb-4">
-        <div class="col-md-10">
-            <h1>Query</h1>
-        </div>
-    </div>
-    <div id="startingTable">
-        <span>Starting table:</span>
-        <select class="form-select">
-            <option selected>Person</option>
+        <select id="startingTableSelector" class="selectpicker form-control" data-live-search="true">
+            <option value="" selected>Starting table...</option>
         </select>
     </div>
-    <h2>Output Fields</h2>
-    <div><button id="addFieldRow" class="btn btn-outline-success add-button">Add Field</button></div>
-    <div id="fieldRows"></div>
-    <h2>Filter</h2>
-    <div><button id="addFilterSection" class="btn btn-outline-success add-button">Add Filter</button></div>
-    <div id="filterSections"></div>
+    <div id="querySettings" style="display:none;">
+        <h2>Output Fields</h2>
+        <div><button id="addFieldRow" class="btn btn-outline-success add-button">Add Field</button></div>
+        <div id="fieldRows"></div>
+        <h2>Filter</h2>
+        <div><button id="addFilterSection" class="btn btn-outline-success add-button">Add Filter</button></div>
+        <div id="filterSections"></div>
+    </div>
 {% endblock %}
 
 {% block custom_js %}
 <script>
 let schema = null;
+let selectedModel = null;
 
 function fieldSelectHandler(selectorContainer, selector, onChange) {
     return function (e) {
@@ -98,7 +96,7 @@ function fieldSelectHandler(selectorContainer, selector, onChange) {
         const selectedOption = selector.options[selector.selectedIndex];
         const selectedFieldType = selectedOption.dataset.fieldType;
         if (schema.hasOwnProperty(selectedFieldType)) {
-            createFieldSelect(selectorContainer.parentNode, schema[selectedFieldType], onChange);
+            createFieldSelect(selectorContainer.parentNode, selectedFieldType, onChange);
         }
         onChange();
     }
@@ -136,7 +134,7 @@ function createOption(parent, value, text) {
     return option;
 }
 
-function createFieldSelect(parent, fields, onChange) {
+function createFieldSelect(parent, modelName, onChange) {
     const selectorContainer = document.createElement("div");
     parent.appendChild(selectorContainer);
     
@@ -144,10 +142,10 @@ function createFieldSelect(parent, fields, onChange) {
     selector.addEventListener("change", fieldSelectHandler(selectorContainer, selector, onChange));
     selectorContainer.appendChild(selector);
     
-    const defaultOption = createOption(selector, "", "--");
+    const defaultOption = createOption(selector, "", "Query " + modelName + "...");
     defaultOption.dataset.fieldType = "";
     defaultOption.selected = "selected";
-    for (const field of fields) {
+    for (const field of schema[modelName]) {
         const newOption = createOption(selector, field.name, field.label);
         newOption.dataset.fieldType = field.type;
     }
@@ -164,12 +162,15 @@ function createButton(parent, className, text, action) {
 }
 
 function addFieldRow(e) {
+    if (selectedModel === null) {
+        return;
+    }
     const fieldRow = document.createElement("div");
     fieldRow.className = "field-row";
     createButton(fieldRow, "btn btn-outline-danger", "X", deleteRow(fieldRow));
     createButton(fieldRow, "btn btn-outline-secondary", "\u25B2", moveRowUp(fieldRow));
     createButton(fieldRow, "btn btn-outline-secondary", "\u25BC", moveRowDown(fieldRow));
-    createFieldSelect(fieldRow, schema["person"], function() {});
+    createFieldSelect(fieldRow, selectedModel, function() {});
     document.getElementById("fieldRows").appendChild(fieldRow);
     e.target.blur();
 }
@@ -196,6 +197,9 @@ function addFilterCondition(filterContainer, selector) {
 }
 
 function addFilterSection(e) {
+    if (selectedModel === null) {
+        return;
+    }
     const filterSection = document.createElement("div");
     filterSection.className = "filter-section";
     
@@ -213,7 +217,7 @@ function addFilterSection(e) {
     const fieldRow = document.createElement("div");
     fieldRow.className = "field-row";
     createButton(fieldRow, "btn btn-outline-danger", "X", deleteRow(filterSection));
-    createFieldSelect(fieldRow, schema["person"], function() { filterContainer.innerHTML = ""; });
+    createFieldSelect(fieldRow, selectedModel, function() { filterContainer.innerHTML = ""; });
 
     filterSection.appendChild(fieldRow);
     filterSection.appendChild(filterContainer);
@@ -222,12 +226,45 @@ function addFilterSection(e) {
     e.target.blur();
 }
 
+function selectStartingModel(e) {
+    const startingTableSelector = document.getElementById("startingTableSelector");
+    const selectedValue = startingTableSelector.value;
+    if (selectedModel != selectedValue) {
+    
+        const fieldRows = document.getElementById("fieldRows");
+        const filterSections = document.getElementById("filterSections");
+        
+        if (fieldRows.childNodes.length !== 0 || filterSections.childNodes.length !== 0) {
+            if (!confirm("The current query will be erased if you change the starting table. Continue?")) {
+                startingTableSelector.value = selectedModel;
+                $(startingTableSelector).selectpicker("refresh");
+                return;
+            }
+        }
+    
+        selectedModel = selectedValue;
+
+        fieldRows.innerHTML = "";
+        filterSections.innerHTML = "";
+        document.getElementById("querySettings").style.display = selectedValue ? "block" : "none";
+    }
+}
+
 const schemaLocation = "{% url 'custom-query-schema' %}";
 window.addEventListener('load', (event) => {
     fetch(schemaLocation)
     .then((response) => response.json())
     .then((loadedSchema) => {
         schema = loadedSchema;
+        const startingTableSelector = document.getElementById("startingTableSelector");
+        let i = 0;
+        for (const modelName in schema) {
+            // TODO: Use plural verbose name of model as its label
+            const option = createOption(startingTableSelector, modelName, modelName);
+            option.dataset.tokens = modelName
+        }
+        startingTableSelector.addEventListener("change", selectStartingModel);
+        $(startingTableSelector).selectpicker("refresh");
         document.getElementById("addFieldRow").addEventListener("click", addFieldRow);
         document.getElementById("addFilterSection").addEventListener("click", addFilterSection);
     });

@@ -16,12 +16,16 @@ schema_models = [
     models.Country,
     models.PersonAddress,
     models.Grant,
+    models.Student,
 ]
 
 friendly_names = {
     'person.organisations_primary_contact': 'Organisations (by primary contact)',
     'organisation.contacts_primary_org': 'People (by primary org.)',
     'organisation.contacts_other_org': 'People (by other org.)',
+    'person.student_info': 'Student info',
+    'person.students_supervising': 'Students supervising',
+    'award.scholarship_recipient': 'Scholarship recipient',
 }
 
 field_type_map = {
