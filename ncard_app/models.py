@@ -49,37 +49,41 @@ class Person(models.Model):
         YES = 1, 'Yes'
         STUDENT = 2, 'Yes - student'
 
+    class Clinician(models.IntegerChoices):
+        NO = 0, 'No'
+        YES = 1, 'Yes'
+
     title = models.CharField(max_length=16, blank=True)
-    given_name = models.CharField(max_length=64)
-    middle_name = models.CharField(max_length=64, blank=True)
-    surname = models.CharField(max_length=64, blank=True)
+    given_name = models.CharField('Given Name',max_length=64)
+    middle_name = models.CharField('Middle Name',max_length=64, blank=True)
+    surname = models.CharField('Last Name', max_length=64, blank=True)
     surname_first = models.BooleanField(default=False)
     auth_user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='person')
-    email = models.EmailField('email', blank=True)
-    email2 = models.EmailField('email 2', blank=True)
-    phone_office = models.CharField('phone (office)', max_length=25, blank=True, validators=[phone_validator])
-    phone_mobile = models.CharField('phone (mobile)', max_length=25, blank=True, validators=[phone_validator])
-    phone_home = models.CharField('phone (home)', max_length=25, blank=True, validators=[phone_validator])
-    cre_role = models.CharField('CRE role', max_length=15, blank=True)
+    email = models.EmailField('Primary Email', blank=True)
+    email2 = models.EmailField('Secondary Email', blank=True)
+    phone_office = models.CharField('phone (Office)', max_length=25, blank=True, validators=[phone_validator])
+    phone_mobile = models.CharField('phone (Mobile)', max_length=25, blank=True, validators=[phone_validator])
+    phone_home = models.CharField('phone (Home)', max_length=25, blank=True, validators=[phone_validator])
+    cre_role = models.CharField('CRE Role', max_length=15, blank=True)
     ncard_relation = models.IntegerField('relationship with NCARD', choices=NCARDRelation.choices, default=NCARDRelation.OTHER)
     project = models.CharField(max_length=50, blank=True)
     display_on_website = models.IntegerField(choices=DisplayOnWebsite.choices, default=DisplayOnWebsite.NO)
-    profile_url = models.URLField('profile URL', blank=True)
+    profile_url = models.URLField('Profile URL', blank=True)
     orcid_id = models.CharField('ORCID iD', max_length=37, blank=True, validators=[orcid_validator])
     scopus_id = models.BigIntegerField('Scopus ID', null=True, blank=True, validators=[nonnegative_validator])
     wos_researcher_id = models.CharField('WoS ResearcherID', max_length=32, blank=True)
     google_scholar = models.URLField('Google Scholar', blank=True)
     researchgate = models.URLField('ResearchGate', blank=True)
-    loop_profile = models.URLField('Loop profile', blank=True)
-    linkedin = models.URLField('LinkedIn', blank=True)
-    twitter = models.CharField('Twitter handle', max_length=16, blank=True, validators=[twitter_validator])
+    loop_profile = models.URLField('Loop Profile', blank=True)
+    linkedin = models.URLField('LinkedIn (URL)', blank=True)
+    twitter = models.CharField('Twitter Handle (please include "@")', max_length=16, blank=True, validators=[twitter_validator])
     employers = models.ManyToManyField(Organisation, blank=True)
     location = models.CharField(max_length=50, blank=True)
-    organisation_primary = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contact_records_primary', verbose_name='organisation (primary)')
-    organisation_other = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contact_records_other', verbose_name='organisation (other)')
-    clinician = models.BooleanField(default=False)
+    organisation_primary = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contact_records_primary', verbose_name='Organisation (Primary)')
+    organisation_other = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contact_records_other', verbose_name='Organisation (Other)')
+    clinician = models.IntegerField(choices=Clinician.choices, default=Clinician.NO)
     notes = models.TextField(blank=True)
-    research_focus = models.CharField(max_length=255, blank=True)
+    research_focus = models.CharField('Research Focus',max_length=255, blank=True)
 
     @property
     def full_name(self):

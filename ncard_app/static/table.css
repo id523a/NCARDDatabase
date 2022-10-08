@@ -7,14 +7,19 @@
 }
 
 #ncard_table th {
-    width: 200px;
-    
+    width: 180px;
+    color: #343a40;
+}
+
+#ncard_table td {
+    vertical-align: middle;
 }
 
 #ncard_table tr > * {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    align-self: center;
 }
 
 #ncard_table tr > :last-child {
@@ -24,3 +29,58 @@
     right: 0px;
     text-align: center;
 }
+
+.ncard-dark-green {
+    color: #009070;
+}
+
+.ncard-light-green {
+    color: #A5D2C3;
+}
+
+.ncard-grad {
+    height: 10px;
+    background-color: #009070;
+    background-image: linear-gradient(to right,#009070, #A5D2C3);
+}
+
+ul.space_list li { 
+    margin-right: 1em;
+}
+
+.ncard_CTA {
+    height: 50px;
+    width: 150px;
+    position: relative;
+    font-size: large;
+    color: #009070;
+    border: 2px solid #009070;
+    background-color: white;
+}
+
+.ncard_CTA:hover {
+    background-color: #A5D2C3;
+    border: 2px solid #A5D2C3;
+    color: white;
+}
+
+.ncard_btn {
+    color: white;
+    background-color: #A5D2C3;
+}
+
+.ncard_btn:hover {
+    background-color: #009070;
+    color: white;
+    border: 1px solid #009070;
+}
+
+.ncard-current-page{
+    color: white; 
+    background-color: #009070;
+}
+
+.ncard-other-pages {
+    color: #343a40;
+}
+

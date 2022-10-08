@@ -3,14 +3,18 @@
 {% block title %}NCARD People{% endblock %}
 
 {% block content%}
+
     <div class="row mb-4">
         <div class="col-md-10">
-            <h1>People</h1>
+            <h1 class="ncard-dark-green">People</h1>
         </div>
         <div class="col-md-2">
-            <a href="{% url 'add-person' %}" class="btn btn-primary btn-lg" style="width: 100%;">Add</a>
+            <a href="{% url 'add-person' %}">
+              <button class="ncard_CTA">ADD</button>
+            </a>
         </div>
     </div>
+
     <div id="ncard_table">
         <table class="table table-striped">
             <thead>
@@ -25,36 +29,76 @@
                     <th scope="col">NCARD Relation</th>
                     <th scope="col">Project</th>
                     <th scope="col">LinkedIn</th>
+                    <th scope="col">Twitter</th>
                     <th scope="col">Location</th>
                     <th scope="col">Primary Organisation</th>
                     <th scope="col">Other Organisation</th>
-                    <th scope="col">Actions</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
-                {% for person in people_list %}
+                {% for person in people %}
                 <tr>
-                    <td class="" data-id="{{ person.id }}" data-type="title">{{ person.title }}</td>
-                    <td class="" data-id="{{ person.id }}" data-type="given_name">{{ person.given_name }}</td>
-                    <td class="" data-id="{{ person.id }}" data-type="middle_name">{{ person.middle_name }}</td>
-                    <td class="" data-id="{{ person.id }}" data-type="surname">{{ person.surname }}</td>
-                    <td class="" data-id="{{ person.id }}" data-type="email">{{ person.email }}</td>
-                    <td class="" data-id="{{ person.id }}" data-type="phone_office">{{ person.phone_office }}</td>
-                    <td class="" data-id="{{ person.id }}" data-type="phone_mobile">{{ person.phone_mobile }}</td>
-                    <td class="" data-id="{{ person.id }}" data-type="ncard_relation">{{ person.get_ncard_relation_display }}</td>
-                    <td class="" data-id="{{ person.id }}" data-type="project">{{ person.project }}</td>
-                    <td class="" data-id="{{ person.id }}" data-type="linkedin">{{ person.linkedin }}</td>
-                    <td class="" data-id="{{ person.id }}" data-type="location">{{ person.location }}</td>
-                    <td class="" data-id="{{ person.id }}" data-type="organisation_primary">{{ person.organisation_primary }}</td>
-                    <td class="" data-id="{{ person.id }}" data-type="organisation_other">{{ person.organisation_other }}</td>
+                    <td data-id="{{ person.id }}" data-type="title">{{ person.title }}</td>
+                    <td data-id="{{ person.id }}" data-type="given_name">{{ person.given_name }}</td>
+                    <td data-id="{{ person.id }}" data-type="middle_name">{{ person.middle_name }}</td>
+                    <td data-id="{{ person.id }}" data-type="surname">{{ person.surname }}</td>
+                    <td data-id="{{ person.id }}" data-type="email">{{ person.email }}</td>
+                    <td data-id="{{ person.id }}" data-type="phone_office">{{ person.phone_office }}</td>
+                    <td data-id="{{ person.id }}" data-type="phone_mobile">{{ person.phone_mobile }}</td>
+                    <td data-id="{{ person.id }}" data-type="ncard_relation">{{ person.get_ncard_relation_display }}</td>
+                    <td data-id="{{ person.id }}" data-type="project">{{ person.project }}</td>
+                    <td data-id="{{ person.id }}" data-type="linkedin">{{ person.linkedin }}</td>
+                    <td data-id="{{ person.id }}" data-type="twitter">{{ person.twitter }}</td>
+                    <td data-id="{{ person.id }}" data-type="location">{{ person.location }}</td>
+                    <td data-id="{{ person.id }}" data-type="organisation_primary">{{ person.organisation_primary }}</td>
+                    <td data-id="{{ person.id }}" data-type="organisation_other">{{ person.organisation_other }}</td>
                     <td>
-                        <a href="{% url 'edit-person' person.id %}" class="btn btn-primary btn-sm" style="min-width: 60px;">Edit</a>
+                        <a href="{% url 'edit-person' person.id %}" class="btn btn-sm ncard_btn">Edit</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    <br>
+{% if people.has_other_pages %}
+    <nav>
+      <ul class="pagination justify-content-center">
+        {% if people.has_previous %}
+          <li class="page-item">
+            <a class="page-link ncard-dark-green" href="?page={{ people.previous_page_number }}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+              <span class="page-link" aria-hidden="true">&laquo;</span>
+          </li>
+        {% endif %}
+
+        {% for p in people.paginator.page_range %}
+          {% if people.number == p %}
+            <li class="page-item"><a class="page-link ncard-current-page" href="#">{{ p }}</a></li>
+          {% else %}
+            <li class="page-item"><a class="page-link ncard-other-pages" href="?page={{ p }}">{{ p }}</a></li>
+          {% endif %}
+        {% endfor %}
+
+        {% if people.has_next %}
+          <li class="page-item">
+            <a class="page-link ncard-dark-green" href="?page={{ people.next_page_number }}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link" aria-hidden="true">&raquo;</span>
+          </li>
+        {% endif %}
+        </ul>
+    </nav>
+{% endif %}
 
 {% endblock %}
 
