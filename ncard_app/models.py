@@ -274,3 +274,23 @@ class GrantInvestigator(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['grant', 'investigator'], name='grantinvestigator_unique')
         ]
+
+
+class Students(models.Model): 
+    class StudentTypes(models.IntegerChoices):
+        HONS = 1, 'Honours'
+        PHD = 2, 'Phd'
+
+    student_name = models.OneToOneField(Person, on_delete=models.CASCADE, related_name = 'person')
+    student_type = models.IntegerField('student type', choices= StudentTypes.choices)
+    supervisor = models.ManyToManyField(Person, blank=True)
+    title_topic = models.TextField('title topic', blank=True)
+    year_start = models.PositiveSmallIntegerField('year start',blank=True,null=True)
+    year_end = models.PositiveSmallIntegerField('year end',blank=True,null=True)
+    scholarship = models.OneToOneField(Award, on_delete=models.SET_NULL, null=True, blank=True, related_name='award')
+
+    def __str__(self):
+        return self.student_name
+    
+    class Meta:
+        ordering = ['student_name']
