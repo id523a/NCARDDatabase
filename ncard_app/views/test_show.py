@@ -74,7 +74,7 @@ def person_list(request):
 
 import django_filters
 class PersonFilter(django_filters.FilterSet):
-    # name = django_filters.CharFilter(lookup_expr='iexact')
+
     given_name= django_filters.CharFilter(lookup_expr='icontains',label="given_name")
     class Meta:
         model = models.Person
