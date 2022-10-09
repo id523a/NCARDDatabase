@@ -15,4 +15,3 @@ class AwardForm(ModelForm):
         self.prefix = "award"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-

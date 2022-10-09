@@ -29,3 +29,16 @@ class OrganisationUpdateView(UpdateView):
     form_class = forms.OrganisationForm
     def get_success_url(self):
         return reverse('list-organisations')
+
+class AwardCreateView(CreateView):
+    template_name = 'detail_views/add_award.html'
+    form_class = forms.AwardForm
+    def get_success_url(self):
+        return reverse('list-awards')
+
+class AwardUpdateView(UpdateView):
+    template_name = 'detail_views/edit_award.html'
+    model = models.Award
+    form_class = forms.AwardForm
+    def get_success_url(self):
+        return reverse('list-awards')

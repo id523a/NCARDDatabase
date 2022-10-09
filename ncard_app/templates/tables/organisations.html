@@ -29,7 +29,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for organisation in organisations_list %}
+                {% for organisation in organisations %}
                 <tr>
                     <td data-type="name">{{ organisation.name }}</td>
                     <td data-type="primary_contact">{{ organisation.primary_contact }}</td>
@@ -47,12 +47,12 @@
     </div>
     <br>
 
-    {% if organisation.has_other_pages %}
+    {% if organisations.has_other_pages %}
     <nav>
       <ul class="pagination justify-content-center">
-        {% if organisation.has_previous %}
+        {% if organisations.has_previous %}
           <li class="page-item">
-            <a class="page-link ncard-dark-green" href="?page={{ organisation.previous_page_number }}" aria-label="Previous">
+            <a class="page-link ncard-dark-green" href="?page={{ organisations.previous_page_number }}" aria-label="Previous">
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
@@ -62,17 +62,17 @@
           </li>
         {% endif %}
 
-        {% for p in organisation.paginator.page_range %}
-          {% if organisation.number == p %}
+        {% for p in organisations.paginator.page_range %}
+          {% if organisations.number == p %}
             <li class="page-item"><a class="page-link ncard-current-page" href="#">{{ p }}</a></li>
           {% else %}
             <li class="page-item"><a class="page-link ncard-other-pages" href="?page={{ p }}">{{ p }}</a></li>
           {% endif %}
         {% endfor %}
 
-        {% if organisation.has_next %}
+        {% if organisations.has_next %}
           <li class="page-item">
-            <a class="page-link ncard-dark-green" href="?page={{ organisation.next_page_number }}" aria-label="Next">
+            <a class="page-link ncard-dark-green" href="?page={{ organisations.next_page_number }}" aria-label="Next">
               <span aria-hidden="true">&raquo;</span>
             </a>
           </li>
