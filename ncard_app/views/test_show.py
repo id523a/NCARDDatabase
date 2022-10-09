@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from ncard_app.models import Award
 from django.contrib import messages
+from ncard_app import models
 
 def test_show(request):
     if request.method == "GET":
@@ -47,3 +48,48 @@ def test_show(request):
         data=data.filter(recipients__surname__icontains=surname)
 
     return render(request, "test01.html", {"n1":data})
+
+
+import django_tables2 as tables
+
+
+class PersonTable(tables.Table):
+    class Meta:
+        model = models.Person
+        # fields=('given_name',)
+        attrs = {"class": "table table-striped"}
+
+
+
+from django_filters.views import FilterView
+from django_tables2.views import SingleTableMixin
+
+# views.py
+def person_list(request):
+    table = PersonTable(models.Person.objects.all())
+
+    return render(request, "searchBar/person_list.html", {
+        "table": table
+    })
+
+import django_filters
+class PersonFilter(django_filters.FilterSet):
+    # name = django_filters.CharFilter(lookup_expr='iexact')
+    given_name= django_filters.CharFilter(lookup_expr='icontains',label="given_name")
+    class Meta:
+        model = models.Person
+        fields = {
+            # 'given_name':['icontains',]
+                  }
+
+class FilteredPersonListView(SingleTableMixin, FilterView):
+    filter=None
+    table_class = PersonTable
+    model = models.Person
+    template_name = "searchBar/person_list.html"
+    filterset_class = PersonFilter
+
+    def get_queryset(self, **kwargs):
+        qs = models.Person.objects.all().order_by('id')
+        self.filter = self.filterset_class(self.request.GET, queryset=qs)
+        return self.filter.qs

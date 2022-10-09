@@ -8,7 +8,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name="dashboard"),
     path('login_user/', auth_views.LoginView.as_view(), name="login"),
     path('logout_user/', auth_views.logout_then_login, name="logout"),
-    path("test/show/",views.test_show,name='fuzzy'),
+    path("test/show/",views.FilteredPersonListView.as_view(),name='fuzzy'),
 
     path('tables/people/', views.list_people, name="list-people"),
     path('tables/people/add/', login_required(views.PersonCreateView.as_view()), name="add-person"),
@@ -25,4 +25,6 @@ urlpatterns = [
     path('predefined/phonebook', login_required(views.PhoneBook.as_view()), name="phone_book"),
     path('query/', views.custom_query, name="custom-query"),
     path('query/schema.json', views.custom_query_schema, name="custom-query-schema"),
+
+
 ]
