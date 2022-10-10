@@ -1,13 +1,27 @@
 {% extends 'events/base.html' %}
+{% load render_table from django_tables2 %}
+{% load bootstrap5 %}
+{% load crispy_forms_tags %}
+
 
 {% block title %}People | NCARD Table{% endblock %}
 
 {% block content%}
-
-    <div class="row mb-4">
-        <div class="col-md-10">
+<div class="col-md-8">
             <h1 class="ncard-dark-green">People</h1>
+</div>
+
+<div class="row mb-4">
+
+    {% if filter %}
+        <div class="col-md-2">
+            <form action="" method="get" class="form form-inline">
+                {% bootstrap_form filter.form layout='inline'  %}
+{#            <button type="submit" class="ncard_CTA">Search</button>#}
+             </form>
         </div>
+    {% endif %}
+        <div class="col-md-8"></div>
         <div class="col-md-2">
             <a href="{% url 'add-person' %}">
               <button class="ncard_CTA">ADD</button>
@@ -15,93 +29,9 @@
         </div>
     </div>
 
-    <div id="ncard_table">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Title</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Last Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Office Number</th>
-                    <th scope="col">Mobile Number</th>
-                    <th scope="col">NCARD Relation</th>
-                    <th scope="col">Project</th>
-                    <th scope="col">LinkedIn</th>
-                    <th scope="col">Twitter</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">Primary Organisation</th>
-                    <th scope="col">Other Organisation</th>
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for person in people %}
-                <tr>
-                    <td data-type="title">{{ person.title }}</td>
-                    <td data-type="given_name">{{ person.given_name }}</td>
-                    <td data-type="surname">{{ person.surname }}</td>
-                    <td data-type="email">{{ person.email }}</td>
-                    <td data-type="phone_office">{{ person.phone_office }}</td>
-                    <td data-type="phone_mobile">{{ person.phone_mobile }}</td>
-                    <td data-type="ncard_relation">{{ person.get_ncard_relation_display }}</td>
-                    <td data-type="project">{{ person.project }}</td>
-                    <td data-type="linkedin">{{ person.linkedin }}</td>
-                    <td data-type="twitter">{{ person.twitter }}</td>
-                    <td data-type="location">{{ person.location }}</td>
-                    <td data-type="organisation_primary">{{ person.organisation_primary }}</td>
-                    <td data-type="organisation_other">{{ person.organisation_other }}</td>
-                    <td>
-                        <a href="{% url 'edit-person' person.id %}" class="btn btn-sm ncard_btn">Edit</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <br>
-{% if people.has_other_pages %}
-    <nav>
-      <ul class="pagination justify-content-center">
-        {% if people.has_previous %}
-          <li class="page-item">
-            <a class="page-link ncard-dark-green" href="?page={{ people.previous_page_number }}" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-        {% else %}
-          <li class="page-item disabled">
-              <span class="page-link" aria-hidden="true">&laquo;</span>
-          </li>
-        {% endif %}
 
-        {% for p in people.paginator.page_range %}
-          {% if people.number == p %}
-            <li class="page-item"><a class="page-link ncard-current-page" href="#">{{ p }}</a></li>
-          {% else %}
-            <li class="page-item"><a class="page-link ncard-other-pages" href="?page={{ p }}">{{ p }}</a></li>
-          {% endif %}
-        {% endfor %}
-
-        {% if people.has_next %}
-          <li class="page-item">
-            <a class="page-link ncard-dark-green" href="?page={{ people.next_page_number }}" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        {% else %}
-          <li class="page-item disabled">
-            <span class="page-link" aria-hidden="true">&raquo;</span>
-          </li>
-        {% endif %}
-        </ul>
-    </nav>
-{% endif %}
+<div id="ncard_table">
+     {% render_table table 'django_tables2/bootstrap4.html' %}
+</div>
 
 {% endblock %}
-
-{% block custom_js %}
-
-    <script src="/static/table_edit.js"></script>
-
-{% endblock custom_js %}

@@ -99,7 +99,7 @@ class FilteredPersonListView(SingleTableMixin, FilterView):
     filter = None
     table_class = PersonTable
     model = models.Person
-    template_name = "searchBar/person_list.html"
+    template_name = "tables/people.html"
     filterset_class = PersonFilter
     paginator_class = LazyPaginator
     paginate_by = 10

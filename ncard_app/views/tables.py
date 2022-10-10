@@ -18,7 +18,7 @@ def list_people(request):
     context = {
         'people': people,
     }
-    return render(request, 'tables/people.html', context)
+    return render(request, 'searchBar/person_list.html', context)
 
 @login_required
 def list_organisations(request):

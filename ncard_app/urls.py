@@ -8,9 +8,9 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name="dashboard"),
     path('login_user/', auth_views.LoginView.as_view(), name="login"),
     path('logout_user/', auth_views.logout_then_login, name="logout"),
-    path("test/show/",views.FilteredPersonListView.as_view(),name='fuzzy'),
+    path("test/show/",views.list_people,name='fuzzy'),
 
-    path('tables/people/', views.list_people, name="list-people"),
+    path('tables/people/', views.FilteredPersonListView.as_view(), name="list-people"),
     path('tables/people/add/', login_required(views.PersonCreateView.as_view()), name="add-person"),
     path('tables/people/<int:pk>/', login_required(views.PersonUpdateView.as_view()), name="edit-person"),
 
