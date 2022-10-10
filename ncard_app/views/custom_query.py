@@ -2,7 +2,11 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.cache import cache_control
 import django.db.models.fields as django_fields
-from django.db.models import F
+from django.db.models import F, Q
+from django.core.exceptions import SuspiciousOperation
+
+import json
+
 from ncard_app import models
 from .decorators import login_required, api_login_required
 
@@ -86,3 +90,13 @@ def custom_query_schema(request):
 @login_required
 def custom_query(request):
     return render(request, 'custom_query.html')
+
+@api_login_required
+def custom_query_data(request):
+    if not request.method == 'POST':
+        raise SuspiciousOperation()
+    if len(request.body) > 16384:
+        raise SuspiciousOperation()
+    body = json.loads(request.body)
+
+    return JsonResponse(body)

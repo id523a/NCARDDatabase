@@ -72,6 +72,7 @@
         <select id="startingTableSelector" class="selectpicker form-control" data-live-search="true">
             <option value="" selected>Starting table...</option>
         </select>
+        {% csrf_token %}
     </div>
     <div id="querySettings" style="display:none;">
         <h2>Output Fields</h2>
@@ -294,6 +295,7 @@ function parseQuery() {
     };
 }
 
+const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 const schemaLocation = "{% url 'custom-query-schema' %}";
 window.addEventListener('load', (event) => {
     fetch(schemaLocation)
@@ -310,8 +312,20 @@ window.addEventListener('load', (event) => {
         $(startingTableSelector).selectpicker("refresh");
         document.getElementById("addFieldRow").addEventListener("click", addFieldRow);
         document.getElementById("addFilterSection").addEventListener("click", addFilterSection);
-        document.getElementById("runQueryButton").addEventListener("click", function (e) {
-            document.getElementById("queryResult").innerText = JSON.stringify(parseQuery());
+        document.getElementById("runQueryButton").addEventListener("click", (e) => {
+            fetch("{% url 'custom-query-data' %}", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(parseQuery())
+            })
+            .then((responseObj) => responseObj.text())
+            .then((response) => {
+                document.getElementById("queryResult").innerText = response;
+            });
         });
     });
 });
