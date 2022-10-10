@@ -89,11 +89,9 @@ class PersonFilter(django_filters.FilterSet):
 
     def universal_search(self, queryset, name, value):
         return models.Person.objects.all().filter(
-<<<<<<< HEAD
-            Q(phone_home__icontains=value) | Q(given_name__icontains=value) | Q(title__icontains=value) | Q(organisation_primary__name__icontains=value)
-=======
+
             Q(surname__icontains=value) | Q(given_name__icontains=value) | Q(title__icontains=value) | Q(organisation_primary__name__icontains=value)
->>>>>>> 680c8c4caaf8060aeddfeab01247620e9613a663
+
         )
 
 
