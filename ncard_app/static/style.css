@@ -11,6 +11,10 @@
     color: #343a40;
 }
 
+.col-350 {
+    width: 350px;
+}
+
 #ncard_table td {
     vertical-align: middle;
 }

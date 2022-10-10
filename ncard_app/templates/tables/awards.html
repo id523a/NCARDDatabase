@@ -19,28 +19,28 @@
         <table class="table table-striped ">
             <thead>
                 <tr>
-                    <th scope="col">Agency</th>
+                    <th style="width: 300px;" scope="col">Name</th>
                     <th scope="col">Award Type</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Recipients</th>
+                    <th style="width: 300px;" scope="col">Agency</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Established in</th>
-                    <th scope="col">Number of Years</th>
+                    <th scope="col">Recipients</th>
+                    <th scope="col">Year Established</th>
+                    <th scope="col">Concurrent Years</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for award in awards %}
                 <tr>
-                    <td data-type="agency">{{ award.agency }}</td>
+                    <td data-type="agency">{{ award.name }}</td>
                     <td data-type="award_type">{{ award.get_award_type_display }}</td>
-                    <td data-type="name">{{ award.name }}</td>
+                    <td data-type="name">{{ award.agency }}</td>
+                    <td data-type="status">{{ award.get_status_display }}</td>
                     <td data-type="recipients">
                       {% for recipient in award.recipients.all %}
-                        {{ recipient.full_name }} &
+                        {{ recipient.full_name }},
                       {% endfor %}
                     </td>
-                    <td data-type="status">{{ award.get_status_display }}</td>
                     <td data-type="year">{{ award.year }}</td>
                     <td data-type="no_year">{{ award.no_year }}</td>
                     <td>

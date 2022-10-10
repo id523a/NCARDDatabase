@@ -4,12 +4,29 @@
 {% block title %}Login{% endblock %}
 
 {% block content%}
-    <h1>Login</h1>
-    <br>
-    <form action="{% url 'login' %}" method=POST>
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">Login</button>
-        <input type="hidden" name="next" value="{{ next }}">
-    </form>
+
+<div class="container py-5 h-100 ncard-grad">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="card-body p-5 text-center text-white">
+                <div class="mb-md-5 mt-md-4 pb-5">
+    
+                    <h2 class="mb-2">Login</h2>
+                    <p class="mb-5">Please enter your username and password</p>
+    
+                    <form action="{% url 'login' %}" method=POST>
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <br>
+                        <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
+                        <input type="hidden" name="next" value="{{ next }}">
+                    </form>
+    
+                </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

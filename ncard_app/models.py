@@ -142,10 +142,10 @@ class Award(models.Model):
     agency = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='awards')
     name = models.CharField('name', max_length=255)
     recipients = models.ManyToManyField(Person, related_name='awards')
-    status = models.IntegerField('award status', choices=AwardStatus.choices, default=AwardStatus.AWARDEE)
-    detail = models.TextField('detail', blank=True)
-    year = models.PositiveSmallIntegerField('year')
-    no_year = models.DecimalField(verbose_name="Noyear",default=1.0, max_digits=10, decimal_places=1, null=True, blank=True)
+    status = models.IntegerField('award Status', choices=AwardStatus.choices, default=AwardStatus.AWARDEE)
+    detail = models.TextField('details', blank=True)
+    year = models.PositiveSmallIntegerField('year Established')
+    no_year = models.DecimalField(verbose_name="Concurrent Years",default=1.0, max_digits=10, decimal_places=0, null=True, blank=True)
     notes = models.TextField(blank=True)
     link = models.URLField(blank=True)
 
@@ -169,7 +169,7 @@ class Event(models.Model):
     date = models.DateField('date')
     number_attendees = models.IntegerField('number of attendees')
     title = models.CharField('title', max_length=255, blank=True)
-    detail = models.TextField('detail')
+    detail = models.TextField('details')
     lead_organisation = models.ForeignKey(Organisation, on_delete=models.SET_NULL, blank=True, null=True, related_name='events')
     lead_contacts = models.ManyToManyField(Person, blank=True, related_name='events')
     # The participants field is deliberately not ManyToManyField(Person). This allows for the free-form participation info seen in the existing spreadsheet.
