@@ -38,18 +38,5 @@ class EventForm(ModelForm):
             Row(Field('lead_contacts', css_class='selectpicker form-control row', data_live_search='true')),
             Row('detail', css_class='row'),
             Row('participants', css_class='row'),
-            # Row(
-            #     Column('status', css_class='col-md-2 mb-0'),
-            #     Column(
-            #         Field('recipients', css_class='selectpicker form-control col-md-10 mb-0', data_live_search='true')),
-            #     css_class='row'
-            # ),
-            # Row(
-            #     Column('year', css_class='col-md-2 mb-0'),
-            #     Column('no_year', css_class='col-md-2 mb-0'),
-            #     Column('link', css_class='col-md-8 mb-0'),
-            #     css_class='row'
-            # ),
-            # Row('detail', css_class='row'),
-            # Row('notes', css_class='row'),
+
         )
