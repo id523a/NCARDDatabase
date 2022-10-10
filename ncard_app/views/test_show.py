@@ -90,7 +90,7 @@ class PersonFilter(django_filters.FilterSet):
     def universal_search(self, queryset, name, value):
         return models.Person.objects.all().filter(
 
-            Q(surname__icontains=value) | Q(given_name__icontains=value) | Q(title__icontains=value) | Q(organisation_primary__name__icontains=value)
+            Q(surname__icontains=value) | Q(given_name__icontains=value) | Q(title__icontains=value) | Q(organisation_primary__name__icontains=value) |Q(project__icontains=value )
 
         )
 
