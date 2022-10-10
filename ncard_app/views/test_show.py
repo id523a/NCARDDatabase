@@ -99,8 +99,9 @@ class FilteredPersonListView(SingleTableMixin, FilterView):
     model = models.Person
     template_name = "searchBar/person_list.html"
     filterset_class = PersonFilter
-    paginate_by = 10
     paginator_class = LazyPaginator
+    paginate_by = 10
+
 
     def get_queryset(self, **kwargs):
         qs = models.Person.objects.all().order_by('id')
