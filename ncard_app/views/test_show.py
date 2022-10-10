@@ -1,7 +1,14 @@
+from django.db.models import Q
 from django.shortcuts import render, redirect
+from django.urls import reverse, reverse_lazy
+from django.utils.safestring import mark_safe
+from django_tables2 import LazyPaginator
+from django_tables2.utils import A
+
 from ncard_app.models import Award
 from django.contrib import messages
 from ncard_app import models
+
 
 def test_show(request):
     if request.method == "GET":
@@ -11,12 +18,11 @@ def test_show(request):
     agency = request.POST.get("agency")
     name = request.POST.get("name")
     status = request.POST.get("status")
-    start_date=request.POST.get("startDate")
-    end_date=request.POST.get("endDate")
+    start_date = request.POST.get("startDate")
+    end_date = request.POST.get("endDate")
     given_name = request.POST.get("givenName")
-    surname=request.POST.get("surname")
-    noYear=request.POST.get("noYear")
-
+    surname = request.POST.get("surname")
+    noYear = request.POST.get("noYear")
 
     search_dict = dict()
 
@@ -26,69 +32,74 @@ def test_show(request):
         search_dict["type"] = type
 
     if status:
-       search_dict["status"] = status
-
+        search_dict["status"] = status
 
     data = Award.objects.filter(**search_dict)
     # print(data)
 
     if name:
-        data=data.filter(name__icontains=name)
+        data = data.filter(name__icontains=name)
     if agency:
-        data=data.filter(agency__name__icontains=agency)
+        data = data.filter(agency__name__icontains=agency)
     if start_date:
         data = data.filter(year__gte=start_date)
     if end_date:
-        data=data.filter(year__lt=end_date)
-        
+        data = data.filter(year__lt=end_date)
 
     if given_name:
-        data=data.filter(recipients__given_name__icontains=given_name)
+        data = data.filter(recipients__given_name__icontains=given_name)
     if surname:
-        data=data.filter(recipients__surname__icontains=surname)
+        data = data.filter(recipients__surname__icontains=surname)
 
-    return render(request, "test01.html", {"n1":data})
+    return render(request, "test01.html", {"n1": data})
 
 
 import django_tables2 as tables
 
 
 class PersonTable(tables.Table):
+    edit = tables.Column('Action',
+                         orderable=False, empty_values=(), )
+
     class Meta:
         model = models.Person
         # fields=('given_name','title')
-        attrs = {"class": "table table-striped"}
+        exclude = ('id', 'surname_first', 'auth_user')
+        attrs = {"class": "table table-striped", "th": {"scope": "col"}}
 
-
+    def render_edit(self, record):
+        return mark_safe(
+            '<a href=' + reverse_lazy("edit-person", args=[record.pk]) + ' class="btn btn-sm ncard_btn">Edit</a>')
 
 
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 
-# views.py
-def person_list(request):
-    table = PersonTable(models.Person.objects.all())
-
-    return render(request, "searchBar/person_list.html", {
-        "table": table
-    })
-
 import django_filters
-class PersonFilter(django_filters.FilterSet):
 
-    given_name= django_filters.CharFilter(lookup_expr='icontains',label="given_name")
+
+class PersonFilter(django_filters.FilterSet):
+    query = django_filters.CharFilter(method='universal_search', label="query")
+
     class Meta:
         model = models.Person
         fields = {
             # 'given_name':['icontains',]
-                  }
+        }
+
+    def universal_search(self, queryset, name, value):
+        return models.Person.objects.all().filter(
+            Q(phone_home__icontains=value) | Q(given_name__icontains=value) | Q(title__icontains=value)
+        )
+
 
 class FilteredPersonListView(SingleTableMixin, FilterView):
-    filter=None
+    filter = None
     table_class = PersonTable
     model = models.Person
     template_name = "searchBar/person_list.html"
     filterset_class = PersonFilter
+    paginate_by = 10
 
     def get_queryset(self, **kwargs):
         qs = models.Person.objects.all().order_by('id')
