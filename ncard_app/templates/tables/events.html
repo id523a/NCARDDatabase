@@ -2,11 +2,12 @@
 {% load render_table from django_tables2 %}
 {% load bootstrap5 %}
 {% load crispy_forms_tags %}
-{% block title %}Awards | NCARD Table{% endblock %}
+
+{% block title %}Events | NCARD Table{% endblock %}
 
 {% block content%}
 <div class="col-md-8">
-            <h1 class="ncard-dark-green">Awards</h1>
+            <h1 class="ncard-dark-green">Events</h1>
 </div>
 
 <div class="row mb-4">
@@ -21,7 +22,7 @@
     {% endif %}
         <div class="col-md-8"></div>
         <div class="col-md-2">
-            <a href="{% url 'add-award' %}">
+            <a href="{% url 'add-events' %}">
               <button class="ncard_CTA">ADD</button>
             </a>
         </div>

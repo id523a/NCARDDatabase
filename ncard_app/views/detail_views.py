@@ -42,3 +42,17 @@ class AwardUpdateView(UpdateView):
     form_class = forms.AwardForm
     def get_success_url(self):
         return reverse('list-awards')
+
+
+class EventCreateView(CreateView):
+    template_name = 'detail_views/add_event.html'
+    form_class = forms.EventForm
+    def get_success_url(self):
+        return reverse('list-events')
+
+class EventUpdateView(UpdateView):
+    template_name = 'detail_views/edit_event.html'
+    model = models.Event
+    form_class = forms.EventForm
+    def get_success_url(self):
+        return reverse('list-events')

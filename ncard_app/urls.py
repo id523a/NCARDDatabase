@@ -14,13 +14,17 @@ urlpatterns = [
     path('tables/people/add/', login_required(views.PersonCreateView.as_view()), name="add-person"),
     path('tables/people/<int:pk>/', login_required(views.PersonUpdateView.as_view()), name="edit-person"),
 
-    path('tables/organisations/', views.list_organisations, name="list-organisations"),
+    path('tables/organisations/', views.FilteredOrganisationListView.as_view(), name="list-organisations"),
     path('tables/organisations/add/', login_required(views.OrganisationCreateView.as_view()), name="add-organisation"),
     path('tables/organisations/<int:pk>/', login_required(views.OrganisationUpdateView.as_view()), name="edit-organisation"),
 
-    path('tables/awards/', views.list_awards, name="list-awards"),
+    path('tables/awards/', views.FilteredAwardListView.as_view(), name="list-awards"),
     path('tables/awards/add/', login_required(views.AwardCreateView.as_view()), name="add-award"),
     path('tables/awards/<int:pk>/', login_required(views.AwardUpdateView.as_view()), name="edit-award"),
+
+    path('tables/events/', views.FilteredEventsListView.as_view(), name="list-events"),
+    path('tables/events/add/', login_required(views.EventCreateView.as_view()), name="add-events"),
+    path('tables/events/<int:pk>/', login_required(views.EventUpdateView.as_view()), name="edit-events"),
 
     path('predefined/phonebook', login_required(views.PhoneBook.as_view()), name="phone_book"),
     path('query/', views.custom_query, name="custom-query"),
