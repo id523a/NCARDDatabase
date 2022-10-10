@@ -89,7 +89,8 @@
 
 {% block custom_js %}
 <script>
-let schema = null;
+let schemaMeta = null;
+let schemaFields = null;
 let selectedModel = null;
 
 function fieldSelectHandler(selectorContainer, selector, onChange) {
@@ -99,7 +100,7 @@ function fieldSelectHandler(selectorContainer, selector, onChange) {
         }
         const selectedOption = selector.options[selector.selectedIndex];
         const selectedFieldType = selectedOption.dataset.fieldType;
-        if (schema.hasOwnProperty(selectedFieldType)) {
+        if (schemaFields.hasOwnProperty(selectedFieldType)) {
             createFieldSelect(selectorContainer.parentNode, selectedFieldType, onChange);
         }
         onChange();
@@ -147,10 +148,10 @@ function createFieldSelect(parent, modelName, onChange) {
     selector.addEventListener("change", fieldSelectHandler(selectorContainer, selector, onChange));
     selectorContainer.appendChild(selector);
     
-    const defaultOption = createOption(selector, "", "Query " + modelName + "...");
+    const defaultOption = createOption(selector, "", "Query " + schemaMeta[modelName].singular + "...");
     defaultOption.dataset.fieldType = "";
     defaultOption.selected = "selected";
-    for (const field of schema[modelName]) {
+    for (const field of schemaFields[modelName]) {
         const newOption = createOption(selector, field.name, field.label);
         newOption.dataset.fieldType = field.type;
     }
@@ -301,12 +302,14 @@ window.addEventListener('load', (event) => {
     fetch(schemaLocation)
     .then((response) => response.json())
     .then((loadedSchema) => {
-        schema = loadedSchema;
+        schemaMeta = loadedSchema.meta;
+        schemaFields = loadedSchema.fields;
         const startingTableSelector = document.getElementById("startingTableSelector");
-        for (const modelName in schema) {
-            // TODO: Use plural verbose name of model as its label
-            const option = createOption(startingTableSelector, modelName, modelName);
-            option.dataset.tokens = modelName
+        for (const model in schemaMeta) {
+            if (!schemaMeta[model].hide) {
+                const option = createOption(startingTableSelector, model, schemaMeta[model].plural);
+                option.dataset.tokens = model;
+            }
         }
         startingTableSelector.addEventListener("change", selectStartingModel);
         $(startingTableSelector).selectpicker("refresh");
