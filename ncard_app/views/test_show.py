@@ -56,8 +56,9 @@ import django_tables2 as tables
 class PersonTable(tables.Table):
     class Meta:
         model = models.Person
-        # fields=('given_name',)
+        # fields=('given_name','title')
         attrs = {"class": "table table-striped"}
+
 
 
 
