@@ -1,14 +1,28 @@
 from django.contrib import admin
 from ncard_app import models
+from import_export.admin import ImportExportModelAdmin
 
-admin.site.register(models.Person)
-admin.site.register(models.Organisation)
-admin.site.register(models.Project)
-admin.site.register(models.Award)
-admin.site.register(models.Event)
-admin.site.register(models.Publication)
+class PersonAdmin(ImportExportModelAdmin):
+    pass
+admin.site.register(models.Person, PersonAdmin)
+
+class ProjectAdmin(ImportExportModelAdmin):
+    pass
+admin.site.register(models.Project, ProjectAdmin)
+
+class AwardAdmin(ImportExportModelAdmin):
+    pass
+admin.site.register(models.Award, AwardAdmin)
+
+class EventAdmin(ImportExportModelAdmin):
+    pass
+admin.site.register(models.Event, EventAdmin)
+
+class PublicationAdmin(ImportExportModelAdmin):
+    pass
+admin.site.register(models.Publication, PublicationAdmin)
+
 admin.site.register(models.Country)
-admin.site.register(models.PersonAddress)
 
 class GrantInvestigatorInline(admin.TabularInline):
     model = models.GrantInvestigator
@@ -22,3 +36,10 @@ class GrantAdmin(admin.ModelAdmin):
     exclude = ['investigators']
 
 admin.site.register(models.Grant, GrantAdmin)
+
+class OrganisationAdmin(ImportExportModelAdmin):
+    list_display = ("name","primary_contact","phone","website","twitter_handle","organisation_type")
+    pass
+
+admin.site.register(models.Organisation, OrganisationAdmin)
+

@@ -23,9 +23,9 @@ class Organisation(models.Model):
 
     name = models.CharField('name', max_length=255)
     primary_contact = models.ForeignKey('ncard_app.Person', on_delete=models.RESTRICT, null=True, blank=True, related_name='organisations_primary_contact')
-    phone = models.CharField('phone', max_length=25, blank=True, validators=[phone_validator])
-    website = models.URLField('website', blank=True)
-    twitter_handle = models.CharField('Twitter handle', max_length=16, blank=True, validators=[twitter_validator])
+    phone = models.CharField('phone', max_length=25, blank=True, null=True, validators=[phone_validator])
+    website = models.URLField('website', blank=True, null=True)
+    twitter_handle = models.CharField('Twitter handle', max_length=16, blank=True, null=True, validators=[twitter_validator])
     organisation_type = models.IntegerField('type', choices=OrganisationType.choices, default=OrganisationType.NONE)
 
     def __str__(self):
@@ -33,6 +33,7 @@ class Organisation(models.Model):
 
     class Meta:
         ordering = ['name']
+        db_table = "Organisation"
 
 class Person(models.Model):
     class NCARDRelation(models.IntegerChoices):
@@ -102,6 +103,7 @@ class Person(models.Model):
             models.Index(fields=['surname']),
             models.Index(fields=['given_name'])
         ]
+        db_table = "Person"
 
 class Project(models.Model):
     class ProjectStatus(models.IntegerChoices):
@@ -123,6 +125,8 @@ class Project(models.Model):
         indexes = [
             models.Index(fields=['name'])
         ]
+
+        db_table = "Project"
 
 class Award(models.Model):
     class AwardType(models.IntegerChoices):
@@ -150,6 +154,7 @@ class Award(models.Model):
 
     class Meta:
         ordering = ['-year']
+        db_table = "Award"
 
 # The Biography table is not a high priority at the moment, and it is complicated to support thanks to the attachment column.
 # class Biography(models.Model):
@@ -179,6 +184,7 @@ class Event(models.Model):
 
     class Meta:
         ordering = ['-date']
+        db_table = "Event"
 
 
 class Publication(models.Model):
@@ -214,6 +220,7 @@ class Publication(models.Model):
 
     class Meta:
         ordering = ['-year']
+        db_table = "Publication"
 
 class Country(models.Model):
     code = models.CharField('country code', max_length=2, primary_key=True, validators=[country_code_validator])
@@ -225,6 +232,7 @@ class Country(models.Model):
     class Meta:
         ordering = ['code']
         verbose_name_plural = 'countries'
+        db_table = "Country"
 
 class PersonAddress(models.Model):
     class AddressType(models.IntegerChoices):
@@ -250,6 +258,7 @@ class PersonAddress(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['person', 'address_type'], name='address_unique_person_address_type')
         ]
+        db_table = "PersonAddress"
 
 class Grant(models.Model):
     reference = models.CharField(max_length=64, blank=True)
@@ -260,6 +269,9 @@ class Grant(models.Model):
     def __str__(self):
         name = self.title or 'Grant'
         return f'{name} [{self.id}]'
+    
+    class Meta:
+        db_table = "Grant"
 
 class GrantInvestigator(models.Model):
     grant = models.ForeignKey(Grant, on_delete=models.CASCADE, related_name='+')
@@ -270,6 +282,7 @@ class GrantInvestigator(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['grant', 'investigator'], name='grantinvestigator_unique')
         ]
+        db_table = "GrantInvestigator"
 
 
 class Students(models.Model): 
@@ -290,3 +303,4 @@ class Students(models.Model):
     
     class Meta:
         ordering = ['student_name']
+        db_table = "Student"
