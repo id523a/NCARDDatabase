@@ -12,9 +12,9 @@ class AwardForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.prefix = "award"
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.disable_csrf = True
         self.helper.layout = Layout(
             Row(
                 Column('award_type', css_class='col-md-3 mb-0'),

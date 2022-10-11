@@ -1,0 +1,15 @@
+{% extends 'events/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Grant{% endblock %}
+
+{% block content%}
+    <h1 class="ncard-dark-green">Edit Grant</h1><br>
+    <div class="form-margin">
+        <form action="{% url 'edit-grant' form.instance.id %}" method=POST>
+            {% csrf_token %}
+            {% crispy form %}
+            <input class="btn btn-lg ncard_btn stick" type="submit" value="Save">
+        </form>
+    </div>
+{% endblock %}

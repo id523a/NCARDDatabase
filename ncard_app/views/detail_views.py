@@ -56,3 +56,57 @@ class EventUpdateView(UpdateView):
     form_class = forms.EventForm
     def get_success_url(self):
         return reverse('list-events')
+
+
+class ProjectCreateView(CreateView):
+    template_name = 'detail_views/add_project.html'
+    form_class = forms.ProjectForm
+    def get_success_url(self):
+        return reverse('list-projects')
+
+class ProjectUpdateView(UpdateView):
+    template_name = 'detail_views/edit_project.html'
+    model = models.Project
+    form_class = forms.ProjectForm
+    def get_success_url(self):
+        return reverse('list-projects')
+
+
+class GrantCreateView(CreateView):
+    template_name = 'detail_views/add_grant.html'
+    form_class = forms.GrantForm
+    def get_success_url(self):
+        return reverse('list-grants')
+
+class GrantUpdateView(UpdateView):
+    template_name = 'detail_views/edit_grant.html'
+    model = models.Grant
+    form_class = forms.GrantForm
+    def get_success_url(self):
+        return reverse('list-grants')
+
+class PublicationCreateView(CreateView):
+    template_name = 'detail_views/add_publication.html'
+    form_class = forms.PublicationForm
+    def get_success_url(self):
+        return reverse('list-publications')
+
+class PublicationUpdateView(UpdateView):
+    template_name = 'detail_views/edit_publication.html'
+    model = models.Publication
+    form_class = forms.PublicationForm
+    def get_success_url(self):
+        return reverse('list-publications')
+
+class CountryCreateView(CreateView):
+    template_name = 'detail_views/add_country.html'
+    form_class = forms.CountryForm
+    def get_success_url(self):
+        return reverse('list-countries')
+
+class CountryUpdateView(UpdateView):
+    template_name = 'detail_views/edit_country.html'
+    model = models.Country
+    form_class = forms.CountryForm
+    def get_success_url(self):
+        return reverse('list-countries')

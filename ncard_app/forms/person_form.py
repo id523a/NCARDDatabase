@@ -13,9 +13,9 @@ class PersonForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.prefix = "person"
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.disable_csrf = True
         self.helper.layout = Layout(
             TabHolder(
                 Tab('Contact Details',

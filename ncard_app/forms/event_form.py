@@ -19,9 +19,9 @@ class EventForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.prefix = "event"
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.disable_csrf = True
         self.helper.layout = Layout(
             Row(
                 Column('event_type', css_class='col-md-3 mb-0'),
