@@ -75,6 +75,20 @@ extra_fields = {
 }
 """
 
+iso_week_day_type = [
+    (1, 'Monday'),
+    (2, 'Tuesday'),
+    (3, 'Wednesday'),
+    (4, 'Thursday'),
+    (5, 'Friday'),
+    (6, 'Saturday'),
+    (7, 'Sunday'),
+]
+
+schema_enums = [
+    iso_week_day_type
+]
+
 def get_schema_meta(model):
     return {
         'singular': capitalize_first(model._meta.verbose_name),
@@ -83,30 +97,35 @@ def get_schema_meta(model):
 
 schema_meta = {model._meta.model_name: get_schema_meta(model) for model in schema_models}
 
-schema_meta['date'] = {'hide': True, 'singular': 'Date', 'plural': 'Dates'}
+schema_meta['date'] = {'fakeTable': True, 'singular': 'Date', 'plural': 'Dates'}
 
 def get_schema_fields(model):
     # Add computed fields first
     # fields = list(extra_fields.get(model, []))
-    fields = []
+    fields = {}
     # Create list of fields by inspecting model
     for field in model._meta.get_fields():
         field_type = get_field_type(field)
+        if not isinstance(field_type, str):
+            enum_index = len(schema_enums)
+            schema_enums.append(field_type)
+            field_type = f'enum{enum_index}'
         if field_type != '':
-            fields.append({'name': field.name, 'label': get_field_friendly_name(model, field), 'type': field_type})
+            fields[field.name] = {'label': get_field_friendly_name(model, field), 'type': field_type}
     return fields
 
 schema_fields = {model._meta.model_name: get_schema_fields(model) for model in schema_models}
 
-schema_fields['date'] = [
-    {'name': 'year', 'label': 'Year', 'type': 'integer'},
-    {'name': 'month', 'label': 'Month', 'type': 'integer'},
-    {'name': 'day', 'label': 'Day of month', 'type': 'integer'},
-    {'name': 'week', 'label': 'Week of year', 'type': 'integer'},
-    {'name': 'week_day', 'label': 'Day of week', 'type': 'integer'}
-]
+schema_fields['date'] = {
+    'year': {'label': 'Year', 'type': 'integer'},
+    'month': {'label': 'Month', 'type': 'integer'},
+    'day': {'label': 'Day of month', 'type': 'integer'},
+    'week': {'label': 'Week of year', 'type': 'integer'},
+    'iso_week_day': {'label': 'Day of week', 'type': 'enum0'}
+}
 
 schema = {
+    'enums': schema_enums,
     'meta': schema_meta,
     'fields': schema_fields
 }
@@ -130,7 +149,7 @@ def custom_query_data(request):
     
     # Get starting model from table name
     start_table = body["startTable"]
-    if not type(start_table) == str:
+    if not isinstance(start_table, str):
         raise SuspiciousOperation("Invalid starting table.")
 
     start_model = None
@@ -144,12 +163,25 @@ def custom_query_data(request):
     
     objs = start_model.objects.all()
     
-    # Get fields for output
-    # TODO: Validate fields
+    # Validate field selection
+    try:
+        fields_cleaned = []
+        for subfield_list in body["fields"]:
+            current_type = start_table
+            subfields_cleaned = []
+            for subfield in subfield_list:
+                subfield_info = schema_fields[current_type][subfield]
+                current_type = subfield_info['type']
+                subfields_cleaned.append(subfield)
+            if current_type in schema_meta and not schema_meta[current_type].get('fakeTable', False):
+                subfields_cleaned.append('id')
+            fields_cleaned.append("__".join(subfields_cleaned))
+    except TypeError:
+        raise SuspiciousOperation("Invalid field selection.")
+    except KeyError:
+        raise SuspiciousOperation("Invalid field selection.")
     # TODO: Support computed fields such as full_name
-    fields = body["fields"]
-    fields_pp = ["__".join(subfields) or "id" for subfields in fields]
     
     # TODO: Filter the rows
 
-    return JsonResponse(list(objs.values_list(*fields_pp)), safe=False)
+    return JsonResponse(list(objs.values_list(*fields_cleaned)), safe=False)

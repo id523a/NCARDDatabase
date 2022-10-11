@@ -151,8 +151,9 @@ function createFieldSelect(parent, modelName, onChange) {
     const defaultOption = createOption(selector, "", "Query " + schemaMeta[modelName].singular + "...");
     defaultOption.dataset.fieldType = "";
     defaultOption.selected = "selected";
-    for (const field of schemaFields[modelName]) {
-        const newOption = createOption(selector, field.name, field.label);
+    for (const fieldName in schemaFields[modelName]) {
+        const field = schemaFields[modelName][fieldName];
+        const newOption = createOption(selector, fieldName, field.label);
         newOption.dataset.fieldType = field.type;
     }
     selector.dataset.liveSearch = true;
@@ -306,7 +307,7 @@ window.addEventListener('load', (event) => {
         schemaFields = loadedSchema.fields;
         const startingTableSelector = document.getElementById("startingTableSelector");
         for (const model in schemaMeta) {
-            if (!schemaMeta[model].hide) {
+            if (!schemaMeta[model].fakeTable) {
                 const option = createOption(startingTableSelector, model, schemaMeta[model].plural);
                 option.dataset.tokens = model;
             }
@@ -316,6 +317,7 @@ window.addEventListener('load', (event) => {
         document.getElementById("addFieldRow").addEventListener("click", addFieldRow);
         document.getElementById("addFilterSection").addEventListener("click", addFilterSection);
         document.getElementById("runQueryButton").addEventListener("click", (e) => {
+            document.getElementById("queryResult").innerText = 'Loading...'
             fetch("{% url 'custom-query-data' %}", {
                 method: "POST",
                 headers: {
