@@ -105,15 +105,15 @@ class FilteredPublicationListView(SingleTableMixin, FilterView):
         return self.filter.qs
 
 
-class FilteredCountryListView(SingleTableMixin, FilterView):
+class FilteredStudentListView(SingleTableMixin, FilterView):
     filter = None
-    table_class = tables_class.CountryTable
-    model = models.Country
-    template_name = "tables/country.html"
-    filterset_class = filters.CountryFilter
+    table_class = tables_class.StudentTable
+    model = models.Students
+    template_name = "tables/student.html"
+    filterset_class = filters.StudentFilter
     paginate_by = 10
 
     def get_queryset(self, **kwargs):
-        qs = models.Country.objects.all().order_by('code')
+        qs = models.Students.objects.all().order_by('id')
         self.filter = self.filterset_class(self.request.GET, queryset=qs)
         return self.filter.qs

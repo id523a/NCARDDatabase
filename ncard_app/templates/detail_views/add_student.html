@@ -2,16 +2,18 @@
 {% load crispy_forms_tags %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'style.css' %}" type="text/css" media="screen" >
-{% block title %}Add Award{% endblock %}
+
+{% block title %}Add Student{% endblock %}
 
 {% block content%}
-    <h1 class="ncard-dark-green">Add Award</h1><br>
-    <div class="close_position"><a href="{% url 'list-awards' %}" class="aui_close">&times;</a></div>
+    <h1 class="ncard-dark-green">Add Student</h1><br>
+    <div class="close_position"><a href="{% url 'list-students' %}" class="aui_close">&times;</a></div>
     <div class="form-margin">
-        <form action="{% url 'add-award' %}" method=POST>
+        <form action="{% url 'add-student' %}" method=POST>
             {% csrf_token %}
             {% crispy form %}
             <input class="btn btn-lg ncard_btn stick" type="submit"  value="Add">
         </form>
     </div>
 {% endblock %}
+

@@ -101,14 +101,14 @@ class PublicationTable(tables.Table):
         return mark_safe(
             '<a href=' + reverse_lazy("edit-publication", args=[record.pk]) + ' class="btn btn-sm ncard_btn">Edit</a>')
 
-class CountryTable(tables.Table):
+class StudentTable(tables.Table):
     edit = tables.Column('Action',
                          orderable=False, empty_values=(), )
 
     class Meta:
-        model = models.Country
+        model = models.Students
         attrs = {"class": "table table-striped", "th": {"scope": "col"}}
 
     def render_edit(self, record):
         return mark_safe(
-            '<a href=' + reverse_lazy("edit-country", args=[record.pk]) + ' class="btn btn-sm ncard_btn">Edit</a>')
+            '<a href=' + reverse_lazy("edit-student", args=[record.pk]) + ' class="btn btn-sm ncard_btn">Edit</a>')

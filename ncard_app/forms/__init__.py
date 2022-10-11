@@ -5,4 +5,4 @@ from .event_form import *
 from .project_form import *
 from .grant_form import *
 from .publication_form import *
-from .country_form import *
+from .student_form import *

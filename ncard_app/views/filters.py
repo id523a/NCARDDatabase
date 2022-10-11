@@ -121,16 +121,16 @@ class PublicationFilter(django_filters.FilterSet):
         )
 
 
-class CountryFilter(django_filters.FilterSet):
+class StudentFilter(django_filters.FilterSet):
     query = django_filters.CharFilter(method='universal_search',
                                       label="name")
 
     class Meta:
-        model = models.Country
+        model = models.Students
         fields = {}
 
     def universal_search(self, queryset, name, value):
-        return models.Country.objects.all().filter(
+        return models.Students.objects.all().filter(
 
             Q(name__icontains=value)
 

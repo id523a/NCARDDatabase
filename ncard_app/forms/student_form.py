@@ -6,14 +6,14 @@ from crispy_forms.layout import Layout, Row, Column, HTML
 from crispy_forms.bootstrap import Tab, TabHolder
 
 
-class CountryForm(ModelForm):
+class StudentForm(ModelForm):
     class Meta:
-        model = models.Country
-        fields="__all__"
+        model = models.Students
+        exclude=["id"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.prefix = "country"
+        self.prefix = "student"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.layout = Layout()

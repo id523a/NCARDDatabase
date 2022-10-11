@@ -45,10 +45,10 @@
 .ncard-grad {
     height: 10px;
     background-color: #009070;
-    background-image: linear-gradient(to right,#009070, #A5D2C3);
+    background-image: linear-gradient(to right, #009070, #A5D2C3);
 }
 
-ul.space_list li { 
+ul.space_list li {
     margin-right: 1em;
 }
 
@@ -79,8 +79,8 @@ ul.space_list li {
     border: 1px solid #009070;
 }
 
-.ncard-current-page{
-    color: white; 
+.ncard-current-page {
+    color: white;
     background-color: #009070;
 }
 
@@ -90,14 +90,53 @@ ul.space_list li {
 
 /* button stick on bottom right of the screen */
 .stick {
-    position: fixed; 
-    bottom: 50px; 
+    position: fixed;
+    bottom: 50px;
     right: 50px;
 }
 
 .form-margin {
-    width: 90%; 
-    height: 90%; 
+    width: 90%;
+    height: 90%;
     margin: 5%;
     margin-top: 0%;
+}
+
+.aui_close {
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    display: block;
+    font-size: 18px;
+    border-radius: 20px;
+    background: #999;
+    color: #FFF;
+    -moz-transition: linear .06s;
+    -webkit-transition: linear .06s;
+    transition: linear .06s;
+    padding: 0;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.aui_close:hover {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    left: 8px;
+    top: 8px;
+    color: #FFF;
+    box-shadow: 0 1px 3px rgba(209, 40, 42, .5);
+    background: #d1282a;
+    border-radius: 24px;
+    transition: all 0.2s ease-out;
+    opacity: 0.8;
+}
+
+.close_position {
+    position: fixed;
+    top: 110px;
+    right: 30px;
 }

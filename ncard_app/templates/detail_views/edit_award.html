@@ -1,10 +1,12 @@
 {% extends 'events/base.html' %}
 {% load crispy_forms_tags %}
-
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}" type="text/css" media="screen" >
 {% block title %}Edit Event{% endblock %}
 
 {% block content%}
     <h1 class="ncard-dark-green">Edit Award</h1><br>
+    <div class="close_position"><a href="{% url 'list-awards' %}" class="aui_close">&times;</a></div>
     <div class="form-margin">
         <form action="{% url 'edit-award' form.instance.id %}" method=POST>
             {% csrf_token %}
