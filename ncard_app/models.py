@@ -50,6 +50,10 @@ class Person(models.Model):
         YES = 1, 'Yes'
         STUDENT = 2, 'Yes - student'
 
+    class AddressType(models.IntegerChoices):
+        HOME = 1, 'Home'
+        WORK = 2, 'Work'
+
     title = models.CharField(max_length=16, blank=True)
     given_name = models.CharField(max_length=64)
     middle_name = models.CharField(max_length=64, blank=True)
@@ -81,6 +85,14 @@ class Person(models.Model):
     clinician = models.BooleanField(default=False)
     notes = models.TextField(blank=True)
     research_focus = models.CharField(max_length=255, blank=True)
+    address_type = models.IntegerField(choices=AddressType.choices)
+    line1 = models.CharField('line 1', max_length=64)
+    line2 = models.CharField('line 2', max_length=64, blank=True)
+    line3 = models.CharField('line 3', max_length=64, blank=True)
+    suburb = models.CharField(max_length=32, blank=True)
+    state = models.CharField('state (abbrev.)', max_length=3, blank=True)
+    postcode = models.CharField(max_length=20)
+    country = models.ForeignKey(Country, on_delete=models.RESTRICT, to_field='code', default='AU', related_name='+')
 
     @property
     def full_name(self):
@@ -233,32 +245,6 @@ class Country(models.Model):
         ordering = ['code']
         verbose_name_plural = 'countries'
         db_table = "Country"
-
-class PersonAddress(models.Model):
-    class AddressType(models.IntegerChoices):
-        HOME = 1, 'Home'
-        WORK = 2, 'Work'
-
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='addresses')
-    address_type = models.IntegerField(choices=AddressType.choices)
-    line1 = models.CharField('line 1', max_length=64)
-    line2 = models.CharField('line 2', max_length=64, blank=True)
-    line3 = models.CharField('line 3', max_length=64, blank=True)
-    suburb = models.CharField(max_length=32, blank=True)
-    state = models.CharField('state (abbrev.)', max_length=3, blank=True)
-    postcode = models.CharField(max_length=20)
-    country = models.ForeignKey(Country, on_delete=models.RESTRICT, to_field='code', default='AU', related_name='+')
-
-    def __str__(self):
-        return f'{self.person}, {self.get_address_type_display()}'
-
-    class Meta:
-        verbose_name = 'address'
-        verbose_name_plural = 'addresses'
-        constraints = [
-            models.UniqueConstraint(fields=['person', 'address_type'], name='address_unique_person_address_type')
-        ]
-        db_table = "PersonAddress"
 
 class Grant(models.Model):
     reference = models.CharField(max_length=64, blank=True)
