@@ -1,16 +1,16 @@
 {% extends 'events/base.html' %}
 {% load crispy_forms_tags %}
-
 {% block title %}Edit Person{% endblock %}
 
 {% block content%}
     <h1 class="ncard-dark-green">Edit Person</h1>
+    <div class="close_position"><a href="{% url 'list-people' %}" class="aui_close">&times;</a></div>
     <br>
-    <div style="width: 90%; height: 90%; margin: 5%; margin-top: 0%;">
+    <div class="form-margin">
         <form action="{% url 'edit-person' form.instance.id %}" method=POST>
             {% csrf_token %}
             {% crispy form %}
-            <input class="btn btn-lg ncard_btn" type="submit" value="Save" style="position: fixed; bottom: 50px; right: 50px;">
+            <input class="btn btn-lg ncard_btn stick" type="submit" value="Save">
         </form>
     </div>
 {% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'events/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Edit Publication{% endblock %}
+
+{% block content%}
+    <h1 class="ncard-dark-green">Edit Publication</h1>
+    <div class="close_position"><a href="{% url 'list-publications' %}" class="aui_close">&times;</a></div>
+    <br>
+    <div class="form-margin">
+        <form action="{% url 'edit-publication' form.instance.id %}" method=POST>
+            {% csrf_token %}
+            {% crispy form %}
+            <input class="btn btn-lg ncard_btn stick" type="submit" value="Save">
+        </form>
+    </div>
+{% endblock %}

@@ -10,6 +10,8 @@ admin.site.register(models.Publication)
 admin.site.register(models.Country)
 admin.site.register(models.PersonAddress)
 
+admin.site.register(models.Students)
+
 class GrantInvestigatorInline(admin.TabularInline):
     model = models.GrantInvestigator
     fields = ['investigator', 'chief']
