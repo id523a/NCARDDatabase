@@ -25,7 +25,7 @@ class PersonFilter(django_filters.FilterSet):
 
 class AwardFilter(django_filters.FilterSet):
     query = django_filters.CharFilter(method='universal_search',
-                                      label="type, award name, agency, year")
+                                      label="award name, agency, year established")
 
     class Meta:
         model = models.Award
@@ -34,7 +34,7 @@ class AwardFilter(django_filters.FilterSet):
     def universal_search(self, queryset, name, value):
         return models.Award.objects.all().filter(
 
-            Q(award_type__icontains=value) | Q(name__icontains=value) | Q(agency__name__icontains=value) | Q(year__icontains=value) 
+            Q(name__icontains=value) | Q(agency__name__icontains=value) | Q(year__icontains=value) 
 
         )
 
