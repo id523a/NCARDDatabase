@@ -139,13 +139,13 @@ class Award(models.Model):
         FINALIST = 3, 'Finalist'
 
     award_type = models.IntegerField('type', choices=AwardType.choices)
-    name = models.CharField('name', max_length=255)
+    name = models.CharField('Awawrd Name', max_length=255)
     agency = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='awards')
     recipients = models.ManyToManyField(Person, related_name='awards')
-    status = models.IntegerField('award Status', choices=AwardStatus.choices, default=AwardStatus.AWARDEE)
+    status = models.IntegerField('Award Status', choices=AwardStatus.choices, default=AwardStatus.AWARDEE)
     detail = models.TextField('details', blank=True)
-    year = models.PositiveSmallIntegerField('year Established')
-    no_year = models.DecimalField(verbose_name="Concurrent Years",default=1.0, max_digits=10, decimal_places=0, null=True, blank=True)
+    year = models.PositiveSmallIntegerField('Year Established')
+    no_year = models.DecimalField(verbose_name="Concurrent Years",default=1.0, max_digits=10, decimal_places=1, null=True, blank=True)
     notes = models.TextField(blank=True)
     link = models.URLField(blank=True)
 

@@ -15,3 +15,5 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'NCARDDatabase.settings')
 
 application = get_wsgi_application()
 
+
+
