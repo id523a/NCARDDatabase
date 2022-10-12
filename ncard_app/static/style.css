@@ -136,7 +136,7 @@ li.page-item > a {
     color: #009070;
 }
 
-li.page-item > a:hover, li.previous.page-item > a:hover, li.next.page-item > a:hover {
+li.page-item > a:hover {
     color: #009070;
 }
 

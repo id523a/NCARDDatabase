@@ -23,7 +23,7 @@
     {% endif %}
         <div class="col-md-8"></div>
         <div class="col-md-2">
-            <a href="{% url 'add-events' %}">
+            <a href="{% url 'add-event' %}">
               <button class="ncard_CTA">ADD</button>
             </a>
         </div>
@@ -33,7 +33,7 @@
 <div id="ncard_table">
      {% render_table table 'django_tables2/bootstrap4.html' %}
 </div>
-    <div class="export_csv"><button class="btn btn-primary mb-3" ><a class="export_href"   href="{% querystring '_export'='csv' %}">export</a></button></div>
+<div class="export_csv"><a class="btn btn-primary mb-3 export_href" href="{% querystring '_export'='csv' %}">Export</a></div>
 {% endblock %}
 
 {% block custom_js %}
