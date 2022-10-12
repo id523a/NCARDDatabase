@@ -27,16 +27,13 @@ class EventForm(ModelForm):
                 Column('event_type', css_class='col-md-3 mb-0'),
                 Column('date', css_class='col-md-5 mb-0'),
                 Column('number_attendees', css_class='col-md-4 mb-0'),
-                css_class='row'
             ),
             Row(
                 Column('title', css_class='col-md-2 mb-0'),
                 Column('location', css_class='col-md-10 mb-0'),
-                css_class='row'
             ),
             Row(Field('lead_organisation', css_class='selectpicker form-control row', data_live_search='true')),
             Row(Field('lead_contacts', css_class='selectpicker form-control row', data_live_search='true')),
-            Row('detail', css_class='row'),
-            Row('participants', css_class='row'),
-
+            Row('detail'),
+            Row('participants'),
         )

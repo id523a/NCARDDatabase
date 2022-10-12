@@ -39,8 +39,7 @@ urlpatterns = [
 
     path('tables/students/', login_required(views.FilteredStudentListView.as_view()), name="list-students"),
     path('tables/student/add/', login_required(views.StudentCreateView.as_view()), name="add-student"),
-    path('tables/student/<int:pk>/', login_required(views.StudentUpdateView.as_view()),
-         name="edit-student"),
+    path('tables/student/<int:pk>/', login_required(views.StudentUpdateView.as_view()), name="edit-student"),
 
     path('predefined/phonebook', login_required(views.PhoneBook.as_view()), name="phone_book"),
     path('query/', views.custom_query, name="custom-query"),

@@ -42,6 +42,10 @@
     color: #009070;
 }
 
+.ncard-bg-dark-green {
+    background-color: #009070;
+}
+
 .ncard-light-green {
     color: #A5D2C3;
 }
@@ -128,7 +132,7 @@ li.page-item.active > a:hover{
     color: white;
 }
 
-li.page-item > a, li.previous.page-item > a, li.next.page-item > a  {
+li.page-item > a {
     color: #009070;
 }
 

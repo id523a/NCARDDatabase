@@ -1,7 +1,8 @@
+{% load static %}
 <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'dashboard' %}">
-            <img src="https://ncard.org.au/wp-content/uploads/2017/07/logo-ncard.png" height="50px">
+            <img src="{% static 'logo-ncard.png' %}" height="50px">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -14,8 +15,7 @@
                        data-bs-toggle="dropdown" aria-expanded="false">
                         Tables
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown"
-                        style="background-color:#009070;">
+                    <ul class="dropdown-menu dropdown-menu-dark ncard-bg-dark-green" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="{% url 'list-awards' %}">Awards</a></li>
                         <li><a class="dropdown-item" href="{% url 'list-events' %}">Events</a></li>
                         <li><a class="dropdown-item" href="{% url 'list-grants' %}">Grants</a></li>
