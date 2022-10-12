@@ -1,5 +1,6 @@
 {% extends 'events/base.html' %}
 {% load render_table from django_tables2 %}
+{% load querystring from django_tables2 %}
 {% load bootstrap5 %}
 {% load crispy_forms_tags %}
 
@@ -16,7 +17,7 @@
         <div class="col-md-2">
             <form action="" method="get" class="form form-inline">
                 {% bootstrap_form filter.form layout='inline'  %}
-{#            <button type="submit" class="ncard_CTA">Search</button>#}
+
              </form>
         </div>
     {% endif %}
@@ -32,7 +33,7 @@
 <div id="ncard_table">
      {% render_table table 'django_tables2/bootstrap4.html' %}
 </div>
-
+    <div class="export_csv"><button class="btn btn-primary mb-3" ><a class="export_href"   href="{% querystring '_export'='csv' %}">export</a></button></div>
 {% endblock %}
 
 {% block custom_js %}
