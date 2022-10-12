@@ -148,3 +148,7 @@ li.page-item > a:hover, li.previous.page-item > a:hover, li.next.page-item > a:h
 th#award-table {
     width: 350px; 
 }
+
+li.nav-item > a.nav-link{
+    color: #009070;
+}
