@@ -25,7 +25,7 @@ class PersonFilter(django_filters.FilterSet):
 
 class AwardFilter(django_filters.FilterSet):
     query = django_filters.CharFilter(method='universal_search',
-                                      label="award name, agency, year established")
+                                      label="award name, agency, year")
 
     class Meta:
         model = models.Award

@@ -15,4 +15,4 @@ class OrganisationForm(ModelForm):
         self.prefix = "organisation"
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-        self.helper.layout = Layout(),
+        self.helper.layout = Layout()

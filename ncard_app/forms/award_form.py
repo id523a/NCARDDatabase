@@ -22,25 +22,22 @@ class AwardForm(ModelForm):
                     Row(
                         Column('award_type', css_class='col-md-3 mb-0'),
                         Column('name', css_class='col-md-9 mb-0'),
-                        css_class='row'
                     ),
                     Row(Field('agency', css_class='selectpicker form-control row', data_live_search='true')),
                     Row(
                         Column('status', css_class='col-md-2 mb-0'),
                         Column(Field('recipients', css_class='selectpicker form-control col-md-10 mb-0', data_live_search='true')),
-                        css_class='row'
                     ),
                     Row(
                         Column('year', css_class='col-md-2 mb-0'),
                         Column('no_year', css_class='col-md-2 mb-0'),
                         Column('link', css_class='col-md-8 mb-0'),
-                        css_class='row'
                     ),
-                    Row('detail', css_class='row'),
+                    Row('detail'),
                 ),
                 Tab('Notes',
                     HTML("<br>"),
-                    Row('notes', css_class='row')
+                    Row('notes')
                 ),
             )
         )

@@ -19,10 +19,6 @@
     color: #343a40;
 }
 
-.col-350 {
-    width: 350px;
-}
-
 #ncard_table td {
     vertical-align: middle;
 }
@@ -149,6 +145,10 @@ th#award-table {
     width: 350px; 
 }
 
-li.nav-item > a.nav-link{
+ul.nav-tabs > li.nav-item > a.nav-link{
+    color: #343a40;
+}
+
+ul.nav-tabs > li.nav-item > a.nav-link.active{
     color: #009070;
 }
