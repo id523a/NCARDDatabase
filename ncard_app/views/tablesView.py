@@ -1,5 +1,6 @@
 from django_tables2 import LazyPaginator
 from django_filters.views import FilterView
+from django_tables2.export import ExportMixin
 from django_tables2.views import SingleTableMixin
 from ncard_app import models
 
@@ -7,11 +8,12 @@ from ncard_app.views import tables_class
 from ncard_app.views import filters
 
 
-class FilteredPersonListView(SingleTableMixin, FilterView):
+class FilteredPersonListView(ExportMixin,SingleTableMixin, FilterView):
     filter = None
     table_class = tables_class.PersonTable
     model = models.Person
     template_name = "tables/people.html"
+    export_name = "Person"
     filterset_class = filters.PersonFilter
     paginate_by = 10
 
@@ -21,12 +23,13 @@ class FilteredPersonListView(SingleTableMixin, FilterView):
         return self.filter.qs
 
 
-class FilteredAwardListView(SingleTableMixin, FilterView):
+class FilteredAwardListView(ExportMixin,SingleTableMixin,FilterView):
     filter = None
     table_class = tables_class.AwardTable
     model = models.Award
     template_name = "tables/awards.html"
     filterset_class = filters.AwardFilter
+    export_name="Award"
     paginate_by = 10
 
     def get_queryset(self, **kwargs):

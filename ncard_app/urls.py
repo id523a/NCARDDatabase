@@ -42,7 +42,6 @@ urlpatterns = [
     path('tables/countrys/<int:pk>/', login_required(views.StudentUpdateView.as_view()),
          name="edit-student"),
 
-
     path('predefined/phonebook', login_required(views.PhoneBook.as_view()), name="phone_book"),
     path('query/', views.custom_query, name="custom-query"),
     path('query/schema.json', views.custom_query_schema, name="custom-query-schema"),
