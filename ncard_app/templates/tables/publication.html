@@ -33,5 +33,5 @@
 <div id="ncard_table">
      {% render_table table 'django_tables2/bootstrap4.html' %}
 </div>
-    <div class="export_csv"><button class="btn btn-primary mb-3" ><a class="export_href"   href="{% querystring '_export'='csv' %}">export</a></button></div>
+<div class="export_csv"><a class="btn btn-primary mb-3 export_href" href="{% querystring '_export'='csv' %}">Export</a></div>
 {% endblock %}
