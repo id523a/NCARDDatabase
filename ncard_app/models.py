@@ -1,3 +1,4 @@
+from email.policy import default
 from django.conf import settings
 from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator
@@ -33,6 +34,19 @@ class Organisation(models.Model):
 
     class Meta:
         ordering = ['name']
+        db_table = "Organisation"
+
+class Country(models.Model):
+    code = models.CharField('country code', max_length=2, primary_key=True, validators=[country_code_validator])
+    name = models.CharField('name', max_length=255)
+
+    def __str__(self):
+        return f'{self.code} - {self.name}'
+
+    class Meta:
+        ordering = ['code']
+        verbose_name_plural = 'countries'
+        db_table = "Country"
 
 class Person(models.Model):
     class NCARDRelation(models.IntegerChoices):
@@ -52,6 +66,10 @@ class Person(models.Model):
     class Clinician(models.IntegerChoices):
         NO = 0, 'No'
         YES = 1, 'Yes'
+
+    class AddressType(models.IntegerChoices):
+        HOME = 1, 'Home'
+        WORK = 2, 'Work'
 
     title = models.CharField(max_length=16, blank=True)
     given_name = models.CharField('Given Name',max_length=64)
@@ -84,6 +102,14 @@ class Person(models.Model):
     clinician = models.IntegerField(choices=Clinician.choices, default=Clinician.NO)
     notes = models.TextField(blank=True)
     research_focus = models.CharField('Research Focus',max_length=255, blank=True)
+    address_type = models.IntegerField(choices=AddressType.choices, default=AddressType.HOME)
+    line1 = models.CharField('line 1', max_length=64)
+    line2 = models.CharField('line 2', max_length=64, blank=True)
+    line3 = models.CharField('line 3', max_length=64, blank=True)
+    suburb = models.CharField(max_length=32, blank=True)
+    state = models.CharField('state (abbrev.)', max_length=3, blank=True)
+    postcode = models.CharField(max_length=20)
+    country = models.ForeignKey(Country, on_delete=models.RESTRICT, to_field='code', default='AU', related_name='+')
 
     @property
     def full_name(self):
@@ -106,6 +132,7 @@ class Person(models.Model):
             models.Index(fields=['surname']),
             models.Index(fields=['given_name'])
         ]
+        db_table = "Person"
 
 class Project(models.Model):
     class ProjectStatus(models.IntegerChoices):
@@ -127,6 +154,7 @@ class Project(models.Model):
         indexes = [
             models.Index(fields=['name'])
         ]
+        db_table = "Project"
 
 class Award(models.Model):
     class AwardType(models.IntegerChoices):
@@ -154,6 +182,7 @@ class Award(models.Model):
 
     class Meta:
         ordering = ['-year']
+        db_table = "Award"
 
 # The Biography table is not a high priority at the moment, and it is complicated to support thanks to the attachment column.
 # class Biography(models.Model):
@@ -183,7 +212,7 @@ class Event(models.Model):
 
     class Meta:
         ordering = ['-date']
-
+        db_table = "Event"
 
 class Publication(models.Model):
     class OpenAccessStatus(models.IntegerChoices):
@@ -218,17 +247,7 @@ class Publication(models.Model):
 
     class Meta:
         ordering = ['-year']
-
-class Country(models.Model):
-    code = models.CharField('country code', max_length=2, primary_key=True, validators=[country_code_validator])
-    name = models.CharField('name', max_length=255)
-
-    def __str__(self):
-        return f'{self.code} - {self.name}'
-
-    class Meta:
-        ordering = ['code']
-        verbose_name_plural = 'countries'
+        db_table = "Publication"
 
 class PersonAddress(models.Model):
     class AddressType(models.IntegerChoices):
@@ -264,6 +283,9 @@ class Grant(models.Model):
     def __str__(self):
         name = self.title or 'Grant'
         return f'{name} [{self.id}]'
+    
+    class Meta:
+        db_table = "Grant"
 
 class GrantInvestigator(models.Model):
     grant = models.ForeignKey(Grant, on_delete=models.CASCADE, related_name='+')
@@ -274,7 +296,7 @@ class GrantInvestigator(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['grant', 'investigator'], name='grantinvestigator_unique')
         ]
-
+        db_table = "GrantInvestigator"
 
 class Students(models.Model): 
     class StudentTypes(models.IntegerChoices):
@@ -294,4 +316,4 @@ class Students(models.Model):
     
     class Meta:
         ordering = ['student_name']
-        verbose_name_plural = 'Students'
+        db_table = "Student"
