@@ -22,7 +22,7 @@ urlpatterns = [
     path('tables/awards/<int:pk>/', login_required(views.AwardUpdateView.as_view()), name="edit-award"),
 
     path('tables/events/', login_required(views.FilteredEventsListView.as_view()), name="list-events"),
-    path('tables/event/add/', login_required(views.EventCreateView.as_view()), name="add-events"),
+    path('tables/event/add/', login_required(views.EventCreateView.as_view()), name="add-event"),
     path('tables/event/<int:pk>/', login_required(views.EventUpdateView.as_view()), name="edit-event"),
 
     path('tables/projects/', login_required(views.FilteredProjectListView.as_view()), name="list-projects"),

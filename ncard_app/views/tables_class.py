@@ -67,7 +67,7 @@ class EventTable(tables.Table):
 
     def render_edit(self, record):
         return mark_safe(
-            '<a href=' + reverse_lazy("edit-events", args=[record.pk]) + ' class="btn btn-sm ncard_btn">Edit</a>')
+            '<a href=' + reverse_lazy("edit-event", args=[record.pk]) + ' class="btn btn-sm ncard_btn">Edit</a>')
 
 
 class ProjectTable(tables.Table):
