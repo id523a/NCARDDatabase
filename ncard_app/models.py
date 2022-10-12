@@ -139,8 +139,8 @@ class Award(models.Model):
         FINALIST = 3, 'Finalist'
 
     award_type = models.IntegerField('type', choices=AwardType.choices)
-    agency = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='awards')
     name = models.CharField('name', max_length=255)
+    agency = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='awards')
     recipients = models.ManyToManyField(Person, related_name='awards')
     status = models.IntegerField('award Status', choices=AwardStatus.choices, default=AwardStatus.AWARDEE)
     detail = models.TextField('details', blank=True)

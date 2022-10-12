@@ -5,8 +5,10 @@
 {% block title %}Add Award{% endblock %}
 
 {% block content%}
+    <a class="close-btn" href="{% url 'list-awards' %}">
+        <button type="button" class="btn-close" aria-label="Close"></button>
+    </a>
     <h1 class="ncard-dark-green">Add Award</h1><br>
-    <div class="close_position"><a href="{% url 'list-awards' %}" class="aui_close">&times;</a></div>
     <div class="form-margin">
         <form action="{% url 'add-award' %}" method=POST>
             {% csrf_token %}

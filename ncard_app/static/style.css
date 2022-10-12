@@ -11,6 +11,14 @@
     color: #343a40;
 }
 
+#ncard_table th > a {
+    color: #009070;
+}
+
+#ncard_table th > a:hover {
+    color: #343a40;
+}
+
 .col-350 {
     width: 350px;
 }
@@ -102,41 +110,41 @@ ul.space_list li {
     margin-top: 0%;
 }
 
-.aui_close {
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    display: block;
-    font-size: 18px;
-    border-radius: 20px;
-    background: #999;
-    color: #FFF;
-    -moz-transition: linear .06s;
-    -webkit-transition: linear .06s;
-    transition: linear .06s;
-    padding: 0;
-    text-align: center;
-    text-decoration: none;
-    outline: none;
-    cursor: pointer;
+.close-btn {
+    width: 2em; 
+    position: absolute; 
+    top: 125px; 
+    right: 60px;
 }
 
-.aui_close:hover {
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-    left: 8px;
-    top: 8px;
-    color: #FFF;
-    box-shadow: 0 1px 3px rgba(209, 40, 42, .5);
-    background: #d1282a;
-    border-radius: 24px;
-    transition: all 0.2s ease-out;
-    opacity: 0.8;
-}
-
-.close_position {
+nav > ul.pagination.justify-content-center {
     position: fixed;
-    top: 110px;
-    right: 30px;
+    bottom: 2%;
+    margin: auto;
+}
+
+li.page-item.active > a {
+    background-color: #009070;
+}
+
+li.page-item.active > a:hover{
+    background-color: #009070;
+    color: white;
+}
+
+li.page-item > a, li.previous.page-item > a, li.next.page-item > a  {
+    color: #009070;
+}
+
+li.page-item > a:hover, li.previous.page-item > a:hover, li.next.page-item > a:hover {
+    color: #009070;
+}
+
+.form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+} 
+
+th#award-table {
+    width: 350px; 
 }

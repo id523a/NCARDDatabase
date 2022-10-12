@@ -24,8 +24,8 @@ class AwardTable(tables.Table):
 
     class Meta:
         model = models.Award
-        exclude = ('id',)
-        attrs = {"class": "table table-striped", "th": {"scope": "col"}}
+        exclude = ('id', 'notes', 'detail',)
+        attrs = {"class": "table table-striped", "th": {"scope": "col", "id": "award-table"}}
 
     def render_edit(self, record):
         return mark_safe(
