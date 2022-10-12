@@ -13,7 +13,7 @@ class FilteredPersonListView(ExportMixin,SingleTableMixin, FilterView):
     table_class = tables_class.PersonTable
     model = models.Person
     template_name = "tables/people.html"
-    export_name = "Person"
+    export_name = "People"
     filterset_class = filters.PersonFilter
     paginate_by = 10
 
@@ -38,12 +38,13 @@ class FilteredAwardListView(ExportMixin,SingleTableMixin,FilterView):
         return self.filter.qs
 
 
-class FilteredOrganisationListView(SingleTableMixin, FilterView):
+class FilteredOrganisationListView(ExportMixin,SingleTableMixin,FilterView):
     filter = None
     table_class = tables_class.OrganisationTable
     model = models.Organisation
     template_name = "tables/organisations.html"
     filterset_class = filters.OrganisationFilter
+    export_name = "Organisation"
     paginate_by = 10
 
     def get_queryset(self, **kwargs):
@@ -52,12 +53,13 @@ class FilteredOrganisationListView(SingleTableMixin, FilterView):
         return self.filter.qs
 
 
-class FilteredEventsListView(SingleTableMixin, FilterView):
+class FilteredEventsListView(ExportMixin,SingleTableMixin,FilterView):
     filter = None
     table_class = tables_class.EventTable
     model = models.Event
     template_name = "tables/events.html"
     filterset_class = filters.EventFilter
+    export_name = "Events"
     paginate_by = 10
 
     def get_queryset(self, **kwargs):
@@ -66,12 +68,13 @@ class FilteredEventsListView(SingleTableMixin, FilterView):
         return self.filter.qs
 
 
-class FilteredProjectListView(SingleTableMixin, FilterView):
+class FilteredProjectListView(ExportMixin,SingleTableMixin,FilterView):
     filter = None
     table_class = tables_class.ProjectTable
     model = models.Project
     template_name = "tables/projects.html"
     filterset_class = filters.ProjectFilter
+    export_name = "Project"
     paginate_by = 10
 
     def get_queryset(self, **kwargs):
@@ -80,12 +83,13 @@ class FilteredProjectListView(SingleTableMixin, FilterView):
         return self.filter.qs
 
 
-class FilteredGrantListView(SingleTableMixin, FilterView):
+class FilteredGrantListView(ExportMixin,SingleTableMixin,FilterView):
     filter = None
     table_class = tables_class.GrantTable
     model = models.Grant
     template_name = "tables/grants.html"
     filterset_class = filters.GrantFilter
+    export_name = "Grant"
     paginate_by = 10
 
     def get_queryset(self, **kwargs):
@@ -94,12 +98,13 @@ class FilteredGrantListView(SingleTableMixin, FilterView):
         return self.filter.qs
 
 
-class FilteredPublicationListView(SingleTableMixin, FilterView):
+class FilteredPublicationListView(ExportMixin,SingleTableMixin,FilterView):
     filter = None
     table_class = tables_class.PublicationTable
     model = models.Publication
     template_name = "tables/publication.html"
     filterset_class = filters.PublicationFilter
+    export_name = "Publication"
     paginate_by = 10
 
     def get_queryset(self, **kwargs):
@@ -108,12 +113,13 @@ class FilteredPublicationListView(SingleTableMixin, FilterView):
         return self.filter.qs
 
 
-class FilteredStudentListView(SingleTableMixin, FilterView):
+class FilteredStudentListView(ExportMixin,SingleTableMixin,FilterView):
     filter = None
     table_class = tables_class.StudentTable
     model = models.Students
     template_name = "tables/student.html"
     filterset_class = filters.StudentFilter
+    export_name = "Student"
     paginate_by = 10
 
     def get_queryset(self, **kwargs):

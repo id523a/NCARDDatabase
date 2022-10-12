@@ -3,9 +3,16 @@ from django.utils.safestring import mark_safe
 from ncard_app import models
 import django_tables2 as tables
 
+
+def get_formats():
+    formats = ['csv']
+    return formats
+
+
 class PersonTable(tables.Table):
     edit = tables.Column('Action',
                          orderable=False, empty_values=(), exclude_from_export=True)
+    export_formats = get_formats()
 
     class Meta:
         model = models.Person
@@ -21,7 +28,7 @@ class PersonTable(tables.Table):
 class AwardTable(tables.Table):
     edit = tables.Column('Action',
                          orderable=False, empty_values=(), exclude_from_export=True)
-    export_formats = ['csv', 'xls']
+    export_formats = get_formats()
 
     class Meta:
         model = models.Award
@@ -36,6 +43,7 @@ class AwardTable(tables.Table):
 class OrganisationTable(tables.Table):
     edit = tables.Column('Action',
                          orderable=False, empty_values=(), exclude_from_export=True)
+    export_formats = get_formats()
 
     class Meta:
         model = models.Organisation
@@ -50,6 +58,7 @@ class OrganisationTable(tables.Table):
 class EventTable(tables.Table):
     edit = tables.Column('Action',
                          orderable=False, empty_values=(), exclude_from_export=True)
+    export_formats = get_formats()
 
     class Meta:
         model = models.Event
@@ -64,6 +73,7 @@ class EventTable(tables.Table):
 class ProjectTable(tables.Table):
     edit = tables.Column('Action',
                          orderable=False, empty_values=(), exclude_from_export=True)
+    export_formats = get_formats()
 
     class Meta:
         model = models.Project
@@ -78,6 +88,7 @@ class ProjectTable(tables.Table):
 class GrantTable(tables.Table):
     edit = tables.Column('Action',
                          orderable=False, empty_values=(), exclude_from_export=True)
+    export_formats = get_formats()
 
     class Meta:
         model = models.Grant
@@ -92,6 +103,7 @@ class GrantTable(tables.Table):
 class PublicationTable(tables.Table):
     edit = tables.Column('Action',
                          orderable=False, empty_values=(), exclude_from_export=True)
+    export_formats = get_formats()
 
     class Meta:
         model = models.Publication
@@ -102,9 +114,11 @@ class PublicationTable(tables.Table):
         return mark_safe(
             '<a href=' + reverse_lazy("edit-publication", args=[record.pk]) + ' class="btn btn-sm ncard_btn">Edit</a>')
 
+
 class StudentTable(tables.Table):
     edit = tables.Column('Action',
                          orderable=False, empty_values=(), exclude_from_export=True)
+    export_formats = get_formats()
 
     class Meta:
         model = models.Students

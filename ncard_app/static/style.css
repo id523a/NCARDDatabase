@@ -152,3 +152,8 @@ ul.nav-tabs > li.nav-item > a.nav-link{
 ul.nav-tabs > li.nav-item > a.nav-link.active{
     color: #009070;
 }
+
+.export_href{
+    color: #c6e2ff;
+    text-decoration: none;
+}
