@@ -25,21 +25,20 @@ class PersonFilter(django_filters.FilterSet):
 
 class AwardFilter(django_filters.FilterSet):
     query = django_filters.CharFilter(method='universal_search',
-                                      label="award name, agency, year")
+                                      label="type, award name, agency, year")
 
     class Meta:
         model = models.Award
         fields = {}
 
     def universal_search(self, queryset, name, value):
-        qs=Q(name__icontains=value) | Q(agency__name__icontains=value) | Q(year__icontains=value)
-
+        qs = Q(name__icontains=value) | Q(agency__name__icontains=value) | Q(year__icontains=value)
 
         country_reverse = dict((v, k) for k, v in models.Award.AwardType.choices)
         for key in country_reverse.keys():
-            if value in key:
-                dict_value=country_reverse[key]
-                qs.add(Q(award_type=dict_value),Q.OR)
+            if value.lower() in key.lower():
+                dict_value = country_reverse[key]
+                qs.add(Q(award_type=dict_value), Q.OR)
 
         return models.Award.objects.all().filter(qs)
 
