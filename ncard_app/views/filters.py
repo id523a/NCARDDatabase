@@ -32,14 +32,13 @@ class AwardFilter(django_filters.FilterSet):
         fields = {}
 
     def universal_search(self, queryset, name, value):
-        qs=Q(name__icontains=value) | Q(agency__name__icontains=value) | Q(year__icontains=value)
-
+        qs = Q(name__icontains=value) | Q(agency__name__icontains=value) | Q(year__icontains=value)
 
         country_reverse = dict((v, k) for k, v in models.Award.AwardType.choices)
         for key in country_reverse.keys():
-            if value in key:
-                dict_value=country_reverse[key]
-                qs.add(Q(award_type=dict_value),Q.OR)
+            if value.lower() in key.lower():
+                dict_value = country_reverse[key]
+                qs.add(Q(award_type=dict_value), Q.OR)
 
         return models.Award.objects.all().filter(qs)
 
