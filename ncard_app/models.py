@@ -72,7 +72,7 @@ class Person(models.Model):
         WORK = 2, 'Work'
 
     title = models.CharField(max_length=16, blank=True)
-    given_name = models.CharField('Given Name',max_length=64)
+    given_name = models.CharField('First Name',max_length=64)
     middle_name = models.CharField('Middle Name',max_length=64, blank=True)
     surname = models.CharField('Last Name', max_length=64, blank=True)
     surname_first = models.BooleanField(default=False)
@@ -166,8 +166,8 @@ class Award(models.Model):
         NOMINEE = 2, 'Nominee'
         FINALIST = 3, 'Finalist'
 
-    award_type = models.IntegerField('type', choices=AwardType.choices)
     name = models.CharField('Award Name', max_length=255)
+    award_type = models.IntegerField('type', choices=AwardType.choices)
     agency = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='awards')
     recipients = models.ManyToManyField(Person, related_name='awards')
     status = models.IntegerField('Award Status', choices=AwardStatus.choices, default=AwardStatus.AWARDEE)
@@ -194,16 +194,17 @@ class Award(models.Model):
 #         return str(self.person)
 
 class Event(models.Model):
+    title = models.CharField('Event Title', max_length=255, blank=True)
     event_type = models.CharField('type', max_length=255)
     date = models.DateField('date')
-    number_attendees = models.IntegerField('number of attendees')
-    title = models.CharField('title', max_length=255, blank=True)
-    detail = models.TextField('details')
+    location = models.CharField('location', max_length=255, blank=True)
     lead_organisation = models.ForeignKey(Organisation, on_delete=models.SET_NULL, blank=True, null=True, related_name='events')
     lead_contacts = models.ManyToManyField(Person, blank=True, related_name='events')
+    number_attendees = models.IntegerField('number of Attendees', blank=True)
     # The participants field is deliberately not ManyToManyField(Person). This allows for the free-form participation info seen in the existing spreadsheet.
-    participants = models.TextField('participants')
-    location = models.CharField('location', max_length=255, blank=True)
+    participants = models.TextField('participants', blank=True)
+    detail = models.TextField('details', blank=True)
+
 
     def __str__(self):
         if not self.title:
@@ -222,9 +223,9 @@ class Publication(models.Model):
         INDETERMINATE = 3, 'Indeterminate'
         EMBARGOED = 4, 'Embargoed'
 
+    title = models.CharField('title', max_length=255)
     publication_type = models.CharField('type', max_length=255) # integer choices
     year = models.PositiveSmallIntegerField('year')
-    title = models.CharField('title', max_length=255)
     contributors = models.ManyToManyField(Person, related_name='publications')
     journal = models.CharField('journal', max_length=255)
     journal_ISSN = models.CharField('journal ISSN', max_length=255) # add validator
@@ -248,31 +249,6 @@ class Publication(models.Model):
     class Meta:
         ordering = ['-year']
         db_table = "Publication"
-
-class PersonAddress(models.Model):
-    class AddressType(models.IntegerChoices):
-        HOME = 1, 'Home'
-        WORK = 2, 'Work'
-
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='addresses')
-    address_type = models.IntegerField(choices=AddressType.choices)
-    line1 = models.CharField('line 1', max_length=64)
-    line2 = models.CharField('line 2', max_length=64, blank=True)
-    line3 = models.CharField('line 3', max_length=64, blank=True)
-    suburb = models.CharField(max_length=32, blank=True)
-    state = models.CharField('state (abbrev.)', max_length=3, blank=True)
-    postcode = models.CharField(max_length=20)
-    country = models.ForeignKey(Country, on_delete=models.RESTRICT, to_field='code', default='AU', related_name='+')
-
-    def __str__(self):
-        return f'{self.person}, {self.get_address_type_display()}'
-
-    class Meta:
-        verbose_name = 'address'
-        verbose_name_plural = 'addresses'
-        constraints = [
-            models.UniqueConstraint(fields=['person', 'address_type'], name='address_unique_person_address_type')
-        ]
 
 class Grant(models.Model):
     reference = models.CharField(max_length=64, blank=True)
@@ -301,14 +277,14 @@ class GrantInvestigator(models.Model):
 class Students(models.Model): 
     class StudentTypes(models.IntegerChoices):
         HONS = 1, 'Honours'
-        PHD = 2, 'Phd'
+        PHD = 2, 'PhD'
 
     student_name = models.OneToOneField(Person, on_delete=models.CASCADE, related_name = 'person')
-    student_type = models.IntegerField('student type', choices= StudentTypes.choices)
+    student_type = models.IntegerField('Student Type', choices= StudentTypes.choices)
     supervisor = models.ManyToManyField(Person, blank=True)
-    title_topic = models.TextField('title topic', blank=True)
-    year_start = models.PositiveSmallIntegerField('year start',blank=True,null=True)
-    year_end = models.PositiveSmallIntegerField('year end',blank=True,null=True)
+    title_topic = models.TextField('Title Topic', blank=True)
+    year_start = models.PositiveSmallIntegerField('Year Start',blank=True,null=True)
+    year_end = models.PositiveSmallIntegerField('Year End',blank=True,null=True)
     scholarship = models.OneToOneField(Award, on_delete=models.SET_NULL, null=True, blank=True, related_name='award')
 
     def __str__(self):

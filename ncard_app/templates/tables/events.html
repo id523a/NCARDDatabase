@@ -7,33 +7,36 @@
 {% block title %}Events | NCARD Table{% endblock %}
 
 {% block content%}
-<div class="col-md-8">
-            <h1 class="ncard-dark-green">Events</h1>
-</div>
-
 <div class="row mb-4">
+    <div class="col-md-3">
+            <h1 class="ncard-dark-green" >Events</h1>
+    </div>
 
     {% if filter %}
-        <div class="col-md-2">
+        <div class="col-md-4 self-align-center">
             <form action="" method="get" class="form form-inline">
                 {% bootstrap_form filter.form layout='inline'  %}
-
              </form>
         </div>
     {% endif %}
-        <div class="col-md-8"></div>
-        <div class="col-md-2">
-            <a href="{% url 'add-event' %}">
-              <button class="ncard_CTA">ADD</button>
-            </a>
-        </div>
-    </div>
 
+    <div class="col-md-3"></div>
+
+    <div class="col-md-2 text-align-right">
+        <a href="{% url 'add-event' %}">
+            <button class="ncard_CTA">ADD</button>
+        </a>
+    </div>
+</div>
 
 <div id="ncard_table">
      {% render_table table 'django_tables2/bootstrap4.html' %}
 </div>
-<div class="export_csv"><a class="btn btn-primary mb-3 export_href" href="{% querystring '_export'='csv' %}">Export</a></div>
+
+<div class="export_csv">
+    <a class="btn export-btn" href="{% querystring '_export'='csv' %}">Export</a>
+</div>
+
 {% endblock %}
 
 {% block custom_js %}
