@@ -6,21 +6,23 @@
 {% block title %}Awards | NCARD Table{% endblock %}
 
 {% block content%}
+
 <div class="row mb-4">
     <div class="col-md-3">
             <h1 class="ncard-dark-green" >Awards</h1>
-
     </div>
 
     {% if filter %}
-        <div class="col-md-3" style="align-self: center;">
+        <div class="col-md-3 self-align-center">
             <form action="" method="get" class="form form-inline">
                 {% bootstrap_form filter.form layout='inline'  %}
             </form>
         </div>
     {% endif %}
+
     <div class="col-md-4"></div>
-    <div class="col-md-2">
+
+    <div class="col-md-2 text-align-right">
         <a href="{% url 'add-award' %}">
             <button class="ncard_CTA">ADD</button>
         </a>
@@ -28,8 +30,10 @@
 </div>
 
 <div id="ncard_table">
-     {% render_table table 'django_tables2/bootstrap4.html' %}
+    {% render_table table 'django_tables2/bootstrap4.html' %}
 </div>
-<div class="export_csv"><a class="btn btn-primary mb-3 export_href" href="{% querystring '_export'='csv' %}">Export</a></div>
-{% endblock %}
 
+<div class="export_csv">
+    <a class="btn export-btn" href="{% querystring '_export'='csv' %}">Export</a>
+</div>
+{% endblock %}

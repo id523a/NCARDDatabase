@@ -48,7 +48,7 @@ class OrganisationTable(tables.Table):
     class Meta:
         model = models.Organisation
         exclude = ('id',)
-        attrs = {"class": "table table-striped", "th": {"scope": "col"}}
+        attrs = {"class": "table table-striped", "th": {"scope": "col", "id": "award-table"}}
 
     def render_edit(self, record):
         return mark_safe(
