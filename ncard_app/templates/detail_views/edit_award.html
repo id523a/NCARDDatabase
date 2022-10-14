@@ -1,13 +1,13 @@
 {% extends 'events/base.html' %}
 {% load crispy_forms_tags %}
 
-{% block title %}Edit Organisation{% endblock %}
+{% block title %}Edit Award{% endblock %}
 
 {% block content %}
-    <a class="btn btn-close close-btn" href="{% url 'list-organisations' %}"></a> 
-    <h1 class="ncard-dark-green">Edit Organisation</h1><br>
+    <a class="btn btn-close close-btn" href="{% url 'list-awards' %}"></a> 
+    <h1 class="ncard-dark-green">Edit Award</h1><br>
     <div class="form-margin">
-        <form action="{% url 'edit-organisation' form.instance.id %}" method=POST>
+        <form action="{% url 'edit-award' form.instance.id %}" method=POST>
             {% csrf_token %}
             {% crispy form %}
             <input class="btn btn-lg ncard_btn stick" type="submit" value="Save">

@@ -4,26 +4,27 @@
 {% load bootstrap5 %}
 {% load crispy_forms_tags %}
 
-{% block title %}Organisations | NCARD Table{% endblock %}
+{% block title %}Projects | NCARD Table{% endblock %}
 
 {% block content%}
+
 <div class="row mb-4">
     <div class="col-md-3">
-            <h1 class="ncard-dark-green" >Organisations</h1>
+            <h1 class="ncard-dark-green" >Projects</h1>
     </div>
 
     {% if filter %}
         <div class="col-md-4 self-align-center">
             <form action="" method="get" class="form form-inline">
                 {% bootstrap_form filter.form layout='inline'  %}
-            </form>
+             </form>
         </div>
     {% endif %}
 
     <div class="col-md-3"></div>
 
     <div class="col-md-2 text-align-right">
-        <a href="{% url 'add-organisation' %}">
+        <a href="{% url 'add-project' %}">
             <button class="ncard_CTA">ADD</button>
         </a>
     </div>
@@ -36,11 +37,4 @@
 <div class="export_csv">
     <a class="btn export-btn" href="{% querystring '_export'='csv' %}">Export</a>
 </div>
-
 {% endblock %}
-
-{% block custom_js %}
-
-    <script src="/static/table_edit.js"></script>
-
-{% endblock custom_js %}

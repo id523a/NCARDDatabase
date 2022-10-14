@@ -1,0 +1,190 @@
+#ncard_table {
+    overflow-x: scroll;
+}
+
+#ncard_table table {
+    table-layout: fixed;
+}
+
+#ncard_table th {
+    width: 200px;
+    color: #343a40;
+}
+
+#ncard_table th > a {
+    color: #009070;
+}
+
+#ncard_table th > a:hover {
+    color: #343a40;
+}
+
+#ncard_table td {
+    vertical-align: middle;
+}
+
+#ncard_table tr > * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    align-self: center;
+}
+
+#ncard_table tr > :last-child {
+    position: sticky;
+    width: 100px!important;
+    background-color: white;
+    right: 0px;
+    text-align: center;
+}
+
+.ncard-dark-green {
+    color: #009070;
+}
+
+.ncard-bg-dark-green {
+    background-color: #009070;
+}
+
+.ncard-light-green {
+    color: #A5D2C3;
+}
+
+.ncard-grad {
+    height: 10px;
+    background-color: #009070;
+    background-image: linear-gradient(to right, #009070, #A5D2C3);
+}
+
+ul.space_list li {
+    margin-right: 1em;
+}
+
+.ncard_CTA {
+    height: 50px;
+    width: 150px;
+    position: relative;
+    font-size: large;
+    color: #009070;
+    border: 2px solid #009070;
+    background-color: white;
+}
+
+.ncard_CTA:hover {
+    background-color: #A5D2C3;
+    border: 2px solid #A5D2C3;
+    color: white;
+}
+
+.ncard_btn {
+    color: white;
+    background-color: #A5D2C3;
+}
+
+.ncard_btn:hover {
+    background-color: #009070;
+    color: white;
+    border: 1px solid #009070;
+}
+
+.ncard-current-page {
+    color: white;
+    background-color: #009070;
+}
+
+.ncard-other-pages {
+    color: #343a40;
+}
+
+/* button stick on bottom right of the screen */
+.stick {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+}
+
+.form-margin {
+    width: 90%;
+    height: 90%;
+    margin: 5%;
+    margin-top: 0%;
+}
+
+.close-btn {
+    width: 2em; 
+    position: absolute; 
+    top: 125px; 
+    right: 60px;
+}
+
+nav > ul.pagination.justify-content-center {
+    position: fixed;
+    bottom: 2%;
+    margin: auto;
+}
+
+li.page-item.active > a {
+    background-color: #009070;
+}
+
+li.page-item.active > a:hover{
+    background-color: #009070;
+    color: white;
+}
+
+li.page-item > a {
+    color: #009070;
+}
+
+li.page-item > a:hover {
+    color: #009070;
+}
+
+.form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+} 
+
+th.col-width-350 {
+    width: 350px!important;
+}
+
+ul.nav-tabs > li.nav-item > a.nav-link{
+    color: #343a40;
+}
+
+ul.nav-tabs > li.nav-item > a.nav-link.active{
+    color: #009070;
+}
+
+.export_href{
+    color: #c6e2ff;
+    text-decoration: none;
+}
+
+.export_csv {
+    position: fixed;
+    bottom: 2%;
+    right: 5%
+}
+
+.export-btn, .export-btn:checked, .export-btn::after, .export-btn:focus {
+    color: #009070;
+    border: 1px solid #DEE2E6;;
+    background-color: white;
+    align-self: center;
+}
+
+.export-btn:hover {
+    color: #009070;
+    background-color: #EAECEF;
+    border: 1px solid #DEE2E6;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.self-align-center {
+    align-self: center;
+}
