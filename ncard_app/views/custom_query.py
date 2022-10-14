@@ -20,7 +20,7 @@ schema_models = [
     models.Country,
     models.PersonAddress,
     models.Grant,
-    models.Student,
+    models.Students,
 ]
 
 friendly_names = {
