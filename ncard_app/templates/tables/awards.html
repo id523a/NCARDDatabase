@@ -3,32 +3,29 @@
 {% load querystring from django_tables2 %}
 {% load bootstrap5 %}
 {% load crispy_forms_tags %}
-
-{% block title %}Organisations | NCARD Table{% endblock %}
+{% block title %}Awards | NCARD Table{% endblock %}
 
 {% block content%}
-<div class="col-md-8">
-            <h1 class="ncard-dark-green">Organisations</h1>
-</div>
-
 <div class="row mb-4">
+    <div class="col-md-3">
+            <h1 class="ncard-dark-green" >Awards</h1>
 
-    {% if filter %}
-        <div class="col-md-2">
-            <form action="" method="get" class="form form-inline">
-                {% bootstrap_form filter.form layout='inline'  %}
-
-             </form>
-        </div>
-    {% endif %}
-        <div class="col-md-8"></div>
-        <div class="col-md-2">
-            <a href="{% url 'add-organisation' %}">
-              <button class="ncard_CTA">ADD</button>
-            </a>
-        </div>
     </div>
 
+    {% if filter %}
+        <div class="col-md-3" style="align-self: center;">
+            <form action="" method="get" class="form form-inline">
+                {% bootstrap_form filter.form layout='inline'  %}
+            </form>
+        </div>
+    {% endif %}
+    <div class="col-md-4"></div>
+    <div class="col-md-2">
+        <a href="{% url 'add-award' %}">
+            <button class="ncard_CTA">ADD</button>
+        </a>
+    </div>
+</div>
 
 <div id="ncard_table">
      {% render_table table 'django_tables2/bootstrap4.html' %}
@@ -36,8 +33,3 @@
 <div class="export_csv"><a class="btn btn-primary mb-3 export_href" href="{% querystring '_export'='csv' %}">Export</a></div>
 {% endblock %}
 
-{% block custom_js %}
-
-    <script src="/static/table_edit.js"></script>
-
-{% endblock custom_js %}
