@@ -222,10 +222,16 @@ function addFilterSection(e) {
     
     const conditionSelector = document.createElement("select");
     conditionSelector.className = "form-select";
-    options = ["(Add condition)", "Contains", "Starts with", "Ends with", "Equals"];
-    for (let i = 0; i < options.length; ++i) {
-        createOption(conditionSelector, options[i], options[i]);
-    }
+
+    createOption(conditionSelector, "", "(Add condition)");
+    createOption(conditionSelector, "iexact", "Equals (case insensitive)");
+    createOption(conditionSelector, "icontains", "Contains");
+    createOption(conditionSelector, "istartswith", "Starts with");
+    createOption(conditionSelector, "iendswith", "Ends with");
+    createOption(conditionSelector, "exact", "Equals (match case)");
+    createOption(conditionSelector, "contains", "Contains (match case)");
+    createOption(conditionSelector, "startswith", "Starts with (match case)");
+    createOption(conditionSelector, "endswith", "Ends with (match case)");
     conditionSelector.selectedIndex = 0;
     conditionSelector.addEventListener("change", addFilterCondition(filterContainer, conditionSelector));
 

@@ -67,28 +67,6 @@ def get_field_friendly_name(model, field):
         verbose_name = field.name.replace('_', ' ')
     return capitalize_first(verbose_name)
 
-"""
-extra_fields = {
-    models.Person: [
-        {'name': 'full_name', 'label': 'Full name', 'type': 'string'},
-    ],
-}
-"""
-
-iso_week_day_type = [
-    (1, 'Monday'),
-    (2, 'Tuesday'),
-    (3, 'Wednesday'),
-    (4, 'Thursday'),
-    (5, 'Friday'),
-    (6, 'Saturday'),
-    (7, 'Sunday'),
-]
-
-schema_enums = [
-    iso_week_day_type
-]
-
 def get_schema_meta(model):
     return {
         'singular': capitalize_first(model._meta.verbose_name),
@@ -100,32 +78,50 @@ schema_meta = {model._meta.model_name: get_schema_meta(model) for model in schem
 schema_meta['date'] = {'fakeTable': True, 'singular': 'Date', 'plural': 'Dates'}
 
 def get_schema_fields(model):
-    # Add computed fields first
-    # fields = list(extra_fields.get(model, []))
     fields = {}
     # Create list of fields by inspecting model
     for field in model._meta.get_fields():
         field_type = get_field_type(field)
+        enum_choices = None
         if not isinstance(field_type, str):
-            enum_index = len(schema_enums)
-            schema_enums.append(field_type)
-            field_type = f'enum{enum_index}'
+            enum_choices = field_type
+            field_type = 'enum'
         if field_type != '':
             fields[field.name] = {'label': get_field_friendly_name(model, field), 'type': field_type}
+        if enum_choices is not None:
+            fields[field.name]['choices'] = enum_choices
     return fields
 
 schema_fields = {model._meta.model_name: get_schema_fields(model) for model in schema_models}
+
+iso_week_day_choices = [
+    (1, 'Monday'),
+    (2, 'Tuesday'),
+    (3, 'Wednesday'),
+    (4, 'Thursday'),
+    (5, 'Friday'),
+    (6, 'Saturday'),
+    (7, 'Sunday'),
+]
 
 schema_fields['date'] = {
     'year': {'label': 'Year', 'type': 'integer'},
     'month': {'label': 'Month', 'type': 'integer'},
     'day': {'label': 'Day of month', 'type': 'integer'},
     'week': {'label': 'Week of year', 'type': 'integer'},
-    'iso_week_day': {'label': 'Day of week', 'type': 'enum0'}
+    'iso_week_day': {'label': 'Day of week', 'type': 'enum', 'choices': iso_week_day_choices}
+}
+
+supported_conditions = {
+    'string': {'exact', 'iexact', 'contains', 'icontains', 'startswith', 'istartswith', 'endswith', 'iendswith'},
+    'integer': {'exact', 'gt', 'gte', 'lt', 'lte', 'range'},
+    'decimal': {'exact', 'gt', 'gte', 'lt', 'lte', 'range'},
+    'date': {'exact', 'gt', 'gte', 'lt', 'lte', 'range'},
+    'enum': {'in'},
+    'boolean': {'in'}
 }
 
 schema = {
-    'enums': schema_enums,
     'meta': schema_meta,
     'fields': schema_fields
 }
@@ -138,6 +134,17 @@ def custom_query_schema(request):
 @login_required
 def custom_query(request):
     return render(request, 'custom_query.html')
+
+def get_clean_field(start_table, subfield_list):
+    current_type = start_table
+    subfields_cleaned = []
+    for subfield in subfield_list:
+        subfield_info = schema_fields[current_type][subfield]
+        current_type = subfield_info['type']
+        subfields_cleaned.append(subfield)
+    if current_type in schema_meta and not schema_meta[current_type].get('fakeTable', False):
+        subfields_cleaned.append('id')
+    return "__".join(subfields_cleaned)
 
 @api_login_required
 def custom_query_data(request):
@@ -161,27 +168,33 @@ def custom_query_data(request):
     if start_model is None:
         raise SuspiciousOperation("Invalid starting table.")
     
-    objs = start_model.objects.all()
+    query_set = start_model.objects.all()
     
     # Validate field selection
+    selected_fields = []
     try:
-        fields_cleaned = []
         for subfield_list in body["fields"]:
-            current_type = start_table
-            subfields_cleaned = []
-            for subfield in subfield_list:
-                subfield_info = schema_fields[current_type][subfield]
-                current_type = subfield_info['type']
-                subfields_cleaned.append(subfield)
-            if current_type in schema_meta and not schema_meta[current_type].get('fakeTable', False):
-                subfields_cleaned.append('id')
-            fields_cleaned.append("__".join(subfields_cleaned))
+            selected_fields.append(get_clean_field(start_table, subfield_list))
     except TypeError:
         raise SuspiciousOperation("Invalid field selection.")
     except KeyError:
         raise SuspiciousOperation("Invalid field selection.")
-    # TODO: Support computed fields such as full_name
     
-    # TODO: Filter the rows
+    # Filter the rows
+    try:
+        for filter_section in body["filters"]:
+            filter_field = get_clean_field(start_table,filter_section["field"])
+            cond_q = Q(pk__in=[])
+            for filter_condition in filter_section["conditions"]:
+                id = filter_condition["id"]
+                arg = filter_condition["arg"]
+                cond_dict = {}
+                cond_dict[filter_field + "__" + id] = arg
+                cond_q |= Q(**cond_dict)
+            query_set = query_set.filter(cond_q)
+    except TypeError:
+        raise SuspiciousOperation("Invalid condition.")
+    except KeyError:
+        raise SuspiciousOperation("Invalid condition.")
 
-    return JsonResponse(list(objs.values_list(*fields_cleaned)), safe=False)
+    return JsonResponse(list(query_set.values_list(*selected_fields)), safe=False)
