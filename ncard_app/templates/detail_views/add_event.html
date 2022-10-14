@@ -3,8 +3,10 @@
 {% block title %}Add Event{% endblock %}
 
 {% block content %}
+    <a class="close-btn" href="{% url 'list-events' %}">
+        <button type="button" class="btn-close" aria-label="Close"></button>
+    </a>
     <h1 class="ncard-dark-green">Add Event</h1><br>
-    <div class="close_position"><a href="{% url 'list-events' %}" class="aui_close">&times;</a></div>
     <div class="form-margin">
         <form action="{% url 'add-event' %}" method=POST>
             {% csrf_token %}

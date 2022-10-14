@@ -1,11 +1,12 @@
 {% extends 'events/base.html' %}
 {% load crispy_forms_tags %}
-
 {% block title %}Add Grant{% endblock %}
 
 {% block content%}
+    <a class="close-btn" href="{% url 'list-grants' %}">
+        <button type="button" class="btn-close" aria-label="Close"></button>
+    </a>
     <h1 class="ncard-dark-green">Add Grant</h1><br>
-            <div class="close_position"><a href="{% url 'list-grants' %}" class="aui_close">&times;</a></div>
     <div class="form-margin">
         <form action="{% url 'add-grant' %}" method=POST>
             {% csrf_token %}

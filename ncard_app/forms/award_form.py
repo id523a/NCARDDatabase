@@ -20,8 +20,8 @@ class AwardForm(ModelForm):
                 Tab('Award Details',
                     HTML("<br>"),
                     Row(
-                        Column('award_type', css_class='col-md-3 mb-0'),
                         Column('name', css_class='col-md-9 mb-0'),
+                        Column('award_type', css_class='col-md-3 mb-0'),
                     ),
                     Row(Field('agency', css_class='selectpicker form-control row', data_live_search='true')),
                     Row(

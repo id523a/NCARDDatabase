@@ -3,8 +3,10 @@
 {% block title %}Add Project{% endblock %}
 
 {% block content%}
-    <h1 class="ncard-dark-green">Add Project</h1>
-    <div class="close_position"><a href="{% url 'list-projects' %}" class="aui_close">&times;</a></div>
+    <a class="close-btn" href="{% url 'list-projects' %}">
+        <button type="button" class="btn-close" aria-label="Close"></button>
+    </a>
+    <h1 class="ncard-dark-green">Add Project</h1><br>
     <div class="form-margin">
         <form action="{% url 'add-project' %}" method=POST>
             {% csrf_token %}

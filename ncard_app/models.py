@@ -23,11 +23,11 @@ class Organisation(models.Model):
         SERVICE_PROVIDER = 4, 'Service Provider'
 
     name = models.CharField('name', max_length=255)
+    organisation_type = models.IntegerField('type', choices=OrganisationType.choices, default=OrganisationType.NONE)
     primary_contact = models.ForeignKey('ncard_app.Person', on_delete=models.RESTRICT, null=True, blank=True, related_name='organisations_primary_contact')
     phone = models.CharField('phone', max_length=25, blank=True, validators=[phone_validator])
     website = models.URLField('website', blank=True)
     twitter_handle = models.CharField('Twitter handle', max_length=16, blank=True, validators=[twitter_validator])
-    organisation_type = models.IntegerField('type', choices=OrganisationType.choices, default=OrganisationType.NONE)
 
     def __str__(self):
         return self.name
@@ -67,10 +67,6 @@ class Person(models.Model):
         NO = 0, 'No'
         YES = 1, 'Yes'
 
-    class AddressType(models.IntegerChoices):
-        HOME = 1, 'Home'
-        WORK = 2, 'Work'
-
     title = models.CharField(max_length=16, blank=True)
     given_name = models.CharField('First Name',max_length=64)
     middle_name = models.CharField('Middle Name',max_length=64, blank=True)
@@ -100,16 +96,23 @@ class Person(models.Model):
     organisation_primary = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contacts_primary_org', verbose_name='Organisation (Primary)')
     organisation_other = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contacts_other_org', verbose_name='Organisation (Other)')
     clinician = models.IntegerField(choices=Clinician.choices, default=Clinician.NO)
-    notes = models.TextField(blank=True)
     research_focus = models.CharField('Research Focus',max_length=255, blank=True)
-    address_type = models.IntegerField(choices=AddressType.choices, default=AddressType.HOME)
-    line1 = models.CharField('line 1', max_length=64)
-    line2 = models.CharField('line 2', max_length=64, blank=True)
-    line3 = models.CharField('line 3', max_length=64, blank=True)
-    suburb = models.CharField(max_length=32, blank=True)
-    state = models.CharField('state (abbrev.)', max_length=3, blank=True)
-    postcode = models.CharField(max_length=20)
-    country = models.ForeignKey(Country, on_delete=models.RESTRICT, to_field='code', default='AU', related_name='+')
+    work_line1 = models.CharField('Line 1', max_length=64, blank=True)
+    work_line2 = models.CharField('Line 2', max_length=64, blank=True)
+    work_line3 = models.CharField('Line 3', max_length=64, blank=True)
+    work_suburb = models.CharField('Suburb',max_length=32, blank=True)
+    work_state = models.CharField('State (abbrev.)', max_length=3, blank=True)
+    work_postcode = models.CharField('Postcode', max_length=20, blank=True)
+    work_country = models.ForeignKey(Country, on_delete=models.RESTRICT, to_field='code', default='AU', related_name='+', verbose_name='Country')
+    home_line1 = models.CharField('Line 1', max_length=64, blank=True)
+    home_line2 = models.CharField('Line 2', max_length=64, blank=True)
+    home_line3 = models.CharField('Line 3', max_length=64, blank=True)
+    home_suburb = models.CharField('Suburb', max_length=32, blank=True)
+    home_state = models.CharField('State (abbrev.)', max_length=3, blank=True)
+    home_postcode = models.CharField('Postcode', max_length=20, blank=True)
+    home_country = models.ForeignKey(Country, on_delete=models.RESTRICT, to_field='code', default='AU', related_name='+', verbose_name='Country')
+    notes = models.TextField(blank=True)
+
 
     @property
     def full_name(self):
@@ -166,7 +169,7 @@ class Award(models.Model):
         NOMINEE = 2, 'Nominee'
         FINALIST = 3, 'Finalist'
 
-    name = models.CharField('Award Name', max_length=255)
+    name = models.CharField('Name', max_length=255)
     award_type = models.IntegerField('type', choices=AwardType.choices)
     agency = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='awards')
     recipients = models.ManyToManyField(Person, related_name='awards')
@@ -194,7 +197,7 @@ class Award(models.Model):
 #         return str(self.person)
 
 class Event(models.Model):
-    title = models.CharField('Event Title', max_length=255, blank=True)
+    title = models.CharField('Title', max_length=255, blank=True)
     event_type = models.CharField('type', max_length=255)
     date = models.DateField('date')
     location = models.CharField('location', max_length=255, blank=True)
@@ -223,8 +226,9 @@ class Publication(models.Model):
         INDETERMINATE = 3, 'Indeterminate'
         EMBARGOED = 4, 'Embargoed'
 
-    title = models.CharField('title', max_length=255)
+    title = models.TextField('title')
     publication_type = models.CharField('type', max_length=255) # integer choices
+    ncard_publication = models.BooleanField('NCARD publication', default=True)
     year = models.PositiveSmallIntegerField('year')
     contributors = models.ManyToManyField(Person, related_name='publications')
     journal = models.CharField('journal', max_length=255)
@@ -239,7 +243,6 @@ class Publication(models.Model):
     abstract = models.TextField('abstract', blank=True)
     citation = models.TextField('citation (Vancouver)', blank=True)
     source_ID = models.CharField('source ID', max_length=50, blank=True) # check type
-    ncard_publication = models.BooleanField('NCARD publication', default=True)
 
     def __str__(self):
         if self.ncard_publication:
@@ -251,8 +254,8 @@ class Publication(models.Model):
         db_table = "Publication"
 
 class Grant(models.Model):
-    reference = models.CharField(max_length=64, blank=True)
     title = models.CharField(max_length=255, blank=True)
+    reference = models.CharField(max_length=64, blank=True)
     project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True, related_name='grants')
     investigators = models.ManyToManyField(Person, through='GrantInvestigator', related_name='grants')
 

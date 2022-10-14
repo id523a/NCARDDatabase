@@ -122,6 +122,7 @@ class StudentTable(tables.Table):
 
     class Meta:
         model = models.Students
+        exclude = ('id',)
         attrs = {"class": "table table-striped", "th": {"scope": "col"}}
 
     def render_edit(self, record):

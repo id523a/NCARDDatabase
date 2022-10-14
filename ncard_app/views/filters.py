@@ -111,7 +111,7 @@ class GrantFilter(django_filters.FilterSet):
 
 class PublicationFilter(django_filters.FilterSet):
     query = django_filters.CharFilter(method='universal_search',
-                                      label="title, type, year")
+                                      label="title, type, year, journal, doi")
 
     class Meta:
         model = models.Publication
@@ -120,7 +120,7 @@ class PublicationFilter(django_filters.FilterSet):
     def universal_search(self, queryset, name, value):
         return models.Publication.objects.all().filter(
 
-            Q(publication_type=value) | Q(year__icontains=value) | Q(title__icontains=value) 
+            Q(publication_type=value) | Q(year__icontains=value) | Q(title__icontains=value) | Q(journal__icontains=value) | Q(doi__icontains=value) 
 
         )
 
