@@ -56,6 +56,10 @@
     background-image: linear-gradient(to right, #009070, #A5D2C3);
 }
 
+.background-color{
+    background-image: linear-gradient(to right, #009070, #A5D2C3);
+}
+
 ul.space_list li {
     margin-right: 1em;
 }
@@ -187,4 +191,28 @@ ul.nav-tabs > li.nav-item > a.nav-link.active{
 
 .self-align-center {
     align-self: center;
+}
+
+.icon {
+    border: 5px solid #DEE2E6;
+    border-radius: 10px;
+    padding: 5px;
+    width: 120px;
+    transition: 0.4s;
+  }
+  
+.icon:hover {
+    border: 5px solid #A5D2C3;  
+    visibility: visible;
+    opacity: 1;
+}
+
+.imgbox {
+    display: grid;
+    height: 100%;
+}
+.center-fit {
+    max-width: 100%;
+    max-height: 100vh;
+    margin: auto;
 }

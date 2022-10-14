@@ -4,7 +4,7 @@ from ncard_app.views.decorators import login_required
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('', views.index, name="index"),
+    path('', auth_views.LoginView.as_view(), name="homepage"),
     path('dashboard/', views.dashboard, name="dashboard"),
     path('login_user/', auth_views.LoginView.as_view(), name="login"),
     path('logout_user/', auth_views.logout_then_login, name="logout"),
