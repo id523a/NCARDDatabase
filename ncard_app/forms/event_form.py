@@ -23,17 +23,27 @@ class EventForm(ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            Row(
-                Column('event_type', css_class='col-md-3 mb-0'),
-                Column('date', css_class='col-md-5 mb-0'),
-                Column('number_attendees', css_class='col-md-4 mb-0'),
-            ),
-            Row(
-                Column('title', css_class='col-md-2 mb-0'),
-                Column('location', css_class='col-md-10 mb-0'),
-            ),
-            Row(Field('lead_organisation', css_class='selectpicker form-control row', data_live_search='true')),
-            Row(Field('lead_contacts', css_class='selectpicker form-control row', data_live_search='true')),
-            Row('detail'),
-            Row('participants'),
+            TabHolder(
+                Tab('Event Information',
+                    HTML("<br>"),
+                    Row(
+                        Column('title', css_class='col-md-9 mb-0'),
+                        Column('event_type', css_class='col-md-3 mb-0'),
+                    ),
+                    Row(
+                        Column('number_attendees', css_class='col-md-3 mb-0'),
+                        Column('date', css_class='col-md-3 mb-0'),
+                        Column('location', css_class='col-md-6 mb-0'),
+                    ),
+                    Row(
+                        Column(Field('lead_organisation', css_class='selectpicker form-control col-md-3 mb-0', data_live_search='true')),
+                        Column(Field('lead_contacts', css_class='selectpicker form-control col-md-9 mb-0', data_live_search='true'))
+                    ),
+                    Row('detail'),
+                ),
+                Tab('Participants',
+                HTML("<br>"),
+                Row('participants'),
+                ),
+            )
         )

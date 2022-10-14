@@ -78,6 +78,32 @@ class PersonForm(ModelForm):
                     Row('organisation_other'),
                 ),
 
+                Tab('Office Address',
+                    HTML("<br>"),
+                    Row('work_line1'),
+                    Row('work_line2'),
+                    Row('work_line3'),
+                    Row(
+                        Column('work_suburb', css_class='col-md-3 mb-0'),
+                        Column('work_state', css_class='col-md-3 mb-0'),
+                        Column('work_postcode', css_class='col-md-3 mb-0'),
+                        Column('work_country', css_class='col-md-3 mb-0'),
+                    ),
+                ),
+
+                Tab('Home Address',
+                    HTML("<br>"),
+                    Row('home_line1'),
+                    Row('home_line2'),
+                    Row('home_line3'),
+                    Row(
+                        Column('home_suburb', css_class='col-md-3 mb-0'),
+                        Column('home_state', css_class='col-md-3 mb-0'),
+                        Column('home_postcode', css_class='col-md-3 mb-0'),
+                        Column('home_country', css_class='col-md-3 mb-0'),
+                    ),
+                ),
+
                 Tab('Notes',
                     HTML("<br>"),
                     Row('notes'),

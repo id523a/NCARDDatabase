@@ -4,8 +4,8 @@
 {% block title %}Add Person{% endblock %}
 
 {% block content %}
-    <h1 class="ncard-dark-green">Add Person</h1>
-    <div class="close_position"><a href="{% url 'list-people' %}" class="aui_close">&times;</a></div>
+    <a class="btn btn-close close-btn" href="{% url 'list-people' %}"></a> 
+    <h1 class="ncard-dark-green">Add Person</h1><br>
     <div class="form-margin">
         <form action="{% url 'add-person' %}" method=POST>
             {% csrf_token %}

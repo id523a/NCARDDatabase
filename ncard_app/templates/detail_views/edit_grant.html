@@ -1,10 +1,11 @@
 {% extends 'events/base.html' %}
 {% load crispy_forms_tags %}
+
 {% block title %}Edit Grant{% endblock %}
 
-{% block content%}
+{% block content %}
+    <a class="btn btn-close close-btn" href="{% url 'list-grants' %}"></a> 
     <h1 class="ncard-dark-green">Edit Grant</h1><br>
-    <div class="close_position"><a href="{% url 'list-grants' %}" class="aui_close">&times;</a></div>
     <div class="form-margin">
         <form action="{% url 'edit-grant' form.instance.id %}" method=POST>
             {% csrf_token %}

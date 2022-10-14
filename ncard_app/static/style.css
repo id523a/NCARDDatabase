@@ -32,7 +32,7 @@
 
 #ncard_table tr > :last-child {
     position: sticky;
-    width: 100px;
+    width: 100px!important;
     background-color: white;
     right: 0px;
     text-align: center;
@@ -145,8 +145,8 @@ li.page-item > a:hover {
     box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
 } 
 
-th#award-table {
-    width: 350px; 
+th.col-width-350 {
+    width: 350px!important;
 }
 
 ul.nav-tabs > li.nav-item > a.nav-link{
@@ -160,4 +160,31 @@ ul.nav-tabs > li.nav-item > a.nav-link.active{
 .export_href{
     color: #c6e2ff;
     text-decoration: none;
+}
+
+.export_csv {
+    position: fixed;
+    bottom: 2%;
+    right: 5%
+}
+
+.export-btn, .export-btn:checked, .export-btn::after, .export-btn:focus {
+    color: #009070;
+    border: 1px solid #DEE2E6;;
+    background-color: white;
+    align-self: center;
+}
+
+.export-btn:hover {
+    color: #009070;
+    background-color: #EAECEF;
+    border: 1px solid #DEE2E6;
+}
+
+.text-align-right {
+    text-align: right;
+}
+
+.self-align-center {
+    align-self: center;
 }
