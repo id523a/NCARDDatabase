@@ -4,9 +4,7 @@
 {% block title %}Add Person{% endblock %}
 
 {% block content %}
-    <a class="close-btn" href="{% url 'list-people' %}">
-        <button type="button" class="btn-close" aria-label="Close"></button>
-    </a>
+    <a class="btn btn-close close-btn" href="{% url 'list-people' %}"></a> 
     <h1 class="ncard-dark-green">Add Person</h1><br>
     <div class="form-margin">
         <form action="{% url 'add-person' %}" method=POST>

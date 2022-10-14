@@ -1,11 +1,10 @@
 {% extends 'events/base.html' %}
 {% load crispy_forms_tags %}
+
 {% block title %}Edit Student{% endblock %}
 
-{% block content%}
-    <a class="close-btn" href="{% url 'list-students' %}">
-        <button type="button" class="btn-close" aria-label="Close"></button>
-    </a>
+{% block content %}
+    <a class="btn btn-close close-btn" href="{% url 'list-students' %}"></a> 
     <h1 class="ncard-dark-green">Edit Student</h1>
     <div class="form-margin">
         <form action="{% url 'edit-student' form.instance.id %}" method=POST>

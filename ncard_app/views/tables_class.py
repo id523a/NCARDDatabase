@@ -18,7 +18,7 @@ class PersonTable(tables.Table):
         model = models.Person
         # fields=('given_name','title')
         exclude = ('id', 'surname_first', 'auth_user')
-        attrs = {"class": "table table-striped", "th": {"scope": "col", "id": "col-width-350"}}
+        attrs = {"class": "table table-striped", "th": {"scope": "col", "class": "col-width-350"}}
 
     def render_edit(self, record):
         return mark_safe(
@@ -33,7 +33,7 @@ class AwardTable(tables.Table):
     class Meta:
         model = models.Award
         exclude = ('id',)
-        attrs = {"class": "table table-striped", "th": {"scope": "col", "id": "col-width-350"}}
+        attrs = {"class": "table table-striped", "th": {"scope": "col", "class": "col-width-350"}}
 
     def render_edit(self, record):
         return mark_safe(
@@ -48,7 +48,7 @@ class OrganisationTable(tables.Table):
     class Meta:
         model = models.Organisation
         exclude = ('id',)
-        attrs = {"class": "table table-striped", "th": {"scope": "col", "id": "col-width-350"}}
+        attrs = {"class": "table table-striped", "th": {"scope": "col", "class": "col-width-350"}}
 
     def render_edit(self, record):
         return mark_safe(
@@ -63,7 +63,7 @@ class EventTable(tables.Table):
     class Meta:
         model = models.Event
         exclude = ('id',)
-        attrs = {"class": "table table-striped", "th": {"scope": "col", "id": "col-width-350"}}
+        attrs = {"class": "table table-striped", "th": {"scope": "col", "class": "col-width-350"}}
 
     def render_edit(self, record):
         return mark_safe(
@@ -93,7 +93,7 @@ class GrantTable(tables.Table):
     class Meta:
         model = models.Grant
         exclude = ('id',)
-        attrs = {"class": "table table-striped", "th": {"scope": "col", "id": "col-width-350"}}
+        attrs = {"class": "table table-striped", "th": {"scope": "col", "class": "col-width-350"}}
 
     def render_edit(self, record):
         return mark_safe(
@@ -108,7 +108,7 @@ class PublicationTable(tables.Table):
     class Meta:
         model = models.Publication
         exclude = ('id',)
-        attrs = {"class": "table table-striped", "th": {"scope": "col", "id": "col-width-350"}}
+        attrs = {"class": "table table-striped", "th": {"scope": "col", "class": "col-width-350"}}
 
     def render_edit(self, record):
         return mark_safe(

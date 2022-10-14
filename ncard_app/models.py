@@ -1,4 +1,3 @@
-from email.policy import default
 from django.conf import settings
 from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator
@@ -27,7 +26,7 @@ class Organisation(models.Model):
     primary_contact = models.ForeignKey('ncard_app.Person', on_delete=models.RESTRICT, null=True, blank=True, related_name='organisations_primary_contact')
     phone = models.CharField('phone', max_length=25, blank=True, validators=[phone_validator])
     website = models.URLField('website', blank=True)
-    twitter_handle = models.CharField('Twitter handle', max_length=16, blank=True, validators=[twitter_validator])
+    twitter_handle = models.CharField('Twitter Handle', max_length=16, blank=True, validators=[twitter_validator])
 
     def __str__(self):
         return self.name
@@ -90,7 +89,7 @@ class Person(models.Model):
     researchgate = models.URLField('ResearchGate', blank=True)
     loop_profile = models.URLField('Loop Profile', blank=True)
     linkedin = models.URLField('LinkedIn (URL)', blank=True)
-    twitter = models.CharField('Twitter Handle (please include "@")', max_length=16, blank=True, validators=[twitter_validator])
+    twitter = models.CharField('Twitter Handle', max_length=16, blank=True, validators=[twitter_validator])
     employers = models.ManyToManyField(Organisation, blank=True, related_name='employees')
     location = models.CharField(max_length=50, blank=True)
     organisation_primary = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contacts_primary_org', verbose_name='Organisation (Primary)')
