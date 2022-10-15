@@ -19,6 +19,7 @@
     }
     .field-row {
         display: flex;
+        align-items: center;
         flex-wrap: wrap;
     }
     .field-row > * {
@@ -31,7 +32,6 @@
     .field-row .bootstrap-select {
         width: 100% !important;
     }
-
     .field-row button {
         width: 2.5em;
     }
@@ -41,6 +41,9 @@
     }
     .filter-section {
         margin-bottom: 1em;
+    }
+    .filter-section:first-child > .field-row .conjunction {
+        display: none;
     }
     .filter-container {
         padding-left: 3em;
@@ -54,8 +57,8 @@
         vertical-align: baseline;
         background-color: white;
     }
-    .filter-container div:not(:last-child)::after {
-        content: " OR";
+    .filter-condition:first-child > .conjunction {
+        display: none;
     }
     .condition-argument {
         width: 20em;
@@ -206,6 +209,10 @@ function addFilterCondition(filterContainer, selector) {
             filterID.type = "hidden";
             filterID.className = "condition-id";
             filterID.value = selectedOption.value;
+            
+            const conjunctionText = document.createElement("span");
+            conjunctionText.className = "conjunction";
+            conjunctionText.appendChild(document.createTextNode("OR "));
 
             const filterArgument = document.createElement("input");
             filterArgument.type = "text";
@@ -213,6 +220,7 @@ function addFilterCondition(filterContainer, selector) {
 
             createButton(newFilter, "btn btn-outline-danger", "X", deleteRow(newFilter));
             newFilter.appendChild(filterID);
+            newFilter.appendChild(conjunctionText);
             newFilter.appendChild(document.createTextNode(selectedOption.text));
             newFilter.appendChild(filterArgument);
             
@@ -264,12 +272,17 @@ function addFilterSection(e) {
     const conditionSelector = document.createElement("select");
     conditionSelector.className = "form-select";
 
-
     conditionSelector.addEventListener("change", addFilterCondition(filterContainer, conditionSelector));
 
     const fieldRow = document.createElement("div");
     fieldRow.className = "field-row";
     createButton(fieldRow, "btn btn-outline-danger", "X", deleteRow(filterSection));
+    
+    const conjunctionText = document.createElement("span");
+    conjunctionText.className = "conjunction";
+    conjunctionText.appendChild(document.createTextNode("AND"));
+    fieldRow.appendChild(conjunctionText);
+    
     const eventHandler = changeFilterField(filterContainer, conditionSelector);
     createFieldSelect(fieldRow, selectedModel, eventHandler);
     // Populate initial list of conditions

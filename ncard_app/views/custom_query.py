@@ -184,7 +184,7 @@ def custom_query_data(request):
     try:
         for filter_section in body["filters"]:
             filter_field = get_clean_field(start_table,filter_section["field"])
-            cond_q = Q(pk__in=[])
+            cond_q = Q()
             for filter_condition in filter_section["conditions"]:
                 id = filter_condition["id"]
                 arg = filter_condition["arg"]
