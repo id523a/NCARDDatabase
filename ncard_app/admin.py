@@ -1,8 +1,9 @@
 from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin
+
 from ncard_app import models
 
 admin.site.register(models.Person)
-admin.site.register(models.Organisation)
 admin.site.register(models.Project)
 admin.site.register(models.Award)
 admin.site.register(models.Event)
@@ -22,3 +23,7 @@ class GrantAdmin(admin.ModelAdmin):
     exclude = ['investigators']
 
 admin.site.register(models.Grant, GrantAdmin)
+
+class OrganisationAdmin(ImportExportModelAdmin):
+    pass
+admin.site.register(models.Organisation, OrganisationAdmin)

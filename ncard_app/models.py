@@ -24,9 +24,9 @@ class Organisation(models.Model):
     name = models.CharField('name', max_length=255)
     organisation_type = models.IntegerField('type', choices=OrganisationType.choices, default=OrganisationType.NONE)
     primary_contact = models.ForeignKey('ncard_app.Person', on_delete=models.RESTRICT, null=True, blank=True, related_name='organisations_primary_contact')
-    phone = models.CharField('phone', max_length=25, blank=True, validators=[phone_validator])
-    website = models.URLField('website', blank=True)
-    twitter_handle = models.CharField('Twitter Handle', max_length=16, blank=True, validators=[twitter_validator])
+    phone = models.CharField('phone', max_length=25, null=True, blank=True, validators=[phone_validator])
+    website = models.URLField('website', null=True, blank=True)
+    twitter_handle = models.CharField('Twitter Handle', max_length=16, null=True, blank=True, validators=[twitter_validator])
 
     def __str__(self):
         return self.name
