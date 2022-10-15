@@ -93,6 +93,45 @@ let schemaMeta = null;
 let schemaFields = null;
 let selectedModel = null;
 
+// Returns an event handler that deletes the specified DOM element.
+function deleteRow(row) {
+    return function (e) {
+        row.remove();
+    }
+}
+
+// Returns an event handler that moves the specified DOM element towards the start of the list of child nodes.
+function moveRowUp(row) {
+    return function (e) {
+        if (row.previousElementSibling) {
+            row.parentNode.insertBefore(row, row.previousElementSibling);
+        }
+        e.target.blur()
+    }
+}
+
+// Returns an event handler that moves the specified DOM element towards the end of the list of child nodes.
+function moveRowDown(row) {
+    return function (e) {
+        if (row.nextElementSibling) {
+            row.parentNode.insertBefore(row, row.nextElementSibling.nextElementSibling);
+        }
+        e.target.blur()
+    }
+}
+
+// Creates an <option> element inside the specified parent element.
+function createOption(parent, value, text) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.text = text;
+    parent.appendChild(option);
+    return option;
+}
+
+// Returns an event handler for when a (sub)field is selected in a field-row.
+// The subsequent dropdowns on that row are deleted, and if the selected field has sub-fields,
+// a single new dropdown is created for it.
 function fieldSelectHandler(selectorContainer, selector, onChange) {
     return function (e) {
         while (selectorContainer.nextSibling) {
@@ -103,48 +142,19 @@ function fieldSelectHandler(selectorContainer, selector, onChange) {
         if (schemaFields.hasOwnProperty(selectedFieldType)) {
             createFieldSelect(selectorContainer.parentNode, selectedFieldType, onChange);
         }
-        onChange();
+        onChange(selectedFieldType ? selectedFieldType : selector.dataset.modelName);
     }
 }
 
-function deleteRow(row) {
-    return function (e) {
-        row.remove();
-    }
-}
-
-function moveRowUp(row) {
-    return function (e) {
-        if (row.previousElementSibling) {
-            row.parentNode.insertBefore(row, row.previousElementSibling);
-        }
-        e.target.blur()
-    }
-}
-
-function moveRowDown(row) {
-    return function (e) {
-        if (row.nextElementSibling) {
-            row.parentNode.insertBefore(row, row.nextElementSibling.nextElementSibling);
-        }
-        e.target.blur()
-    }
-}
-
-function createOption(parent, value, text) {
-    const option = document.createElement("option");
-    option.value = value;
-    option.text = text;
-    parent.appendChild(option);
-    return option;
-}
-
+// Creates a dropdown inside the specified parent element, that selects fields from the specified model name.
+// Selecting a field in the dropdown calls the function onChange(t) where t is a string representing type of the selected field.
 function createFieldSelect(parent, modelName, onChange) {
     const selectorContainer = document.createElement("div");
     parent.appendChild(selectorContainer);
     
     const selector = document.createElement("select");
     selector.className = 'field-select';
+    selector.dataset.modelName = modelName;
     selector.addEventListener("change", fieldSelectHandler(selectorContainer, selector, onChange));
     selectorContainer.appendChild(selector);
     
@@ -160,6 +170,7 @@ function createFieldSelect(parent, modelName, onChange) {
     $(selector).selectpicker();
 }
 
+// Creates a <button> element inside the specified parent element.
 function createButton(parent, className, text, action) {
     const button = document.createElement("button");
     button.className = className;
@@ -168,6 +179,7 @@ function createButton(parent, className, text, action) {
     parent.appendChild(button);
 }
 
+// This is the event handler for the "Add Field" button.
 function addFieldRow(e) {
     if (selectedModel === null) {
         return;
@@ -177,11 +189,12 @@ function addFieldRow(e) {
     createButton(fieldRow, "btn btn-outline-danger", "X", deleteRow(fieldRow));
     createButton(fieldRow, "btn btn-outline-secondary", "\u25B2", moveRowUp(fieldRow));
     createButton(fieldRow, "btn btn-outline-secondary", "\u25BC", moveRowDown(fieldRow));
-    createFieldSelect(fieldRow, selectedModel, function() {});
+    createFieldSelect(fieldRow, selectedModel, function(selectedFieldType) {});
     document.getElementById("fieldRows").appendChild(fieldRow);
     e.target.blur();
 }
 
+// Returns an event handler for selecting a filter condition from the (Add condition...) dropdown.
 function addFilterCondition(filterContainer, selector) {
     return function (e) {
         if (selector.selectedIndex > 0) {
@@ -210,6 +223,34 @@ function addFilterCondition(filterContainer, selector) {
     }
 }
 
+// Returns an event handler for changing the field being filtered. The new field might be a different type
+// and therefore require a different set of filters.
+function changeFilterField(filterContainer, conditionSelector) {
+    return function (selectedFieldType) {
+        filterContainer.innerHTML = "";
+        console.log(selectedFieldType);
+        conditionSelector.innerHTML = "";
+        const firstOption = createOption(conditionSelector, "", "(Add condition...)");
+        conditionSelector.selectedIndex = 0;
+        let enableConditionSelector = false;
+        
+        if (selectedFieldType === "string") {
+            enableConditionSelector = true;
+            createOption(conditionSelector, "iexact", "Equals (case insensitive)").dataset.args = "string";
+            createOption(conditionSelector, "icontains", "Contains").dataset.args = "string";
+            createOption(conditionSelector, "istartswith", "Starts with").dataset.args = "string";
+            createOption(conditionSelector, "iendswith", "Ends with").dataset.args = "string";
+            createOption(conditionSelector, "exact", "Equals (match case)").dataset.args = "string";
+            createOption(conditionSelector, "contains", "Contains (match case)").dataset.args = "string";
+            createOption(conditionSelector, "startswith", "Starts with (match case)").dataset.args = "string";
+            createOption(conditionSelector, "endswith", "Ends with (match case)").dataset.args = "string";
+        }
+        
+        conditionSelector.style.display = enableConditionSelector ? null : "none";
+    }
+}
+
+// This is the event handler for the "Add Filter" button.
 function addFilterSection(e) {
     if (selectedModel === null) {
         return;
@@ -223,22 +264,16 @@ function addFilterSection(e) {
     const conditionSelector = document.createElement("select");
     conditionSelector.className = "form-select";
 
-    createOption(conditionSelector, "", "(Add condition)");
-    createOption(conditionSelector, "iexact", "Equals (case insensitive)");
-    createOption(conditionSelector, "icontains", "Contains");
-    createOption(conditionSelector, "istartswith", "Starts with");
-    createOption(conditionSelector, "iendswith", "Ends with");
-    createOption(conditionSelector, "exact", "Equals (match case)");
-    createOption(conditionSelector, "contains", "Contains (match case)");
-    createOption(conditionSelector, "startswith", "Starts with (match case)");
-    createOption(conditionSelector, "endswith", "Ends with (match case)");
-    conditionSelector.selectedIndex = 0;
+
     conditionSelector.addEventListener("change", addFilterCondition(filterContainer, conditionSelector));
 
     const fieldRow = document.createElement("div");
     fieldRow.className = "field-row";
     createButton(fieldRow, "btn btn-outline-danger", "X", deleteRow(filterSection));
-    createFieldSelect(fieldRow, selectedModel, function() { filterContainer.innerHTML = ""; });
+    const eventHandler = changeFilterField(filterContainer, conditionSelector);
+    createFieldSelect(fieldRow, selectedModel, eventHandler);
+    // Populate initial list of conditions
+    eventHandler(selectedModel);
 
     filterSection.appendChild(fieldRow);
     filterSection.appendChild(filterContainer);
@@ -247,6 +282,7 @@ function addFilterSection(e) {
     e.target.blur();
 }
 
+// Event handler for selecting / changing the starting table.
 function selectStartingModel(e) {
     const startingTableSelector = document.getElementById("startingTableSelector");
     const selectedValue = startingTableSelector.value;
@@ -271,6 +307,7 @@ function selectStartingModel(e) {
     }
 }
 
+// Given the DOM element for a field row (div.field-row), parse out the selected fields / subfields.
 function parseFieldRow(row) {
     let fields = [];
     for (const field of row.querySelectorAll("select.field-select")) {
@@ -281,6 +318,7 @@ function parseFieldRow(row) {
     return fields;
 }
 
+// Given the DOM element for a filter condition (div.filter-condition), parse out the id (e.g. "icontains") and the argument(s).
 function parseFilterCondition(cond) {
     return {
         id: cond.getElementsByClassName("condition-id")[0].value,
@@ -288,6 +326,7 @@ function parseFilterCondition(cond) {
     };
 }
 
+// Given the DOM element for a filter section (div.filter-section), parse out the fields being filtered, and the filter conditions.
 function parseFilterSection(sect) {
     return {
         field: parseFieldRow(sect.getElementsByClassName("field-row")[0]),
@@ -295,6 +334,7 @@ function parseFilterSection(sect) {
     };
 }
 
+// Parse the entire contents of the query form into a JavaScript object.
 function parseQuery() {
     return {
         startTable: selectedModel,
