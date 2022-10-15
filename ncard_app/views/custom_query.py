@@ -144,7 +144,7 @@ def get_clean_field(start_table, subfield_list):
         subfields_cleaned.append(subfield)
     if current_type in schema_meta and not schema_meta[current_type].get('fakeTable', False):
         subfields_cleaned.append('id')
-    return "__".join(subfields_cleaned)
+    return "__".join(subfields_cleaned), current_type
 
 @api_login_required
 def custom_query_data(request):
@@ -174,7 +174,8 @@ def custom_query_data(request):
     selected_fields = []
     try:
         for subfield_list in body["fields"]:
-            selected_fields.append(get_clean_field(start_table, subfield_list))
+            field_text, field_type = get_clean_field(start_table, subfield_list)
+            selected_fields.append(field_text)
     except TypeError:
         raise SuspiciousOperation("Invalid field selection.")
     except KeyError:
@@ -183,13 +184,17 @@ def custom_query_data(request):
     # Filter the rows
     try:
         for filter_section in body["filters"]:
-            filter_field = get_clean_field(start_table,filter_section["field"])
+            filter_field, field_type = get_clean_field(start_table,filter_section["field"])
             cond_q = Q()
             for filter_condition in filter_section["conditions"]:
                 id = filter_condition["id"]
-                arg = filter_condition["arg"]
+                if (field_type not in supported_conditions) or (id not in supported_conditions[field_type]):
+                    raise SuspiciousOperation("Invalid condition.")
+                args = filter_condition["args"]
+                if len(args) == 1:
+                    args = args[0]
                 cond_dict = {}
-                cond_dict[filter_field + "__" + id] = arg
+                cond_dict[filter_field + "__" + id] = args
                 cond_q |= Q(**cond_dict)
             query_set = query_set.filter(cond_q)
     except TypeError:
