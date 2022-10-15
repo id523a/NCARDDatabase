@@ -18,7 +18,6 @@ schema_models = [
     models.Event,
     models.Publication,
     models.Country,
-    models.PersonAddress,
     models.Grant,
     models.Students,
 ]
