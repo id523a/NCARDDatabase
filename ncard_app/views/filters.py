@@ -54,11 +54,9 @@ class OrganisationFilter(django_filters.FilterSet):
     def universal_search(self, queryset, name, value):
         qs = Q(name__icontains=value)
 
-        country_reverse = dict((v, k) for k, v in models.Organisation.OrganisationType.choices)
-        for key in country_reverse.keys():
-            if value.lower() in key.lower():
-                dict_value = country_reverse[key]
-                qs.add(Q(organisation_type=dict_value), Q.OR)
+        for index, choice_name in models.Organisation.OrganisationType.choices:
+            if value.lower() in choice_name.lower():
+                qs.add(Q(organisation_type=index), Q.OR)
 
         return models.Organisation.objects.all().filter(qs)
 
