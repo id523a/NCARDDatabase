@@ -2,6 +2,7 @@ from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 
 from ncard_app import models
+from ncard_app.views.resources import EventResource
 
 admin.site.register(models.Country)
 
@@ -26,6 +27,7 @@ admin.site.register(models.Organisation, OrganisationAdmin)
 
 class EventAdmin(ImportExportModelAdmin):
     list_display = ("event_type", "date", "number_attendees", "title", "detail", "lead_organisation", "location")
+    resources_class = EventResource
     pass
 admin.site.register(models.Event, EventAdmin)
 

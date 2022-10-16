@@ -201,9 +201,8 @@ class Event(models.Model):
     date = models.DateField('date', null=True, blank=True)
     location = models.CharField('location', max_length=255, null=True, blank=True)
     lead_organisation = models.ForeignKey(Organisation, on_delete=models.SET_NULL, blank=True, null=True, related_name='events')
-    lead_contacts = models.ManyToManyField(Person,null=True, blank=True, related_name='events')
+    lead_contacts = models.ManyToManyField(Person, null=True, blank=True, related_name='events')
     number_attendees = models.TextField('number of Attendees', null=True, blank=True)
-    # The participants field is deliberately not ManyToManyField(Person). This allows for the free-form participation info seen in the existing spreadsheet.
     participants = models.TextField('participants', null=True, blank=True)
     detail = models.TextField('details', null=True, blank=True)
 

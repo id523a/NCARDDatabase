@@ -1,4 +1,5 @@
-from import_export import resources
+from import_export import fields, resources
+from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ForeignKeyWidget
 
 from ncard_app.models import (Award, Event, Grant, Organisation, Person,
@@ -10,8 +11,8 @@ class OrganisationResource(resources.ModelResource):
         model = Organisation
 
 class PersonResource(resources.ModelResource):
-    organisation_primary = fields.field(column_name='organisation_primary', attribute='organisation_primary', widget=ForeignKeyWidget(Organisation,'name'))
-    organisation_other = fields.field(column_name='organisation_primary', attribute='organisation_primary', widget=ForeignKeyWidget(Organisation,'name'))
+    organisation_primary = fields.Field(column_name='organisation_primary', attribute='organisation_primary', widget=ForeignKeyWidget(Organisation,'name'))
+    organisation_other = fields.Field(column_name='organisation_primary', attribute='organisation_primary', widget=ForeignKeyWidget(Organisation,'name'))
     class Meta:
         model = Person
 
@@ -24,7 +25,7 @@ class AwardResource(resources.ModelResource):
         model = Award
 
 class EventResource(resources.ModelResource):
-    lead_organisation = fields.field(column_name='lead_organisation', attribute='lead_organisation', widget=ForeignKeyWidget(Organisation,'name'))
+    lead_organisation = fields.Field(column_name='lead_organisation', attribute='lead_organisation', widget=ForeignKeyWidget(Organisation,'name'))
     class Meta:
         model = Event
 
