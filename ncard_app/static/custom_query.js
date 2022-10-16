@@ -208,6 +208,10 @@ function changeFilterField(filterContainer, conditionSelector) {
                 createOption(conditionSelector, choice[0], "= " + choice[1]).dataset.argTypes = "";
             }
             break;
+        case "boolean":
+            createOption(conditionSelector, "True", "= True").dataset.argTypes = "";
+            createOption(conditionSelector, "False", "= False").dataset.argTypes = "";
+            break;
         default:
             enableConditionSelector = false;
             break;

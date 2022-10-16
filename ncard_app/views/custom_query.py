@@ -200,7 +200,9 @@ def custom_query_data(request):
             for filter_condition in filter_section["conditions"]:
                 id = filter_condition["id"]
                 if field_type == "boolean":
-                    pass
+                    cond_dict = {}
+                    cond_dict[filter_field + "__exact"] = (id == "True")
+                    cond_q |= Q(**cond_dict)
                 elif enum_choices is not None:
                     cond_dict = {}
                     cond_dict[filter_field + "__exact"] = id
