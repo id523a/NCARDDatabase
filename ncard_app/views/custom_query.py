@@ -173,6 +173,8 @@ def custom_query_data(request):
     # or whether its string representation should be looked up from the DB in a separate query (= model name)
     model_types = []
     try:
+        if len(body["fields"]) == 0:
+            body["fields"] = [[]]
         for subfield_list in body["fields"]:
             field_text, field_type = get_clean_field(start_table, subfield_list)
             selected_fields.append(field_text)

@@ -198,9 +198,10 @@ ul.nav-tabs > li.nav-item > a.nav-link.active{
     border-radius: 10px;
     padding: 5px;
     width: 120px;
-    transition: 0.4s;
-  }
-  
+    transition: 0.2s;
+    display: block;
+}
+
 .icon:hover {
     border: 5px solid #A5D2C3;  
     visibility: visible;
@@ -209,4 +210,21 @@ ul.nav-tabs > li.nav-item > a.nav-link.active{
 
 #navbar-white {
     background-color:white;
+}
+
+.ncard-dashboard {
+    padding: 50px;
+    margin: 50px;
+}
+
+.ncard-dashboard .col-md-3 {
+    text-align: center;
+}
+
+.ncard-dashboard a {
+    display: inline-block;
+    margin-bottom: 70px;
+    text-decoration: none;
+    color: #009070;
+    font-size: 120%;
 }
