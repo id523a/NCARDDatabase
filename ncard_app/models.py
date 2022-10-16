@@ -178,8 +178,8 @@ class Award(models.Model):
     detail = models.TextField('details', blank=True)
     year = models.PositiveSmallIntegerField('Year Established', null=True, blank=True)
     no_year = models.DecimalField(verbose_name="Concurrent Years",default=1.0, max_digits=10, decimal_places=1, null=True, blank=True)
-    notes = models.TextField(null=True, blank=True,)
-    link = models.URLField(null=True, blank=True,)
+    notes = models.TextField('notes', null=True, blank=True)
+    link = models.URLField('link', null=True, blank=True)
 
     def __str__(self):
         return f'{self.name} {self.year}'
@@ -233,7 +233,7 @@ class Publication(models.Model):
     print_ISBN = models.CharField('print ISBN', max_length=255, blank=True)
     abstract = models.TextField('abstract', blank=True)
     citation = models.TextField('citation (Vancouver)', blank=True)
-    source_ID = models.CharField('source ID', max_length=50, blank=True) 
+    source_ID = models.CharField('source ID', max_length=255, blank=True) 
 
     def __str__(self):
         if self.ncard_publication:
