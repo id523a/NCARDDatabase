@@ -103,6 +103,27 @@ function addFieldRow(e) {
     e.target.blur();
 }
 
+function addFilterArgument(newFilter, argType) {
+    let filterArgument;
+    switch (argType) {
+    case "string":
+        filterArgument = document.createElement("input");
+        filterArgument.type = "text";
+        filterArgument.className = "form-control condition-argument";
+        newFilter.appendChild(filterArgument);
+        break;
+    case "integer":
+        filterArgument = document.createElement("input");
+        filterArgument.type = "number";
+        filterArgument.min = 0;
+        filterArgument.value = 0;
+        filterArgument.required = true;
+        filterArgument.className = "form-control condition-argument";
+        newFilter.appendChild(filterArgument);
+        break;
+    }
+}
+
 // Returns an event handler for selecting a filter condition from the (Add condition...) dropdown.
 function addFilterCondition(filterContainer, selector) {
     return function (e) {
@@ -128,11 +149,7 @@ function addFilterCondition(filterContainer, selector) {
             argTypeStr = selectedOption.dataset.argTypes;
             if (argTypeStr.length > 0) {
                 for (argType of argTypeStr.split(" ")) {
-                    console.log(argType);
-                    const filterArgument = document.createElement("input");
-                    filterArgument.type = "text";
-                    filterArgument.className = "form-control condition-argument";
-                    newFilter.appendChild(filterArgument);
+                    addFilterArgument(newFilter, argType);
                 }
             }
 
@@ -364,16 +381,19 @@ window.addEventListener('load', (event) => {
         document.getElementById("addFieldRow").addEventListener("click", addFieldRow);
         document.getElementById("addFilterSection").addEventListener("click", addFilterSection);
         document.getElementById("showResultsButton").addEventListener("click", (e) => {
-            document.getElementById("queryResult").innerText = 'Loading...'
-            runQuery()
-            .then((response) => {
-                const table = document.getElementById("queryResult");
-                renderResultsTable(table, response);
-            });
+            if (document.getElementById("querySettings").reportValidity()) {
+                document.getElementById("queryResult").innerText = 'Loading...'
+                runQuery()
+                .then((response) => {
+                    const table = document.getElementById("queryResult");
+                    renderResultsTable(table, response);
+                });
+            }
         });
         document.getElementById("exportCSVButton").addEventListener("click", (e) => {
-            runQuery()
-            .then(exportResultsCSV);
+            if (document.getElementById("querySettings").reportValidity()) {
+                runQuery().then(exportResultsCSV);
+            }
         });
     });
 });

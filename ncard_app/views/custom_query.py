@@ -196,6 +196,10 @@ def custom_query_data(request):
                 if (field_type not in supported_conditions) or (id not in supported_conditions[field_type]):
                     raise SuspiciousOperation("Invalid condition.")
                 args = filter_condition["args"]
+                # Hack to avoid ValueError: year out of range
+                if filter_field.endswith("__year") and field_type == "integer":
+                    for i in range(len(args)):
+                        args[i] = max(1, int(args[i]))
                 if len(args) == 1:
                     args = args[0]
                 cond_dict = {}
@@ -205,6 +209,8 @@ def custom_query_data(request):
     except TypeError:
         raise SuspiciousOperation("Invalid condition.")
     except KeyError:
+        raise SuspiciousOperation("Invalid condition.")
+    except ValueError:
         raise SuspiciousOperation("Invalid condition.")
 
     # Get the results
