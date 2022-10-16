@@ -1,6 +1,6 @@
 from django.conf import settings
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
-from django.core.validators import RegexValidator, MinValueValidator
 from django.urls import reverse
 
 #validators section
@@ -24,9 +24,9 @@ class Organisation(models.Model):
     name = models.CharField('name', max_length=255)
     organisation_type = models.IntegerField('type', choices=OrganisationType.choices, default=OrganisationType.NONE)
     primary_contact = models.ForeignKey('ncard_app.Person', on_delete=models.RESTRICT, null=True, blank=True, related_name='organisations_primary_contact')
-    phone = models.CharField('phone', max_length=25, blank=True, validators=[phone_validator])
-    website = models.URLField('website', blank=True)
-    twitter_handle = models.CharField('Twitter Handle', max_length=16, blank=True, validators=[twitter_validator])
+    phone = models.CharField('phone', max_length=25, null=True, blank=True, validators=[phone_validator])
+    website = models.URLField('website', null=True, blank=True)
+    twitter_handle = models.CharField('Twitter Handle', max_length=16, null=True, blank=True, validators=[twitter_validator])
 
     def __str__(self):
         return self.name
@@ -66,51 +66,51 @@ class Person(models.Model):
         NO = 0, 'No'
         YES = 1, 'Yes'
 
-    title = models.CharField(max_length=16, blank=True)
+    title = models.CharField(max_length=16, null=True, blank=True)
     given_name = models.CharField('First Name',max_length=64)
-    middle_name = models.CharField('Middle Name',max_length=64, blank=True)
-    surname = models.CharField('Last Name', max_length=64, blank=True)
+    middle_name = models.CharField('Middle Name',max_length=64, null=True, blank=True)
+    surname = models.CharField('Last Name', max_length=64, null=True, blank=True)
     surname_first = models.BooleanField(default=False)
     auth_user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='person')
-    email = models.EmailField('Primary Email', blank=True)
-    email2 = models.EmailField('Secondary Email', blank=True)
-    phone_office = models.CharField('phone (Office)', max_length=25, blank=True, validators=[phone_validator])
-    phone_mobile = models.CharField('phone (Mobile)', max_length=25, blank=True, validators=[phone_validator])
-    phone_home = models.CharField('phone (Home)', max_length=25, blank=True, validators=[phone_validator])
-    cre_role = models.CharField('CRE Role', max_length=15, blank=True)
+    email = models.EmailField('Primary Email', null=True, blank=True)
+    email2 = models.EmailField('Secondary Email', null=True,  blank=True)
+    phone_office = models.CharField('phone (Office)', max_length=25, null=True,  blank=True, validators=[phone_validator])
+    phone_mobile = models.CharField('phone (Mobile)', max_length=25, null=True, blank=True, validators=[phone_validator])
+    phone_home = models.CharField('phone (Home)', max_length=25, null=True, blank=True, validators=[phone_validator])
+    cre_role = models.CharField('CRE Role', max_length=15, null=True, blank=True)
     ncard_relation = models.IntegerField('relationship with NCARD', choices=NCARDRelation.choices, default=NCARDRelation.OTHER)
-    project = models.CharField(max_length=50, blank=True)
+    project = models.CharField(max_length=50, null=True, blank=True)
     display_on_website = models.IntegerField(choices=DisplayOnWebsite.choices, default=DisplayOnWebsite.NO)
-    profile_url = models.URLField('Profile URL', blank=True)
-    orcid_id = models.CharField('ORCID iD', max_length=37, blank=True, validators=[orcid_validator])
+    profile_url = models.URLField('Profile URL', null=True, blank=True)
+    orcid_id = models.CharField('ORCID iD', max_length=37, null=True, blank=True, validators=[orcid_validator])
     scopus_id = models.BigIntegerField('Scopus ID', null=True, blank=True, validators=[nonnegative_validator])
-    wos_researcher_id = models.CharField('WoS ResearcherID', max_length=32, blank=True)
-    google_scholar = models.URLField('Google Scholar', blank=True)
-    researchgate = models.URLField('ResearchGate', blank=True)
-    loop_profile = models.URLField('Loop Profile', blank=True)
-    linkedin = models.URLField('LinkedIn (URL)', blank=True)
-    twitter = models.CharField('Twitter Handle', max_length=16, blank=True, validators=[twitter_validator])
+    wos_researcher_id = models.CharField('WoS ResearcherID', max_length=32, null=True, blank=True)
+    google_scholar = models.URLField('Google Scholar', null=True, blank=True)
+    researchgate = models.URLField('ResearchGate', null=True,  blank=True)
+    loop_profile = models.URLField('Loop Profile', null=True,  blank=True)
+    linkedin = models.URLField('LinkedIn (URL)', null=True,  blank=True)
+    twitter = models.CharField('Twitter Handle', max_length=16, null=True,  blank=True, validators=[twitter_validator])
     employers = models.ManyToManyField(Organisation, blank=True, related_name='employees')
-    location = models.CharField(max_length=50, blank=True)
+    location = models.CharField(max_length=50, null=True,  blank=True)
     organisation_primary = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contacts_primary_org', verbose_name='Organisation (Primary)')
     organisation_other = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contacts_other_org', verbose_name='Organisation (Other)')
     clinician = models.IntegerField(choices=Clinician.choices, default=Clinician.NO)
     research_focus = models.CharField('Research Focus',max_length=255, blank=True)
-    work_line1 = models.CharField('Line 1', max_length=64, blank=True)
-    work_line2 = models.CharField('Line 2', max_length=64, blank=True)
-    work_line3 = models.CharField('Line 3', max_length=64, blank=True)
-    work_suburb = models.CharField('Suburb',max_length=32, blank=True)
-    work_state = models.CharField('State (abbrev.)', max_length=3, blank=True)
-    work_postcode = models.CharField('Postcode', max_length=20, blank=True)
+    work_line1 = models.CharField('Line 1', max_length=64, null=True, blank=True)
+    work_line2 = models.CharField('Line 2', max_length=64, null=True,  blank=True)
+    work_line3 = models.CharField('Line 3', max_length=64, null=True, blank=True)
+    work_suburb = models.CharField('Suburb',max_length=32, null=True, blank=True)
+    work_state = models.CharField('State (abbrev.)', max_length=3, null=True, blank=True)
+    work_postcode = models.CharField('Postcode', max_length=20, null=True, blank=True)
     work_country = models.ForeignKey(Country, on_delete=models.RESTRICT, to_field='code', default='AU', related_name='+', verbose_name='Country')
-    home_line1 = models.CharField('Line 1', max_length=64, blank=True)
-    home_line2 = models.CharField('Line 2', max_length=64, blank=True)
-    home_line3 = models.CharField('Line 3', max_length=64, blank=True)
-    home_suburb = models.CharField('Suburb', max_length=32, blank=True)
-    home_state = models.CharField('State (abbrev.)', max_length=3, blank=True)
-    home_postcode = models.CharField('Postcode', max_length=20, blank=True)
+    home_line1 = models.CharField('Line 1', max_length=64, null=True, blank=True)
+    home_line2 = models.CharField('Line 2', max_length=64, null=True, blank=True)
+    home_line3 = models.CharField('Line 3', max_length=64, null=True, blank=True)
+    home_suburb = models.CharField('Suburb', max_length=32, null=True, blank=True)
+    home_state = models.CharField('State (abbrev.)', max_length=3, null=True, blank=True)
+    home_postcode = models.CharField('Postcode', max_length=20, null=True, blank=True)
     home_country = models.ForeignKey(Country, on_delete=models.RESTRICT, to_field='code', default='AU', related_name='+', verbose_name='Country')
-    notes = models.TextField(blank=True)
+    notes = models.TextField(null=True, blank=True)
 
 
     @property
@@ -162,6 +162,8 @@ class Award(models.Model):
     class AwardType(models.IntegerChoices):
         PRIZE = 1, 'Prize'
         SCHOLARSHIP = 2, 'Scholarship'
+        AWARD = 3, 'Award'
+        GRANT = 4, 'Grant'
 
     class AwardStatus(models.IntegerChoices):
         AWARDEE = 1, 'Awardee'
@@ -169,15 +171,15 @@ class Award(models.Model):
         FINALIST = 3, 'Finalist'
 
     name = models.CharField('Name', max_length=255)
-    award_type = models.IntegerField('type', choices=AwardType.choices)
+    award_type = models.IntegerField('type', null=True, blank=True, choices=AwardType.choices)
     agency = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='awards')
     recipients = models.ManyToManyField(Person, related_name='awards')
     status = models.IntegerField('Award Status', choices=AwardStatus.choices, default=AwardStatus.AWARDEE)
     detail = models.TextField('details', blank=True)
-    year = models.PositiveSmallIntegerField('Year Established')
+    year = models.PositiveSmallIntegerField('Year Established', null=True, blank=True)
     no_year = models.DecimalField(verbose_name="Concurrent Years",default=1.0, max_digits=10, decimal_places=1, null=True, blank=True)
-    notes = models.TextField(blank=True)
-    link = models.URLField(blank=True)
+    notes = models.TextField('notes', null=True, blank=True)
+    link = models.URLField('link', null=True, blank=True)
 
     def __str__(self):
         return f'{self.name} {self.year}'
@@ -186,26 +188,16 @@ class Award(models.Model):
         ordering = ['-year']
         db_table = "Award"
 
-# The Biography table is not a high priority at the moment, and it is complicated to support thanks to the attachment column.
-# class Biography(models.Model):
-#     person = models.OneToOneField(Person, on_delete=models.RESTRICT, related_name='biography')
-#     bio_type = # choice of 'CV Full', 'CV Short' and 'Profile'
-#     cv_attachment = # Microsoft Access supports multiple files in the Attachment column.
-
-#     def __str__(self):
-#         return str(self.person)
-
 class Event(models.Model):
-    title = models.CharField('Title', max_length=255, blank=True)
-    event_type = models.CharField('type', max_length=255)
-    date = models.DateField('date')
-    location = models.CharField('location', max_length=255, blank=True)
+    title = models.CharField('Title', max_length=255, null=True, blank=True)
+    event_type = models.CharField('type',null=True, blank=True, max_length=255)
+    date = models.DateField('date', null=True, blank=True)
+    location = models.CharField('location', max_length=255, null=True, blank=True)
     lead_organisation = models.ForeignKey(Organisation, on_delete=models.SET_NULL, blank=True, null=True, related_name='events')
-    lead_contacts = models.ManyToManyField(Person, blank=True, related_name='events')
-    number_attendees = models.IntegerField('number of Attendees', blank=True)
-    # The participants field is deliberately not ManyToManyField(Person). This allows for the free-form participation info seen in the existing spreadsheet.
-    participants = models.TextField('participants', blank=True)
-    detail = models.TextField('details', blank=True)
+    lead_contacts = models.ManyToManyField(Person, null=True, blank=True, related_name='events')
+    number_attendees = models.TextField('number of Attendees', null=True, blank=True)
+    participants = models.TextField('participants', null=True, blank=True)
+    detail = models.TextField('details', null=True, blank=True)
 
 
     def __str__(self):
@@ -226,22 +218,22 @@ class Publication(models.Model):
         EMBARGOED = 4, 'Embargoed'
 
     title = models.TextField('title')
-    publication_type = models.CharField('type', max_length=255) # integer choices
+    publication_type = models.TextField('publication type', max_length=255)
     ncard_publication = models.BooleanField('NCARD publication', default=True)
     year = models.PositiveSmallIntegerField('year')
     contributors = models.ManyToManyField(Person, related_name='publications')
     journal = models.CharField('journal', max_length=255)
-    journal_ISSN = models.CharField('journal ISSN', max_length=255) # add validator
+    journal_ISSN = models.CharField('journal ISSN', max_length=255)
     volume = models.PositiveSmallIntegerField('volume', blank=True, null=True)
-    page_start = models.PositiveIntegerField('start page', blank=True, null=True)
-    page_end = models.PositiveIntegerField('end page', blank=True, null=True)
+    page_start = models.CharField('start page', max_length=255, blank=True, null=True)
+    page_end = models.CharField('end page', max_length=255, blank=True, null=True)
     open_access_status = models.IntegerField(choices=OpenAccessStatus.choices, default=OpenAccessStatus.NONE)
     doi = models.CharField('doi', max_length=255)
     electronic_ISBN = models.CharField('electronic ISBN', max_length=255, blank=True)
     print_ISBN = models.CharField('print ISBN', max_length=255, blank=True)
     abstract = models.TextField('abstract', blank=True)
     citation = models.TextField('citation (Vancouver)', blank=True)
-    source_ID = models.CharField('source ID', max_length=50, blank=True) # check type
+    source_ID = models.CharField('source ID', max_length=255, blank=True) 
 
     def __str__(self):
         if self.ncard_publication:

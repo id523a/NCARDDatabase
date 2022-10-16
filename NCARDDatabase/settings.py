@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-from pathlib import Path
 import os
 import sys
+from pathlib import Path
 
 from datetime import timedelta
 
@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'django_tables2',
     "django_filters",
     "bootstrap5",
-
+    'import_export',
 ]
 
 MIDDLEWARE = [
