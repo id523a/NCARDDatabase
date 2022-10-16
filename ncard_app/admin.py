@@ -45,7 +45,7 @@ class StudentsAdmin(ImportExportModelAdmin):
 admin.site.register(models.Students, StudentsAdmin)
 
 class AwardAdmin(ImportExportModelAdmin):
-    list_displays = ('name', 'award_type', 'agency', 'recipients', 'status', 'detail', 'year', 'no_year', 'notes', 'link')
+    list_displays = ( 'award_type', 'agency','name', 'recipients', 'status', 'detail', 'year', 'no_year', 'notes', 'link')
     resource_class = AwardResource
     pass
 admin.site.register(models.Award, AwardAdmin)
