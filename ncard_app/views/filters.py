@@ -10,9 +10,7 @@ class PersonFilter(django_filters.FilterSet):
 
     class Meta:
         model = models.Person
-        fields = {
-            # 'given_name':['icontains',]
-        }
+        fields = {}
 
     def universal_search(self, queryset, name, value):
         return models.Person.objects.all().filter(
@@ -34,29 +32,29 @@ class AwardFilter(django_filters.FilterSet):
     def universal_search(self, queryset, name, value):
         qs = Q(name__icontains=value) | Q(agency__name__icontains=value) | Q(year__icontains=value)
 
-        country_reverse = dict((v, k) for k, v in models.Award.AwardType.choices)
-        for key in country_reverse.keys():
-            if value.lower() in key.lower():
-                dict_value = country_reverse[key]
-                qs.add(Q(award_type=dict_value), Q.OR)
-
+        for index, choice_name in models.Award.AwardType.choices:
+            if value.lower() in choice_name.lower():
+                qs.add(Q(award_type=index), Q.OR)
+            
         return models.Award.objects.all().filter(qs)
 
 
 class OrganisationFilter(django_filters.FilterSet):
     query = django_filters.CharFilter(method='universal_search',
-                                      label="name")
+                                      label="name, type")
 
     class Meta:
         model = models.Organisation
         fields = {}
 
     def universal_search(self, queryset, name, value):
-        return models.Organisation.objects.all().filter(
+        qs = Q(name__icontains=value)
 
-            Q(name__icontains=value)
+        for index, choice_name in models.Organisation.OrganisationType.choices:
+            if value.lower() in choice_name.lower():
+                qs.add(Q(organisation_type=index), Q.OR)
 
-        )
+        return models.Organisation.objects.all().filter(qs)
 
 
 class EventFilter(django_filters.FilterSet):
@@ -65,9 +63,7 @@ class EventFilter(django_filters.FilterSet):
 
     class Meta:
         model = models.Event
-        fields = {
-            # 'given_name':['icontains',]
-        }
+        fields = {}
 
     def universal_search(self, queryset, name, value):
         return models.Event.objects.all().filter(
@@ -134,12 +130,10 @@ class StudentFilter(django_filters.FilterSet):
         fields = {}
 
     def universal_search(self, queryset, name, value):
-        qs = Q(student_name__name__icontains=value) | Q(title_topic__icontains=value) 
+        qs = Q(student_name__given_name__icontains=value) | Q(student_name__surname__icontains=value) | Q(title_topic__icontains=value) 
 
-        student_reverse = dict((v, k) for k, v in models.Students.StudentTypes.choices)
-        for key in student_reverse.keys():
-            if value.lower() in key.lower():
-                dict_value = student_reverse[key]
-                qs.add(Q(award_type=dict_value), Q.OR)
-
-        return models.Award.objects.all().filter(qs)
+        for index, choice_name in models.Students.StudentTypes.choices:
+            if value.lower() in choice_name.lower():
+                qs.add(Q(student_type=index), Q.OR)
+    
+        return models.Students.objects.all().filter(qs)
