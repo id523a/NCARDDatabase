@@ -1,32 +1,63 @@
 {% extends 'events/base.html' %}
+{% load static %}
 
-{% block title %}NCARD Database{% endblock %}
-
+{% block title %}Dashboard | NCARD{% endblock %}
 
 {% block content%}
-    <div class="container-fluid">
-        <div class="text-center row">
-            <div class="col-sm">
-                <a href="{% url 'list-people' %}">
-                    <button type="button" class="btn btn-outline-info btn-lg">People</button>
-                </a>
+    <div class="row mt-3">
+        <div class="text-center">
+            <h1 class="ncard-dark-green" >NCARD Dashboard</h1>
+        </div>
+    </div>
+
+    <div class="container" style="text-align:center;">
+        <div class="dashboard" style="padding:50px; margin:50px;">
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="{% url 'list-awards' %}">
+                        <img class="icon" src="{% static 'awards-icon.png' %}" alt="awards icon">
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'list-events' %}">
+                        <img class="icon" src="{% static 'events-icon.png' %}" alt="events icon">
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'list-grants' %}">
+                        <img class="icon" src="{% static 'grants-icon.png' %}" alt="grants icon">
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'list-organisations' %}">
+                        <img class="icon" src="{% static 'organisations-icon.png' %}" alt="organisations icon">
+                    </a>
+                </div>
             </div>
-            <div class="col-sm">
-                <a href="{% url 'list-organisations' %}">
-                    <button type="button" class="btn btn-outline-info btn-lg">Organisation</button>
-                </a>
-            </div>
-            <div class="col-sm">
-                <a href="#">
-                    <button type="button" class="btn btn-outline-info btn-lg">Button 3</button>
-                </a>
-            </div>
-            <div class="col-sm">
-                <a href="#">
-                    <button type="button" class="btn btn-outline-info btn-lg">Button 4</button>
-                </a>
+            <div style="height:100px"></div>
+            <div class="row">
+                <div class="col-md-3">
+                    <a href="{% url 'list-people' %}">
+                        <img class="icon" src="{% static 'people-icon.png' %}" alt="people icon">
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'list-projects' %}">
+                        <img class="icon" src="{% static 'projects-icon.png' %}" alt="projects icon">
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'list-publications' %}">
+                        <img class="icon" src="{% static 'publications-icon.png' %}" alt="publications icon">
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'list-students' %}">
+                        <img class="icon" src="{% static 'students-icon.png' %}" alt="students icon">
+                    </a>
+                </div>
             </div>
         </div>
-
     </div>
+
 {% endblock %}
