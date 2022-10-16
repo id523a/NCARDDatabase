@@ -125,6 +125,8 @@ schema = {
     'fields': schema_fields
 }
 
+schema_model_lookup = {model._meta.model_name: model for model in schema_models}
+
 @cache_control(max_age=86400)
 @api_login_required
 def custom_query_schema(request):
@@ -141,7 +143,7 @@ def get_clean_field(start_table, subfield_list):
         subfield_info = schema_fields[current_type][subfield]
         current_type = subfield_info['type']
         subfields_cleaned.append(subfield)
-    if current_type in schema_meta and not schema_meta[current_type].get('fakeTable', False):
+    if len(subfields_cleaned) == 0:
         subfields_cleaned.append('id')
     return "__".join(subfields_cleaned), current_type
 
@@ -158,23 +160,25 @@ def custom_query_data(request):
     if not isinstance(start_table, str):
         raise SuspiciousOperation("Invalid starting table.")
 
-    start_model = None
-    for model in schema_models:
-        if model._meta.model_name == start_table:
-            start_model = model
-            break
-    
+    start_model = schema_model_lookup.get(start_table, None)
     if start_model is None:
         raise SuspiciousOperation("Invalid starting table.")
     
     query_set = start_model.objects.all()
     
-    # Validate field selection
+    # Parse and validate field selection
+    # selected_fields: The list of fields to export.
     selected_fields = []
+    # model_types: Same length as selected_fields, specifies whether each field should be passed through verbatim (= None)
+    # or whether its string representation should be looked up from the DB in a separate query (= model name)
+    model_types = []
     try:
         for subfield_list in body["fields"]:
             field_text, field_type = get_clean_field(start_table, subfield_list)
             selected_fields.append(field_text)
+            is_foreign_key = field_type in schema_meta and not schema_meta[field_type].get('fakeTable', False)
+            model_types.append(field_type if is_foreign_key else None)
+                
     except TypeError:
         raise SuspiciousOperation("Invalid field selection.")
     except KeyError:
@@ -201,7 +205,22 @@ def custom_query_data(request):
     except KeyError:
         raise SuspiciousOperation("Invalid condition.")
 
+    # Get the results
+    results = list(list(row) for row in query_set.values_list(*selected_fields))
+    
+    # Replace foreign-key IDs with string representations
+    for field_index, model_type in enumerate(model_types):
+        if model_type is not None:
+            # Get all of the IDs that need to be fetched
+            ids = set(row[field_index] for row in results)
+            # Fetch the models with those IDs
+            models = {instance.pk: str(instance) for instance in schema_model_lookup[model_type].objects.all().filter(pk__in=ids)}
+            # For each row, replace the ID with the string representation
+            for row in results:
+                if row[field_index] is not None:
+                    row[field_index] = models.get(row[field_index], None)
+
     return JsonResponse({
         'headings': selected_fields,
-        'data': list(query_set.values_list(*selected_fields))
+        'data': results
     })
