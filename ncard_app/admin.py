@@ -3,7 +3,7 @@ from import_export.admin import ImportExportModelAdmin
 
 from ncard_app import models
 from ncard_app.views.resources import (AwardResource, EventResource,
-                                       PublicationResource)
+                                       PublicationResource, OrganisationResource)
 
 admin.site.register(models.Country)
 
@@ -22,6 +22,7 @@ class GrantAdmin(ImportExportModelAdmin):
 admin.site.register(models.Grant, GrantAdmin)
 
 class OrganisationAdmin(ImportExportModelAdmin):
+    resource_class = OrganisationResource
     list_display = ("name","primary_contact","phone","website","twitter_handle","organisation_type")
     pass
 admin.site.register(models.Organisation, OrganisationAdmin)

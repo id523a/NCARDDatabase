@@ -7,8 +7,10 @@ from ncard_app.models import (Award, Event, Grant, Organisation, Person,
 
 
 class OrganisationResource(resources.ModelResource):
+
     class Meta:
         model = Organisation
+        import_id_fields=('name',)
 
 class PersonResource(resources.ModelResource):
     organisation_primary = fields.Field(column_name='organisation_primary', attribute='organisation_primary', widget=ForeignKeyWidget(Organisation,'name'))
