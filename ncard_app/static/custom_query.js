@@ -132,6 +132,14 @@ function addFilterArgument(newFilter, argType) {
         filterArgument.className = "form-control condition-argument";
         newFilter.appendChild(filterArgument);
         break;
+    case "date":
+        filterArgument = document.createElement("input");
+        filterArgument.type = "date";
+        filterArgument.value = new Date().toISOString().slice(0, 10);
+        filterArgument.required = true;
+        filterArgument.className = "form-control condition-argument";
+        newFilter.appendChild(filterArgument);
+        break;
     }
 }
 
@@ -201,6 +209,14 @@ function changeFilterField(filterContainer, conditionSelector) {
             createOption(conditionSelector, "gte", "Greater or equal to").dataset.argTypes = selectedFieldType;
             createOption(conditionSelector, "lt", "Less than").dataset.argTypes = selectedFieldType;
             createOption(conditionSelector, "lte", "Less or equal to").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "range", "In range").dataset.argTypes = selectedFieldType + " " + selectedFieldType;
+            break;
+        case "date":
+            createOption(conditionSelector, "exact", "Equals").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "gt", "After").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "gte", "On or after").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "lt", "Before").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "lte", "On or before").dataset.argTypes = selectedFieldType;
             createOption(conditionSelector, "range", "In range").dataset.argTypes = selectedFieldType + " " + selectedFieldType;
             break;
         case "enum":
