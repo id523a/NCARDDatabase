@@ -154,7 +154,7 @@ def custom_query_data(request):
     if len(request.body) > 16384:
         raise SuspiciousOperation("Query is too long.")
     body = json.loads(request.body)
-    
+
     # Get starting model from table name
     start_table = body["startTable"]
     if not isinstance(start_table, str):
@@ -163,9 +163,9 @@ def custom_query_data(request):
     start_model = schema_model_lookup.get(start_table, None)
     if start_model is None:
         raise SuspiciousOperation("Invalid starting table.")
-    
+
     query_set = start_model.objects.all()
-    
+
     # Parse and validate field selection
     # selected_fields: The list of fields to export.
     selected_fields = []
@@ -178,12 +178,12 @@ def custom_query_data(request):
             selected_fields.append(field_text)
             is_foreign_key = field_type in schema_meta and not schema_meta[field_type].get('fakeTable', False)
             model_types.append(field_type if is_foreign_key else None)
-                
+
     except TypeError:
         raise SuspiciousOperation("Invalid field selection.")
     except KeyError:
         raise SuspiciousOperation("Invalid field selection.")
-    
+
     # Filter the rows
     try:
         for filter_section in body["filters"]:
@@ -207,7 +207,7 @@ def custom_query_data(request):
 
     # Get the results
     results = list(list(row) for row in query_set.values_list(*selected_fields))
-    
+
     # Replace foreign-key IDs with string representations
     for field_index, model_type in enumerate(model_types):
         if model_type is not None:

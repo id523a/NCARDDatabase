@@ -154,13 +154,13 @@ function fieldSelectHandler(selectorContainer, selector, onChange) {
 function createFieldSelect(parent, modelName, onChange) {
     const selectorContainer = document.createElement("div");
     parent.appendChild(selectorContainer);
-    
+
     const selector = document.createElement("select");
     selector.className = 'field-select';
     selector.dataset.modelName = modelName;
     selector.addEventListener("change", fieldSelectHandler(selectorContainer, selector, onChange));
     selectorContainer.appendChild(selector);
-    
+
     const defaultOption = createOption(selector, "", "Query " + schemaMeta[modelName].singular + "...");
     defaultOption.dataset.fieldType = "";
     defaultOption.selected = "selected";
@@ -204,12 +204,12 @@ function addFilterCondition(filterContainer, selector) {
             const selectedOption = selector.options[selector.selectedIndex];
             const newFilter = document.createElement("div");
             newFilter.className = "filter-condition";
-            
+
             const filterID = document.createElement("input");
             filterID.type = "hidden";
             filterID.className = "condition-id";
             filterID.value = selectedOption.value;
-            
+
             const conjunctionText = document.createElement("span");
             conjunctionText.className = "conjunction";
             conjunctionText.appendChild(document.createTextNode("OR "));
@@ -218,7 +218,7 @@ function addFilterCondition(filterContainer, selector) {
             newFilter.appendChild(filterID);
             newFilter.appendChild(conjunctionText);
             newFilter.appendChild(document.createTextNode(selectedOption.text));
-            
+
             argTypeStr = selectedOption.dataset.argTypes;
             if (argTypeStr.length > 0) {
                 for (argType of argTypeStr.split(" ")) {
@@ -229,7 +229,7 @@ function addFilterCondition(filterContainer, selector) {
                     newFilter.appendChild(filterArgument);
                 }
             }
-            
+
             filterContainer.appendChild(newFilter);
             selector.selectedIndex = 0;
             selector.blur();
@@ -247,7 +247,7 @@ function changeFilterField(filterContainer, conditionSelector) {
         const firstOption = createOption(conditionSelector, "", "(Add condition...)");
         conditionSelector.selectedIndex = 0;
         let enableConditionSelector = true;
-        
+
         switch (selectedFieldType) {
         case "string":
             createOption(conditionSelector, "iexact", "Equals (case insensitive)").dataset.argTypes = "string";
@@ -271,7 +271,7 @@ function changeFilterField(filterContainer, conditionSelector) {
             enableConditionSelector = false;
             break;
         }
-        
+
         conditionSelector.style.display = enableConditionSelector ? null : "none";
     }
 }
@@ -283,10 +283,10 @@ function addFilterSection(e) {
     }
     const filterSection = document.createElement("div");
     filterSection.className = "filter-section";
-    
+
     const filterContainer = document.createElement("div");
     filterContainer.className = "filter-container bg-light";
-    
+
     const conditionSelector = document.createElement("select");
     conditionSelector.className = "form-select";
 
@@ -295,12 +295,12 @@ function addFilterSection(e) {
     const fieldRow = document.createElement("div");
     fieldRow.className = "field-row";
     createButton(fieldRow, "btn btn-outline-danger", "X", deleteRow(filterSection));
-    
+
     const conjunctionText = document.createElement("span");
     conjunctionText.className = "conjunction";
     conjunctionText.appendChild(document.createTextNode("AND"));
     fieldRow.appendChild(conjunctionText);
-    
+
     const eventHandler = changeFilterField(filterContainer, conditionSelector);
     createFieldSelect(fieldRow, selectedModel, eventHandler);
     // Populate initial list of conditions
@@ -318,10 +318,10 @@ function selectStartingModel(e) {
     const startingTableSelector = document.getElementById("startingTableSelector");
     const selectedValue = startingTableSelector.value;
     if (selectedModel != selectedValue) {
-    
+
         const fieldRows = document.getElementById("fieldRows");
         const filterSections = document.getElementById("filterSections");
-        
+
         if (fieldRows.childNodes.length !== 0 || filterSections.childNodes.length !== 0) {
             if (!confirm("The current query will be erased if you change the starting table. Continue?")) {
                 startingTableSelector.value = selectedModel;
@@ -329,7 +329,7 @@ function selectStartingModel(e) {
                 return;
             }
         }
-    
+
         selectedModel = selectedValue;
 
         fieldRows.innerHTML = "";
