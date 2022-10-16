@@ -27,7 +27,7 @@ admin.site.register(models.Organisation, OrganisationAdmin)
 
 class EventAdmin(ImportExportModelAdmin):
     list_display = ("event_type", "date", "number_attendees", "title", "detail", "lead_organisation", "location")
-    resources_class = EventResource
+    resource_class = EventResource
     pass
 admin.site.register(models.Event, EventAdmin)
 

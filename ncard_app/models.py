@@ -90,7 +90,7 @@ class Person(models.Model):
     loop_profile = models.URLField('Loop Profile', null=True,  blank=True)
     linkedin = models.URLField('LinkedIn (URL)', null=True,  blank=True)
     twitter = models.CharField('Twitter Handle', max_length=16, null=True,  blank=True, validators=[twitter_validator])
-    employers = models.ManyToManyField(Organisation, null=True, blank=True, related_name='employees')
+    employers = models.ManyToManyField(Organisation, blank=True, related_name='employees')
     location = models.CharField(max_length=50, null=True,  blank=True)
     organisation_primary = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contacts_primary_org', verbose_name='Organisation (Primary)')
     organisation_other = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='contacts_other_org', verbose_name='Organisation (Other)')
@@ -162,6 +162,8 @@ class Award(models.Model):
     class AwardType(models.IntegerChoices):
         PRIZE = 1, 'Prize'
         SCHOLARSHIP = 2, 'Scholarship'
+        AWARD = 3, 'Award'
+        GRANT = 4, 'Grant'
 
     class AwardStatus(models.IntegerChoices):
         AWARDEE = 1, 'Awardee'
