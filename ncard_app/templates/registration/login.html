@@ -4,8 +4,9 @@
 {% block title %}Login{% endblock %}
 
 {% block content%}
+<body class="login-bg-color">
 
-<div class="container py-5 h-100 ncard-grad">
+<div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-12 col-md-8 col-lg-6 col-xl-5">
             <div class="card-body p-5 text-center text-white">
@@ -13,7 +14,6 @@
     
                     <h2 class="mb-2">Login</h2>
                     <p class="mb-5">Please enter your username and password</p>
-    
                     <form action="{% url 'login' %}" method=POST>
                         {% csrf_token %}
                         {{ form|crispy }}

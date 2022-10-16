@@ -3,234 +3,38 @@
 {% block title %}NCARD Database{% endblock %}
 
 {% block custom_css %}
-<style type="text/css">
-    .bootstrap-select * {
-        overflow-x: hidden;
-    }
-    .bootstrap-select > button {
-        border: 1px solid #ced4da;
-    }
-    #startingTable {
-        margin-bottom: 1em;
-    }
-    #startingTable select {
-        width: 20em;
-        display: inline-block;
-    }
-    .field-row {
-        display: flex;
-        flex-wrap: wrap;
-    }
-    .field-row > * {
-        margin-right: 0.5em;
-        margin-bottom: 0.5em;
-    }
-    .field-row > div {
-        width: 12em;
-    }
-    .field-row .bootstrap-select {
-        width: 100% !important;
-    }
-
-    .field-row button {
-        width: 2.5em;
-    }
-    .add-button {
-        width: 8.5em;
-        margin-bottom: 1em;
-    }
-    .filter-section {
-        margin-bottom: 1em;
-    }
-    .filter-container {
-        padding-left: 3em;
-    }
-    .filter-container div {
-        margin-bottom: 0.5em;
-    }
-    .filter-container button {
-        width: 2.5em;
-        margin-right: 0.5em;
-        vertical-align: baseline;
-        background-color: white;
-    }
-    .filter-container div:not(:last-child)::after {
-        content: " OR";
-    }
-    .condition-argument {
-        width: 20em;
-        display: inline;
-        margin-left: 0.5em;
-        margin-right: 0.5em;
-    }
-</style>
+<link href="/static/custom_query.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
+    <h1 class="mb-4">Query</h1>
     <div class="row mb-4">
-        <div class="col-md-10">
-            <h1>Query</h1>
-        </div>
-    </div>
-    <div id="startingTable">
-        <span>Starting table:</span>
-        <select class="form-select">
-            <option selected>Person</option>
+        <select id="startingTableSelector" class="selectpicker form-control" data-live-search="true">
+            <option value="" selected>Starting table...</option>
         </select>
+        {% csrf_token %}
     </div>
-    <h2>Output Fields</h2>
-    <div><button id="addFieldRow" class="btn btn-outline-success add-button">Add Field</button></div>
-    <div id="fieldRows"></div>
-    <h2>Filter</h2>
-    <div><button id="addFilterSection" class="btn btn-outline-success add-button">Add Filter</button></div>
-    <div id="filterSections"></div>
+    <div id="querySettings" style="display:none;">
+        <h2>Output Fields</h2>
+        <div><button id="addFieldRow" class="btn btn-outline-success add-button">Add Field</button></div>
+        <div id="fieldRows"></div>
+        <h2>Filter</h2>
+        <div><button id="addFilterSection" class="btn btn-outline-success add-button">Add Filter</button></div>
+        <div id="filterSections"></div>
+        <h2>Results</h2>
+        <div>
+            <button id="showResultsButton" class="btn btn-outline-success add-button">Show results</button>
+            <button id="exportCSVButton" class="btn btn-outline-success add-button">Download as CSV</button>
+        </div>
+        <table id="queryResult" class="table table-striped"></table>
+    </div>
 {% endblock %}
 
 {% block custom_js %}
 <script>
-let schema = null;
-
-function fieldSelectHandler(selectorContainer, selector, onChange) {
-    return function (e) {
-        while (selectorContainer.nextSibling) {
-            selectorContainer.nextSibling.remove();
-        }
-        const selectedOption = selector.options[selector.selectedIndex];
-        const selectedFieldType = selectedOption.dataset.fieldType;
-        if (schema.hasOwnProperty(selectedFieldType)) {
-            createFieldSelect(selectorContainer.parentNode, schema[selectedFieldType], onChange);
-        }
-        onChange();
-    }
-}
-
-function deleteRow(row) {
-    return function (e) {
-        row.remove();
-    }
-}
-
-function moveRowUp(row) {
-    return function (e) {
-        if (row.previousElementSibling) {
-            row.parentNode.insertBefore(row, row.previousElementSibling);
-        }
-        e.target.blur()
-    }
-}
-
-function moveRowDown(row) {
-    return function (e) {
-        if (row.nextElementSibling) {
-            row.parentNode.insertBefore(row, row.nextElementSibling.nextElementSibling);
-        }
-        e.target.blur()
-    }
-}
-
-function createOption(parent, value, text) {
-    const option = document.createElement("option");
-    option.value = value;
-    option.text = text;
-    parent.appendChild(option);
-    return option;
-}
-
-function createFieldSelect(parent, fields, onChange) {
-    const selectorContainer = document.createElement("div");
-    parent.appendChild(selectorContainer);
-    
-    const selector = document.createElement("select");
-    selector.addEventListener("change", fieldSelectHandler(selectorContainer, selector, onChange));
-    selectorContainer.appendChild(selector);
-    
-    const defaultOption = createOption(selector, "", "--");
-    defaultOption.dataset.fieldType = "";
-    defaultOption.selected = "selected";
-    for (const field of fields) {
-        const newOption = createOption(selector, field.name, field.label);
-        newOption.dataset.fieldType = field.type;
-    }
-    selector.dataset.liveSearch = true;
-    $(selector).selectpicker();
-}
-
-function createButton(parent, className, text, action) {
-    const button = document.createElement("button");
-    button.className = className;
-    button.addEventListener("click", action);
-    button.appendChild(document.createTextNode(text));
-    parent.appendChild(button);
-}
-
-function addFieldRow(e) {
-    const fieldRow = document.createElement("div");
-    fieldRow.className = "field-row";
-    createButton(fieldRow, "btn btn-outline-danger", "X", deleteRow(fieldRow));
-    createButton(fieldRow, "btn btn-outline-secondary", "\u25B2", moveRowUp(fieldRow));
-    createButton(fieldRow, "btn btn-outline-secondary", "\u25BC", moveRowDown(fieldRow));
-    createFieldSelect(fieldRow, schema["person"], function() {});
-    document.getElementById("fieldRows").appendChild(fieldRow);
-    e.target.blur();
-}
-
-function addFilterCondition(filterContainer, selector) {
-    return function (e) {
-        if (selector.selectedIndex > 0) {
-            const selectedOption = selector.options[selector.selectedIndex];
-            const newFilter = document.createElement("div");
-
-            const filterArgument = document.createElement("input");
-            filterArgument.type = "text";
-            filterArgument.className = "form-control condition-argument";
-
-            createButton(newFilter, "btn btn-outline-danger", "X", deleteRow(newFilter));
-            newFilter.appendChild(document.createTextNode(selectedOption.text));
-            newFilter.appendChild(filterArgument);
-            
-            filterContainer.appendChild(newFilter);
-            selector.selectedIndex = 0;
-            selector.blur();
-        }
-    }
-}
-
-function addFilterSection(e) {
-    const filterSection = document.createElement("div");
-    filterSection.className = "filter-section";
-    
-    const filterContainer = document.createElement("div");
-    filterContainer.className = "filter-container bg-light";
-    
-    const conditionSelector = document.createElement("select");
-    conditionSelector.className = "form-select";
-    options = ["(Add condition)", "Contains", "Starts with", "Ends with", "Equals"];
-    for (let i = 0; i < options.length; ++i) {
-        createOption(conditionSelector, i, options[i]);
-    }
-    conditionSelector.addEventListener("change", addFilterCondition(filterContainer, conditionSelector));
-
-    const fieldRow = document.createElement("div");
-    fieldRow.className = "field-row";
-    createButton(fieldRow, "btn btn-outline-danger", "X", deleteRow(filterSection));
-    createFieldSelect(fieldRow, schema["person"], function() { filterContainer.innerHTML = ""; });
-
-    filterSection.appendChild(fieldRow);
-    filterSection.appendChild(filterContainer);
-    filterSection.appendChild(conditionSelector);
-    document.getElementById("filterSections").appendChild(filterSection);
-    e.target.blur();
-}
-
+const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 const schemaLocation = "{% url 'custom-query-schema' %}";
-window.addEventListener('load', (event) => {
-    fetch(schemaLocation)
-    .then((response) => response.json())
-    .then((loadedSchema) => {
-        schema = loadedSchema;
-        document.getElementById("addFieldRow").addEventListener("click", addFieldRow);
-        document.getElementById("addFilterSection").addEventListener("click", addFilterSection);
-    });
-});
+const dataLocation = "{% url 'custom-query-data' %}";
 </script>
+<script src="/static/custom_query.js"></script>
 {% endblock %}

@@ -4,8 +4,7 @@ from ncard_app.views.decorators import login_required
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('', views.index, name="index"),
-    path('dashboard/', views.dashboard, name="dashboard"),
+    path('', views.dashboard, name="dashboard"),
     path('login_user/', auth_views.LoginView.as_view(), name="login"),
     path('logout_user/', auth_views.logout_then_login, name="logout"),
 
@@ -44,6 +43,5 @@ urlpatterns = [
     path('predefined/phonebook', login_required(views.PhoneBook.as_view()), name="phone_book"),
     path('query/', views.custom_query, name="custom-query"),
     path('query/schema.json', views.custom_query_schema, name="custom-query-schema"),
-
-
+    path('query/data.json', views.custom_query_data, name="custom-query-data"),
 ]
