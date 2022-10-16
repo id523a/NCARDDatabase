@@ -21,7 +21,7 @@ def user_passes_test_set_message(test_func, message=default_message):
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
-            if not test_func(request.user):
+            if not test_func(request.user) and message is not None:
                 messages.error(request, message)
             return view_func(request, *args, **kwargs)
         return _wrapped_view
