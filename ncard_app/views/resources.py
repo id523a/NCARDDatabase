@@ -1,11 +1,8 @@
-from inspect import Attribute
-from tkinter import Widget
 from import_export import resources
 from import_export.widgets import ForeignKeyWidget
 
-from ncard_app.models import (Award, Event, Grant, GrantInvestigator,
-                              Organisation, Person, PersonAddress, Project,
-                              Publication, Students)
+from ncard_app.models import (Award, Event, Grant, Organisation, Person,
+                              Project, Publication, Students)
 
 
 class OrganisationResource(resources.ModelResource):
@@ -13,6 +10,8 @@ class OrganisationResource(resources.ModelResource):
         model = Organisation
 
 class PersonResource(resources.ModelResource):
+    organisation_primary = fields.field(column_name='organisation_primary', attribute='organisation_primary', widget=ForeignKeyWidget(Organisation,'name'))
+    organisation_other = fields.field(column_name='organisation_primary', attribute='organisation_primary', widget=ForeignKeyWidget(Organisation,'name'))
     class Meta:
         model = Person
 
