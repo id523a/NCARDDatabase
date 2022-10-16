@@ -45,19 +45,22 @@ class AwardFilter(django_filters.FilterSet):
 
 class OrganisationFilter(django_filters.FilterSet):
     query = django_filters.CharFilter(method='universal_search',
-                                      label="name")
+                                      label="name, type")
 
     class Meta:
         model = models.Organisation
         fields = {}
 
     def universal_search(self, queryset, name, value):
-        return models.Organisation.objects.all().filter(
+        qs = Q(name__icontains=value)
 
-            Q(name__icontains=value)
+        country_reverse = dict((v, k) for k, v in models.Organisation.OrganisationType.choices)
+        for key in country_reverse.keys():
+            if value.lower() in key.lower():
+                dict_value = country_reverse[key]
+                qs.add(Q(organisation_type=dict_value), Q.OR)
 
-        )
-
+        return models.Organisation.objects.all().filter(qs)
 
 class EventFilter(django_filters.FilterSet):
     query = django_filters.CharFilter(method='universal_search',
@@ -140,6 +143,6 @@ class StudentFilter(django_filters.FilterSet):
         for key in student_reverse.keys():
             if value.lower() in key.lower():
                 dict_value = student_reverse[key]
-                qs.add(Q(award_type=dict_value), Q.OR)
+                qs.add(Q(student_type=dict_value), Q.OR)
 
-        return models.Award.objects.all().filter(qs)
+        return models.Students.objects.all().filter(qs)
