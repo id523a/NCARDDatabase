@@ -10,9 +10,7 @@ class PersonFilter(django_filters.FilterSet):
 
     class Meta:
         model = models.Person
-        fields = {
-            # 'given_name':['icontains',]
-        }
+        fields = {}
 
     def universal_search(self, queryset, name, value):
         return models.Person.objects.all().filter(
@@ -65,9 +63,7 @@ class EventFilter(django_filters.FilterSet):
 
     class Meta:
         model = models.Event
-        fields = {
-            # 'given_name':['icontains',]
-        }
+        fields = {}
 
     def universal_search(self, queryset, name, value):
         return models.Event.objects.all().filter(
