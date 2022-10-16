@@ -116,8 +116,7 @@ supported_conditions = {
     'integer': {'exact', 'gt', 'gte', 'lt', 'lte', 'range'},
     'decimal': {'exact', 'gt', 'gte', 'lt', 'lte', 'range'},
     'date': {'exact', 'gt', 'gte', 'lt', 'lte', 'range'},
-    'enum': {'in'},
-    'boolean': {'in'}
+    # 'enum' and 'boolean' fields get special treatment
 }
 
 schema = {
@@ -200,18 +199,25 @@ def custom_query_data(request):
             cond_q = Q()
             for filter_condition in filter_section["conditions"]:
                 id = filter_condition["id"]
-                if (field_type not in supported_conditions) or (id not in supported_conditions[field_type]):
-                    raise SuspiciousOperation("Invalid condition.")
-                args = filter_condition["args"]
-                # Hack to avoid ValueError: year out of range
-                if filter_field.endswith("__year") and field_type == "integer":
-                    for i in range(len(args)):
-                        args[i] = max(1, int(args[i]))
-                if len(args) == 1:
-                    args = args[0]
-                cond_dict = {}
-                cond_dict[filter_field + "__" + id] = args
-                cond_q |= Q(**cond_dict)
+                if field_type == "boolean":
+                    pass
+                elif enum_choices is not None:
+                    cond_dict = {}
+                    cond_dict[filter_field + "__exact"] = id
+                    cond_q |= Q(**cond_dict)
+                else:
+                    if (field_type not in supported_conditions) or (id not in supported_conditions[field_type]):
+                        raise SuspiciousOperation("Invalid condition.")
+                    args = filter_condition["args"]
+                    # Hack to avoid ValueError: year out of range
+                    if filter_field.endswith("__year") and field_type == "integer":
+                        for i in range(len(args)):
+                            args[i] = max(1, int(args[i]))
+                    if len(args) == 1:
+                        args = args[0]
+                    cond_dict = {}
+                    cond_dict[filter_field + "__" + id] = args
+                    cond_q |= Q(**cond_dict)
             query_set = query_set.filter(cond_q)
     except TypeError:
         raise SuspiciousOperation("Invalid condition.")

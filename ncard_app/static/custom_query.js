@@ -51,12 +51,13 @@ function fieldSelectHandler(selectorContainer, selector, onChange) {
         if (schemaFields.hasOwnProperty(selectedFieldType)) {
             createFieldSelect(selectorContainer.parentNode, selectedFieldType, onChange);
         }
-        onChange(selectedFieldType ? selectedFieldType : selector.dataset.modelName);
+        onChange(selector.dataset.modelName, selector.value);
     }
 }
 
 // Creates a dropdown inside the specified parent element, that selects fields from the specified model name.
-// Selecting a field in the dropdown calls the function onChange(t) where t is a string representing type of the selected field.
+// Selecting a field in the dropdown calls the function onChange(modelName, fieldName) where
+// where modelName is the name of the model and fieldName is the name of the selected field within the model, or "" if no field is selected.
 function createFieldSelect(parent, modelName, onChange) {
     const selectorContainer = document.createElement("div");
     parent.appendChild(selectorContainer);
@@ -98,7 +99,7 @@ function addFieldRow(e) {
     createButton(fieldRow, "btn btn-outline-danger", "X", deleteRow(fieldRow));
     createButton(fieldRow, "btn btn-outline-secondary", "\u25B2", moveRowUp(fieldRow));
     createButton(fieldRow, "btn btn-outline-secondary", "\u25BC", moveRowDown(fieldRow));
-    createFieldSelect(fieldRow, selectedModel, function(selectedFieldType) {});
+    createFieldSelect(fieldRow, selectedModel, function() {});
     document.getElementById("fieldRows").appendChild(fieldRow);
     e.target.blur();
 }
@@ -173,9 +174,10 @@ function addFilterCondition(filterContainer, selector) {
 // Returns an event handler for changing the field being filtered. The new field might be a different type
 // and therefore require a different set of filters.
 function changeFilterField(filterContainer, conditionSelector) {
-    return function (selectedFieldType) {
+    return function (modelName, fieldName) {
+        const selectedField = schemaFields[modelName][fieldName];
+        const selectedFieldType = fieldName === "" ? modelName : selectedField.type;
         filterContainer.innerHTML = "";
-        console.log(selectedFieldType);
         conditionSelector.innerHTML = "";
         const firstOption = createOption(conditionSelector, "", "(Add condition...)");
         conditionSelector.selectedIndex = 0;
@@ -200,6 +202,11 @@ function changeFilterField(filterContainer, conditionSelector) {
             createOption(conditionSelector, "lt", "Less than").dataset.argTypes = selectedFieldType;
             createOption(conditionSelector, "lte", "Less or equal to").dataset.argTypes = selectedFieldType;
             createOption(conditionSelector, "range", "In range").dataset.argTypes = selectedFieldType + " " + selectedFieldType;
+            break;
+        case "enum":
+            for (choice of selectedField.choices) {
+                createOption(conditionSelector, choice[0], "= " + choice[1]).dataset.argTypes = "";
+            }
             break;
         default:
             enableConditionSelector = false;
@@ -238,7 +245,7 @@ function addFilterSection(e) {
     const eventHandler = changeFilterField(filterContainer, conditionSelector);
     createFieldSelect(fieldRow, selectedModel, eventHandler);
     // Populate initial list of conditions
-    eventHandler(selectedModel);
+    eventHandler(selectedModel, "");
 
     filterSection.appendChild(fieldRow);
     filterSection.appendChild(filterContainer);
