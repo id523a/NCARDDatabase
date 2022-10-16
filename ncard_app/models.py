@@ -171,15 +171,15 @@ class Award(models.Model):
         FINALIST = 3, 'Finalist'
 
     name = models.CharField('Name', max_length=255)
-    award_type = models.IntegerField('type', choices=AwardType.choices)
+    award_type = models.IntegerField('type', null=True, blank=True, choices=AwardType.choices)
     agency = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True, related_name='awards')
     recipients = models.ManyToManyField(Person, related_name='awards')
     status = models.IntegerField('Award Status', choices=AwardStatus.choices, default=AwardStatus.AWARDEE)
     detail = models.TextField('details', blank=True)
-    year = models.PositiveSmallIntegerField('Year Established')
+    year = models.PositiveSmallIntegerField('Year Established', null=True, blank=True)
     no_year = models.DecimalField(verbose_name="Concurrent Years",default=1.0, max_digits=10, decimal_places=1, null=True, blank=True)
-    notes = models.TextField(blank=True)
-    link = models.URLField(blank=True)
+    notes = models.TextField(null=True, blank=True,)
+    link = models.URLField(null=True, blank=True,)
 
     def __str__(self):
         return f'{self.name} {self.year}'
@@ -187,15 +187,6 @@ class Award(models.Model):
     class Meta:
         ordering = ['-year']
         db_table = "Award"
-
-# The Biography table is not a high priority at the moment, and it is complicated to support thanks to the attachment column.
-# class Biography(models.Model):
-#     person = models.OneToOneField(Person, on_delete=models.RESTRICT, related_name='biography')
-#     bio_type = # choice of 'CV Full', 'CV Short' and 'Profile'
-#     cv_attachment = # Microsoft Access supports multiple files in the Attachment column.
-
-#     def __str__(self):
-#         return str(self.person)
 
 class Event(models.Model):
     title = models.CharField('Title', max_length=255, null=True, blank=True)
@@ -234,15 +225,15 @@ class Publication(models.Model):
     journal = models.CharField('journal', max_length=255)
     journal_ISSN = models.CharField('journal ISSN', max_length=255)
     volume = models.PositiveSmallIntegerField('volume', blank=True, null=True)
-    page_start = models.PositiveIntegerField('start page', blank=True, null=True)
-    page_end = models.PositiveIntegerField('end page', blank=True, null=True)
+    page_start = models.CharField('start page', max_length=255, blank=True, null=True)
+    page_end = models.CharField('end page', max_length=255, blank=True, null=True)
     open_access_status = models.IntegerField(choices=OpenAccessStatus.choices, default=OpenAccessStatus.NONE)
     doi = models.CharField('doi', max_length=255)
     electronic_ISBN = models.CharField('electronic ISBN', max_length=255, blank=True)
     print_ISBN = models.CharField('print ISBN', max_length=255, blank=True)
     abstract = models.TextField('abstract', blank=True)
     citation = models.TextField('citation (Vancouver)', blank=True)
-    source_ID = models.CharField('source ID', max_length=50, blank=True) # check type
+    source_ID = models.CharField('source ID', max_length=50, blank=True) 
 
     def __str__(self):
         if self.ncard_publication:
