@@ -11,7 +11,7 @@ class GrantInvestigatorInline(admin.TabularInline):
     extra = 1
 
 class GrantAdmin(ImportExportModelAdmin):
-    list_display = ("title", "reference", "project","investigators")
+    list_display = ("title", "reference", "project")
     inlines = [
         GrantInvestigatorInline
     ]
