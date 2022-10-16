@@ -121,6 +121,16 @@ function addFilterArgument(newFilter, argType) {
         filterArgument.className = "form-control condition-argument";
         newFilter.appendChild(filterArgument);
         break;
+    case "decimal":
+        filterArgument = document.createElement("input");
+        filterArgument.type = "number";
+        filterArgument.min = 0;
+        filterArgument.value = 0;
+        filterArgument.step = "0.1";
+        filterArgument.required = true;
+        filterArgument.className = "form-control condition-argument";
+        newFilter.appendChild(filterArgument);
+        break;
     }
 }
 
@@ -183,12 +193,13 @@ function changeFilterField(filterContainer, conditionSelector) {
             createOption(conditionSelector, "endswith", "Ends with (match case)").dataset.argTypes = "string";
             break;
         case "integer":
-            createOption(conditionSelector, "exact", "Equals").dataset.argTypes = "integer";
-            createOption(conditionSelector, "gt", "Greater than").dataset.argTypes = "integer";
-            createOption(conditionSelector, "gte", "Greater or equal to").dataset.argTypes = "integer";
-            createOption(conditionSelector, "lt", "Less than").dataset.argTypes = "integer";
-            createOption(conditionSelector, "lte", "Less or equal to").dataset.argTypes = "integer";
-            createOption(conditionSelector, "range", "In range").dataset.argTypes = "integer integer";
+        case "decimal":
+            createOption(conditionSelector, "exact", "Equals").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "gt", "Greater than").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "gte", "Greater or equal to").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "lt", "Less than").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "lte", "Less or equal to").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "range", "In range").dataset.argTypes = selectedFieldType + " " + selectedFieldType;
             break;
         default:
             enableConditionSelector = false;
