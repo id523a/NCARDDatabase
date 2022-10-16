@@ -201,4 +201,7 @@ def custom_query_data(request):
     except KeyError:
         raise SuspiciousOperation("Invalid condition.")
 
-    return JsonResponse(list(query_set.values_list(*selected_fields)), safe=False)
+    return JsonResponse({
+        'headings': selected_fields,
+        'data': list(query_set.values_list(*selected_fields))
+    })

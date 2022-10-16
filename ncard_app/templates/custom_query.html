@@ -86,7 +86,7 @@
         <div id="filterSections"></div>
         <h2>Results</h2>
         <div><button id="runQueryButton" class="btn btn-outline-success add-button">Get JSON</button></div>
-        <pre id="queryResult" style="display:block; white-space: break-spaces;"></pre>
+        <table id="queryResult" class="table table-striped"></table>
     </div>
 {% endblock %}
 
@@ -408,9 +408,33 @@ window.addEventListener('load', (event) => {
                 },
                 body: JSON.stringify(parseQuery())
             })
-            .then((responseObj) => responseObj.text())
+            .then((responseObj) => responseObj.json())
             .then((response) => {
-                document.getElementById("queryResult").innerText = response;
+                const table = document.getElementById("queryResult");
+                table.innerHTML = "";
+                const thead = document.createElement("thead");
+                table.appendChild(thead);
+                const tbody = document.createElement("tbody");
+                table.appendChild(tbody);
+
+                const headerRow = document.createElement("tr");
+                thead.appendChild(headerRow);
+                for (heading of response.headings) {
+                    const headingElement = document.createElement("th");
+                    headingElement.scope = "col";
+                    headingElement.appendChild(document.createTextNode(heading));
+                    headerRow.appendChild(headingElement);
+                }
+                for (row of response.data) {
+                    const rowElement = document.createElement("tr");
+                    for (cell of row) {
+                        const cellElement = document.createElement("td");
+                        cellText = (cell === null) ? "--" : cell;
+                        cellElement.appendChild(document.createTextNode(cellText));
+                        rowElement.appendChild(cellElement);
+                    }
+                    tbody.appendChild(rowElement);
+                }
             });
         });
     });
