@@ -116,8 +116,7 @@ supported_conditions = {
     'integer': {'exact', 'gt', 'gte', 'lt', 'lte', 'range'},
     'decimal': {'exact', 'gt', 'gte', 'lt', 'lte', 'range'},
     'date': {'exact', 'gt', 'gte', 'lt', 'lte', 'range'},
-    'enum': {'in'},
-    'boolean': {'in'}
+    # 'enum' and 'boolean' fields get special treatment
 }
 
 schema = {
@@ -138,14 +137,16 @@ def custom_query(request):
 
 def get_clean_field(start_table, subfield_list):
     current_type = start_table
+    enum_choices = None
     subfields_cleaned = []
     for subfield in subfield_list:
         subfield_info = schema_fields[current_type][subfield]
         current_type = subfield_info['type']
+        enum_choices = subfield_info.get('choices', None)
         subfields_cleaned.append(subfield)
     if len(subfields_cleaned) == 0:
         subfields_cleaned.append('id')
-    return "__".join(subfields_cleaned), current_type
+    return "__".join(subfields_cleaned), current_type, enum_choices
 
 @api_login_required
 def custom_query_data(request):
@@ -170,16 +171,21 @@ def custom_query_data(request):
     # selected_fields: The list of fields to export.
     selected_fields = []
     # model_types: Same length as selected_fields, specifies whether each field should be passed through verbatim (= None)
-    # or whether its string representation should be looked up from the DB in a separate query (= model name)
+    # or whether its string representation should be looked up from an enum (= ('enum', choices))
+    # or whether its string representation should be looked up from the DB in a separate query (= ('model', model name))
     model_types = []
     try:
         if len(body["fields"]) == 0:
             body["fields"] = [[]]
         for subfield_list in body["fields"]:
-            field_text, field_type = get_clean_field(start_table, subfield_list)
+            field_text, field_type, enum_choices = get_clean_field(start_table, subfield_list)
             selected_fields.append(field_text)
-            is_foreign_key = field_type in schema_meta and not schema_meta[field_type].get('fakeTable', False)
-            model_types.append(field_type if is_foreign_key else None)
+            if enum_choices is not None: # is enum
+                model_types.append(('enum', dict(enum_choices)))
+            elif field_type in schema_meta and not schema_meta[field_type].get('fakeTable', False): # is foreign key
+                model_types.append(('model', field_type))
+            else:
+                model_types.append(None)
 
     except TypeError:
         raise SuspiciousOperation("Invalid field selection.")
@@ -189,38 +195,61 @@ def custom_query_data(request):
     # Filter the rows
     try:
         for filter_section in body["filters"]:
-            filter_field, field_type = get_clean_field(start_table,filter_section["field"])
+            filter_field, field_type, enum_choices = get_clean_field(start_table,filter_section["field"])
             cond_q = Q()
             for filter_condition in filter_section["conditions"]:
                 id = filter_condition["id"]
-                if (field_type not in supported_conditions) or (id not in supported_conditions[field_type]):
-                    raise SuspiciousOperation("Invalid condition.")
-                args = filter_condition["args"]
-                if len(args) == 1:
-                    args = args[0]
-                cond_dict = {}
-                cond_dict[filter_field + "__" + id] = args
-                cond_q |= Q(**cond_dict)
+                if field_type == "boolean":
+                    cond_dict = {}
+                    cond_dict[filter_field + "__exact"] = (id == "True")
+                    cond_q |= Q(**cond_dict)
+                elif enum_choices is not None:
+                    cond_dict = {}
+                    cond_dict[filter_field + "__exact"] = id
+                    cond_q |= Q(**cond_dict)
+                else:
+                    if (field_type not in supported_conditions) or (id not in supported_conditions[field_type]):
+                        raise SuspiciousOperation("Invalid condition.")
+                    args = filter_condition["args"]
+                    # Hack to avoid ValueError: year out of range
+                    if filter_field.endswith("__year") and field_type == "integer":
+                        for i in range(len(args)):
+                            args[i] = max(1, int(args[i]))
+                    if len(args) == 1:
+                        args = args[0]
+                    cond_dict = {}
+                    cond_dict[filter_field + "__" + id] = args
+                    cond_q |= Q(**cond_dict)
             query_set = query_set.filter(cond_q)
     except TypeError:
         raise SuspiciousOperation("Invalid condition.")
     except KeyError:
         raise SuspiciousOperation("Invalid condition.")
+    except ValueError:
+        raise SuspiciousOperation("Invalid condition.")
 
     # Get the results
     results = list(list(row) for row in query_set.values_list(*selected_fields))
 
-    # Replace foreign-key IDs with string representations
+    # Replace foreign-key IDs and enums with string representations
     for field_index, model_type in enumerate(model_types):
         if model_type is not None:
-            # Get all of the IDs that need to be fetched
-            ids = set(row[field_index] for row in results)
-            # Fetch the models with those IDs
-            models = {instance.pk: str(instance) for instance in schema_model_lookup[model_type].objects.all().filter(pk__in=ids)}
-            # For each row, replace the ID with the string representation
-            for row in results:
-                if row[field_index] is not None:
-                    row[field_index] = models.get(row[field_index], None)
+            if model_type[0] == 'model':
+                model_type = model_type[1]
+                # Get all of the IDs that need to be fetched
+                ids = set(row[field_index] for row in results)
+                # Fetch the models with those IDs
+                models = {instance.pk: str(instance) for instance in schema_model_lookup[model_type].objects.all().filter(pk__in=ids)}
+                # For each row, replace the ID with the string representation
+                for row in results:
+                    if row[field_index] is not None:
+                        row[field_index] = models.get(row[field_index], None)
+            elif model_type[0] == 'enum':
+                choices = model_type[1]
+                # For each row, replace the ID with the string representation
+                for row in results:
+                    if row[field_index] is not None:
+                        row[field_index] = choices.get(row[field_index], str(row[field_index]))
 
     return JsonResponse({
         'headings': selected_fields,

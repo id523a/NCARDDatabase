@@ -51,12 +51,13 @@ function fieldSelectHandler(selectorContainer, selector, onChange) {
         if (schemaFields.hasOwnProperty(selectedFieldType)) {
             createFieldSelect(selectorContainer.parentNode, selectedFieldType, onChange);
         }
-        onChange(selectedFieldType ? selectedFieldType : selector.dataset.modelName);
+        onChange(selector.dataset.modelName, selector.value);
     }
 }
 
 // Creates a dropdown inside the specified parent element, that selects fields from the specified model name.
-// Selecting a field in the dropdown calls the function onChange(t) where t is a string representing type of the selected field.
+// Selecting a field in the dropdown calls the function onChange(modelName, fieldName) where
+// where modelName is the name of the model and fieldName is the name of the selected field within the model, or "" if no field is selected.
 function createFieldSelect(parent, modelName, onChange) {
     const selectorContainer = document.createElement("div");
     parent.appendChild(selectorContainer);
@@ -98,9 +99,40 @@ function addFieldRow(e) {
     createButton(fieldRow, "btn btn-outline-danger", "X", deleteRow(fieldRow));
     createButton(fieldRow, "btn btn-outline-secondary", "\u25B2", moveRowUp(fieldRow));
     createButton(fieldRow, "btn btn-outline-secondary", "\u25BC", moveRowDown(fieldRow));
-    createFieldSelect(fieldRow, selectedModel, function(selectedFieldType) {});
+    createFieldSelect(fieldRow, selectedModel, function() {});
     document.getElementById("fieldRows").appendChild(fieldRow);
     e.target.blur();
+}
+
+function addFilterArgument(newFilter, argType) {
+    let filterArgument;
+    switch (argType) {
+    case "string":
+        filterArgument = document.createElement("input");
+        filterArgument.type = "text";
+        filterArgument.className = "form-control condition-argument";
+        newFilter.appendChild(filterArgument);
+        break;
+    case "integer":
+        filterArgument = document.createElement("input");
+        filterArgument.type = "number";
+        filterArgument.min = 0;
+        filterArgument.value = 0;
+        filterArgument.required = true;
+        filterArgument.className = "form-control condition-argument";
+        newFilter.appendChild(filterArgument);
+        break;
+    case "decimal":
+        filterArgument = document.createElement("input");
+        filterArgument.type = "number";
+        filterArgument.min = 0;
+        filterArgument.value = 0;
+        filterArgument.step = "0.1";
+        filterArgument.required = true;
+        filterArgument.className = "form-control condition-argument";
+        newFilter.appendChild(filterArgument);
+        break;
+    }
 }
 
 // Returns an event handler for selecting a filter condition from the (Add condition...) dropdown.
@@ -128,11 +160,7 @@ function addFilterCondition(filterContainer, selector) {
             argTypeStr = selectedOption.dataset.argTypes;
             if (argTypeStr.length > 0) {
                 for (argType of argTypeStr.split(" ")) {
-                    console.log(argType);
-                    const filterArgument = document.createElement("input");
-                    filterArgument.type = "text";
-                    filterArgument.className = "form-control condition-argument";
-                    newFilter.appendChild(filterArgument);
+                    addFilterArgument(newFilter, argType);
                 }
             }
 
@@ -146,9 +174,10 @@ function addFilterCondition(filterContainer, selector) {
 // Returns an event handler for changing the field being filtered. The new field might be a different type
 // and therefore require a different set of filters.
 function changeFilterField(filterContainer, conditionSelector) {
-    return function (selectedFieldType) {
+    return function (modelName, fieldName) {
+        const selectedField = schemaFields[modelName][fieldName];
+        const selectedFieldType = fieldName === "" ? modelName : selectedField.type;
         filterContainer.innerHTML = "";
-        console.log(selectedFieldType);
         conditionSelector.innerHTML = "";
         const firstOption = createOption(conditionSelector, "", "(Add condition...)");
         conditionSelector.selectedIndex = 0;
@@ -166,12 +195,22 @@ function changeFilterField(filterContainer, conditionSelector) {
             createOption(conditionSelector, "endswith", "Ends with (match case)").dataset.argTypes = "string";
             break;
         case "integer":
-            createOption(conditionSelector, "exact", "Equals").dataset.argTypes = "integer";
-            createOption(conditionSelector, "gt", "Greater than").dataset.argTypes = "integer";
-            createOption(conditionSelector, "gte", "Greater or equal to").dataset.argTypes = "integer";
-            createOption(conditionSelector, "lt", "Less than").dataset.argTypes = "integer";
-            createOption(conditionSelector, "lte", "Less or equal to").dataset.argTypes = "integer";
-            createOption(conditionSelector, "range", "In range").dataset.argTypes = "integer integer";
+        case "decimal":
+            createOption(conditionSelector, "exact", "Equals").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "gt", "Greater than").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "gte", "Greater or equal to").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "lt", "Less than").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "lte", "Less or equal to").dataset.argTypes = selectedFieldType;
+            createOption(conditionSelector, "range", "In range").dataset.argTypes = selectedFieldType + " " + selectedFieldType;
+            break;
+        case "enum":
+            for (choice of selectedField.choices) {
+                createOption(conditionSelector, choice[0], "= " + choice[1]).dataset.argTypes = "";
+            }
+            break;
+        case "boolean":
+            createOption(conditionSelector, "True", "= True").dataset.argTypes = "";
+            createOption(conditionSelector, "False", "= False").dataset.argTypes = "";
             break;
         default:
             enableConditionSelector = false;
@@ -210,7 +249,7 @@ function addFilterSection(e) {
     const eventHandler = changeFilterField(filterContainer, conditionSelector);
     createFieldSelect(fieldRow, selectedModel, eventHandler);
     // Populate initial list of conditions
-    eventHandler(selectedModel);
+    eventHandler(selectedModel, "");
 
     filterSection.appendChild(fieldRow);
     filterSection.appendChild(filterContainer);
@@ -364,16 +403,19 @@ window.addEventListener('load', (event) => {
         document.getElementById("addFieldRow").addEventListener("click", addFieldRow);
         document.getElementById("addFilterSection").addEventListener("click", addFilterSection);
         document.getElementById("showResultsButton").addEventListener("click", (e) => {
-            document.getElementById("queryResult").innerText = 'Loading...'
-            runQuery()
-            .then((response) => {
-                const table = document.getElementById("queryResult");
-                renderResultsTable(table, response);
-            });
+            if (document.getElementById("querySettings").reportValidity()) {
+                document.getElementById("queryResult").innerText = 'Loading...'
+                runQuery()
+                .then((response) => {
+                    const table = document.getElementById("queryResult");
+                    renderResultsTable(table, response);
+                });
+            }
         });
         document.getElementById("exportCSVButton").addEventListener("click", (e) => {
-            runQuery()
-            .then(exportResultsCSV);
+            if (document.getElementById("querySettings").reportValidity()) {
+                runQuery().then(exportResultsCSV);
+            }
         });
     });
 });
