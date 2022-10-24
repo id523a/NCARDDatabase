@@ -12,7 +12,7 @@
     * `python manage.py migrate`
     * `python manage.py collectstatic`
     * `python manage.py createsuperuser` - Set the username and password to whatever you like. The email address does not matter.
- 9. Try navigating to http://localhost:8000/, then log in with the username and password. You should see the dashboard of the app.
+ 9. Try navigating to http://localhost/, then log in with the username and password. You should see the dashboard of the app.
  
 ## To make code changes
 

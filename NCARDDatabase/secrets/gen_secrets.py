@@ -11,3 +11,4 @@ def make_secret_file(path):
 
 make_secret_file("django_secret.txt")
 make_secret_file("db_password.txt")
+make_secret_file("admin_password.txt")
