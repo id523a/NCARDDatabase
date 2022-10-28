@@ -17,6 +17,7 @@ services:
       - ./NCARDDatabase/secrets:/code/NCARDDatabase/secrets
     ports:
       - "80:80"
+      - "443:443"
     environment:
       - MYSQL_DATABASE=ncarddb
       - MYSQL_USER=ncarddb
