@@ -12,7 +12,6 @@ RUN apt-get update
 RUN apt-get install -y apache2 apache2-utils openssl ssl-cert libapache2-mod-wsgi-py3
 RUN pip install -r pip-requirements.txt
 COPY sites-available /etc/apache2/sites-available/
-COPY certs /etc/apache2/certs/
 RUN a2enmod ssl
 RUN a2enmod rewrite
 RUN a2dissite 000-default

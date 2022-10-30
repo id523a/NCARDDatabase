@@ -23,7 +23,6 @@ git checkout egiles_prod_ready
 cd /root/NCARDDatabase/NCARDDatabase/secrets
 python3 gen_secrets.py
 
-# Spin up the container
+# Build the container
 cd /root/NCARDDatabase
 docker-compose build
-docker-compose up --detach

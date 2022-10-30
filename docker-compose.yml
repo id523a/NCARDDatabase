@@ -14,7 +14,9 @@ services:
   web:
     build: .
     volumes:
-      - ./NCARDDatabase/secrets:/code/NCARDDatabase/secrets
+      - ./NCARDDatabase/secrets:/code/NCARDDatabase/secrets:ro
+      - ./sites-available:/etc/apache2/sites-available:ro
+      - ./certbot/www:/var/www/certbot:ro
     ports:
       - "80:80"
       - "443:443"
@@ -23,5 +25,10 @@ services:
       - MYSQL_USER=ncarddb
     depends_on:
       - db
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www:/var/www/certbot:rw
+      - ./certbot/conf:/etc/letsencrypt:rw
 volumes:
   db_data:
