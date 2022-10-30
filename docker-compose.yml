@@ -17,6 +17,7 @@ services:
       - ./NCARDDatabase/secrets:/code/NCARDDatabase/secrets:ro
       - ./sites-available:/etc/apache2/sites-available:ro
       - ./certbot/www:/var/www/certbot:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
     ports:
       - "80:80"
       - "443:443"
