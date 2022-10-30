@@ -35,9 +35,11 @@ SECRET_KEY = read_file(os.path.join(BASE_DIR, 'NCARDDatabase', 'secrets', 'djang
 
 DEBUG = False
 SECURE_SSL_REDIRECT = False
-# SECURITY WARNING: May be vulnerable to Host header tampering. Only relevant if exposed to the open internet
-ALLOWED_HOSTS = ['*']
-
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    ALLOWED_HOSTS = ['ncardresearch.org', 'www.ncardresearch.org']
 
 # Application definition
 
