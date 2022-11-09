@@ -25,18 +25,21 @@ AUTO_LOGOUT = {
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+def read_file(path):
+    with open(path, mode='r') as f:
+        return f.read();
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
+# https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-pfdpm!_*5obo(5)q5f#fbvu4j47oo%ca!(iy1s@w_1w3-ldr20'
+SECRET_KEY = read_file(os.path.join(BASE_DIR, 'NCARDDatabase', 'secrets', 'django_secret.txt'))
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 SECURE_SSL_REDIRECT = False
-ALLOWED_HOSTS = []
-
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    ALLOWED_HOSTS = ['ncardresearch.org', 'www.ncardresearch.org']
 
 # Application definition
 
@@ -97,7 +100,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ.get('MYSQL_DATABASE'),
         'USER': os.environ.get('MYSQL_USER'),
-        'PASSWORD': os.environ.get('MYSQL_PASSWORD'),
+        'PASSWORD': read_file(os.path.join(BASE_DIR, 'NCARDDatabase', 'secrets', 'db_password.txt')),
         'HOST': 'db',
         'PORT': 3306,
     }

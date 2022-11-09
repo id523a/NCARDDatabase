@@ -1,18 +1,18 @@
 # NCARDDatabase Setup
 
- 1. Install Docker Desktop and Docker Compose (which might be included).
+ 1. Install Python, Docker Desktop and Docker Compose (which might be included).
  2. Clone this repo.
- 3. Open a shell in the top-level `NCARDDatabase` directory.
- 4. `docker compose build`
- 5. `docker compose up`
- 6. Wait for MySQL to initialise, if applicable.
+ 3. Run `gen_secrets.py` in the `NCARDDatabase/secrets` folder in order to generate the necessary secret keys.
+ 4. Open a shell in the top-level `NCARDDatabase` directory.
+ 5. `docker compose build`
+ 6. `docker compose up`
+ 7. Wait for MySQL to initialise, if applicable.
     Look for `/usr/sbin/mysqld: ready for connections.`
- 7. Try navigating to http://localhost:8000. You should see the homepage of the app.
  8. Open a shell inside the currently running `ncarddatabase-web-1` container, then run:
     * `python manage.py migrate`
     * `python manage.py collectstatic`
     * `python manage.py createsuperuser` - Set the username and password to whatever you like. The email address does not matter.
- 9. Try navigating to http://localhost:8000/admin, then log in with the username and password. You should see Django's built-in admin interface.
+ 9. Try navigating to http://localhost/, then log in with the username and password. You should see the dashboard of the app.
  
 ## To make code changes
 
