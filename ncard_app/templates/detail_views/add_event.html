@@ -1,0 +1,16 @@
+{% extends 'events/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add Event{% endblock %}
+
+{% block content %}
+    <a class="btn btn-close close-btn" href="{% url 'list-events' %}"></a>
+    <h1 class="ncard-dark-green">Add Event</h1><br>
+    <div class="form-margin">
+        <form action="{% url 'add-event' %}" method=POST>
+            {% csrf_token %}
+            {% crispy form %}
+            <input class="btn btn-lg ncard_btn stick" type="submit" value="Add">
+        </form>
+    </div>
+{% endblock %}

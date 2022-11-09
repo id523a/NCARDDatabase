@@ -1,0 +1,65 @@
+.bootstrap-select * {
+    overflow-x: hidden;
+}
+.bootstrap-select > button {
+    border: 1px solid #ced4da;
+}
+#startingTable {
+    margin-bottom: 1em;
+}
+#startingTable select {
+    width: 20em;
+    display: inline-block;
+}
+.field-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.field-row > * {
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
+}
+.field-row > div {
+    width: 12em;
+}
+.field-row .bootstrap-select {
+    width: 100% !important;
+}
+.field-row button {
+    width: 2.5em;
+}
+.add-button {
+    width: 8.5em;
+    margin-bottom: 1em;
+}
+.filter-section {
+    margin-bottom: 1em;
+}
+.filter-section:first-child > .field-row .conjunction {
+    display: none;
+}
+.filter-container {
+    padding-left: 3em;
+}
+.filter-container div {
+    margin-bottom: 0.5em;
+}
+.filter-container button {
+    width: 2.5em;
+    margin-right: 0.5em;
+    vertical-align: baseline;
+    background-color: white;
+}
+.filter-condition:first-child > .conjunction {
+    display: none;
+}
+.condition-argument {
+    width: 20em;
+    display: inline;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+#exportCSVButton {
+    width: 12em;
+}

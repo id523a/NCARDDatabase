@@ -3,11 +3,14 @@
 
 {% block title %}Add Person{% endblock %}
 
-{% block content%}
-    <h1>Add Person</h1>
-    <form action="{% url 'add-person' %}" method=POST>
-        {% csrf_token %}
-        {% crispy form %}
-        <input type="submit" value="Add" />
-    </form>
+{% block content %}
+    <a class="btn btn-close close-btn" href="{% url 'list-people' %}"></a> 
+    <h1 class="ncard-dark-green">Add Person</h1><br>
+    <div class="form-margin">
+        <form action="{% url 'add-person' %}" method=POST>
+            {% csrf_token %}
+            {% crispy form %}
+            <input class="btn btn-lg ncard_btn stick" type="submit" value="Add">
+        </form>
+    </div>
 {% endblock %}

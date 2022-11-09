@@ -7,6 +7,7 @@ from functools import wraps
 from django.contrib import messages
 from django.contrib.auth import REDIRECT_FIELD_NAME
 import django.contrib.auth.decorators as django_decorators
+from django.core.exceptions import PermissionDenied
 
 default_message = "You are not authorised to view this page."
 default_message_login_required = "Please login to access this page."
@@ -20,7 +21,7 @@ def user_passes_test_set_message(test_func, message=default_message):
     def decorator(view_func):
         @wraps(view_func)
         def _wrapped_view(request, *args, **kwargs):
-            if not test_func(request.user):
+            if not test_func(request.user) and message is not None:
                 messages.error(request, message)
             return view_func(request, *args, **kwargs)
         return _wrapped_view
@@ -39,3 +40,11 @@ def login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login
     if function:
         return actual_decorator(function)
     return actual_decorator
+
+def api_login_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise PermissionDenied()
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view

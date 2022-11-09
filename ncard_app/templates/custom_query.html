@@ -1,0 +1,42 @@
+{% extends 'events/base.html' %}
+
+{% block title %}NCARD Database{% endblock %}
+
+{% block custom_css %}
+<link href="/static/custom_query.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Query</h1>
+    <div class="row mb-4">
+        <select id="startingTableSelector" class="selectpicker form-control" data-live-search="true">
+            <option value="" selected>Starting table...</option>
+        </select>
+        {% csrf_token %}
+    </div>
+    <form id="querySettings" style="display:none;" onSubmit="return false;">
+        <!-- Prevent implicit submission of the form -->
+        <input type="submit" disabled style="display: none" aria-hidden="true" />
+        <h2>Output Fields</h2>
+        <div><button id="addFieldRow" class="btn btn-outline-success add-button">Add Field</button></div>
+        <div id="fieldRows"></div>
+        <h2>Filter</h2>
+        <div><button id="addFilterSection" class="btn btn-outline-success add-button">Add Filter</button></div>
+        <div id="filterSections"></div>
+        <h2>Results</h2>
+        <div>
+            <button id="showResultsButton" class="btn btn-outline-success add-button">Show results</button>
+            <button id="exportCSVButton" class="btn btn-outline-success add-button">Download as CSV</button>
+        </div>
+        <table id="queryResult" class="table table-striped"></table>
+    </form>
+{% endblock %}
+
+{% block custom_js %}
+<script>
+const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+const schemaLocation = "{% url 'custom-query-schema' %}";
+const dataLocation = "{% url 'custom-query-data' %}";
+</script>
+<script src="/static/custom_query.js"></script>
+{% endblock %}
